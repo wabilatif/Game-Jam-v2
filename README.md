@@ -101,7 +101,7 @@ epic-gang/            projet Godot (res://)
 
 - Adrien Grégoire
 - Ilann Amimer
-- Marc-Antoine Sadio
+- Marc-Antoine Sadio LE BOSS ULTIME PAS LA PEINE D'ETRE PREMIER POUR PROUVER QUELQUE CHOSE T'AS CAPTEEEER
 - Abdoul Latif Wabi
 - Donata Contant
 - Mahammad Abdourahman Mohamed
