@@ -159,3 +159,7 @@ epic-gang/            Godot project (res://)
 - Mahammad Abdourahman Mohamed
 
 - Deniz Demir
+
+## Assets tiers
+
+- Monstre : [Smily horror monster](https://sketchfab.com/3d-models/smily-horror-monster-3d3fc31eddaa409a8f2df564823154e1) par [Bento (gostbento)](https://sketchfab.com/gostbento), sous licence [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/). Animation de marche ajoutée dans le jeu.

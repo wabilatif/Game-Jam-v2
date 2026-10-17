@@ -1,25 +1,26 @@
 [gd_scene format=3]
 
-[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_ucygd"]
-[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="2_mipys"]
-[ext_resource type="PackedScene" path="res://scenes/MenuBackground.tscn" id="3_8a8k8"]
-[ext_resource type="Script" path="res://scripts/MenuBackground.gd" id="4_7la6k"]
-[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="5_2nypq"]
-[ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="6_bky6r"]
-[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="7_l4mxc"]
-[ext_resource type="PackedScene" path="res://scenes/ui/BrightnessControl.tscn" id="9_bright"]
-[ext_resource type="Script" path="res://scripts/ui/LanguageButton.gd" id="10_lang"]
-[ext_resource type="Script" path="res://scripts/ui/FullscreenButton.gd" id="11_full"]
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_2nypq"]
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="2_bky6r"]
+[ext_resource type="PackedScene" path="res://scenes/MenuBackground.tscn" id="3_l4mxc"]
+[ext_resource type="Script" path="res://scripts/MenuBackground.gd" id="4_5faoh"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="5_ptake"]
+[ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="6_hubol"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="7_8vx4p"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="8_tdapf"]
+[ext_resource type="Script" path="res://scripts/ui/SettingsMenu.gd" id="9_v41fp"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HelpMenu.tscn" id="10_7shrw"]
+[ext_resource type="Script" path="res://scripts/ui/HelpMenu.gd" id="11_viowm"]
 
-[sub_resource type="Gradient" id="Gradient_5faoh"]
+[sub_resource type="Gradient" id="Gradient_1n6yq"]
 offsets = PackedFloat32Array(0, 1, 0.5)
 colors = PackedColorArray(0.043137256, 0.043137256, 0.039215688, 0.94, 0.043137256, 0.043137256, 0.039215688, 0.05, 0.043137256, 0.043137256, 0.039215688, 0.6)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ptake"]
-gradient = SubResource("Gradient_5faoh")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yovvs"]
+gradient = SubResource("Gradient_1n6yq")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hubol"]
-shader = ExtResource("5_2nypq")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2axsc"]
+shader = ExtResource("5_ptake")
 shader_parameter/ghost_color = null
 shader_parameter/bleed_color = null
 shader_parameter/ghost_offset_px = null
@@ -28,33 +29,33 @@ shader_parameter/tear_px = null
 shader_parameter/erosion = null
 shader_parameter/crisis_chance = null
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vx4p"]
-shader = ExtResource("7_l4mxc")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wrgne"]
+shader = ExtResource("7_8vx4p")
 shader_parameter/grain_strength = null
 shader_parameter/vignette_strength = null
 shader_parameter/flicker_strength = null
 shader_parameter/flicker_chance = null
 
-[node name="MainMenu" type="Control" unique_id=1269555991]
+[node name="MainMenu" type="Control" unique_id=109355726]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = ExtResource("1_ucygd")
-script = ExtResource("2_mipys")
+theme = ExtResource("1_2nypq")
+script = ExtResource("2_bky6r")
 
-[node name="MenuBackground" type="Node3D" parent="." unique_id=298200069 instance=ExtResource("3_8a8k8")]
-script = ExtResource("4_7la6k")
+[node name="MenuBackground" type="Node3D" parent="." unique_id=298200069 instance=ExtResource("3_l4mxc")]
+script = ExtResource("4_5faoh")
 
-[node name="Shade" type="TextureRect" parent="." unique_id=1313326566]
+[node name="Shade" type="TextureRect" parent="." unique_id=678662348]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = SubResource("GradientTexture2D_ptake")
+texture = SubResource("GradientTexture2D_yovvs")
 expand_mode = 1
 
-[node name="Margin" type="MarginContainer" parent="." unique_id=1674829698]
+[node name="Margin" type="MarginContainer" parent="." unique_id=1536954603]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -63,59 +64,67 @@ theme_override_constants/margin_top = 52
 theme_override_constants/margin_right = 72
 theme_override_constants/margin_bottom = 52
 
-[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=389277895]
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1177420475]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=2043648658]
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=237244127]
 layout_mode = 2
+theme_override_constants/separation = 18
 
-[node name="@Label@2" type="Label" parent="Margin/Layout/Header" unique_id=1649316847]
+[node name="@Label@35" type="Label" parent="Margin/Layout/Header" unique_id=1789630437]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "CENTRE HOSPITALIER SAINT-AUBIN"
 
-[node name="@Control@3" type="Control" parent="Margin/Layout/Header" unique_id=1578445114]
+[node name="@Control@36" type="Control" parent="Margin/Layout/Header" unique_id=1823751825]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="@Label@4" type="Label" parent="Margin/Layout/Header" unique_id=1920295660]
+[node name="@Label@37" type="Label" parent="Margin/Layout/Header" unique_id=2128212960]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "DOSSIER N° 0447"
 
-[node name="@Control@5" type="Control" parent="Margin/Layout" unique_id=972101318]
+[node name="HelpButton" type="Button" parent="Margin/Layout/Header" unique_id=427568201]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Commandes"
+theme_type_variation = &"HelpButton"
+text = "?"
+
+[node name="@Control@38" type="Control" parent="Margin/Layout" unique_id=898654092]
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="@Label@6" type="Label" parent="Margin/Layout" unique_id=371738888]
+[node name="@Label@39" type="Label" parent="Margin/Layout" unique_id=183795634]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "SERVICE DE NEUROLOGIE  ·  DOSSIER INCOMPLET"
 
-[node name="@Control@7" type="Control" parent="Margin/Layout" unique_id=2023196368]
+[node name="@Control@40" type="Control" parent="Margin/Layout" unique_id=648884684]
 custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="@HSeparator@8" type="HSeparator" parent="Margin/Layout" unique_id=2139836530]
+[node name="@HSeparator@41" type="HSeparator" parent="Margin/Layout" unique_id=1774168308]
 layout_mode = 2
 
-[node name="@Control@9" type="Control" parent="Margin/Layout" unique_id=503028139]
+[node name="@Control@42" type="Control" parent="Margin/Layout" unique_id=585094590]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="Title" type="Label" parent="Margin/Layout" unique_id=811238121]
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=1326243249]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "LOST
 MEMORY"
 
-[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=2032844623]
-material = SubResource("ShaderMaterial_hubol")
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=1578142151]
+material = SubResource("ShaderMaterial_2axsc")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -125,7 +134,7 @@ offset_right = 44.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="NoteForget" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1365857522]
+[node name="NoteForget" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1769675214]
 custom_minimum_size = Vector2(520, 0)
 clip_contents = false
 layout_mode = 0
@@ -141,11 +150,11 @@ text = "[s]je ne me souviens pas[/s]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
-script = ExtResource("6_bky6r")
+script = ExtResource("6_hubol")
 delay = 1.4
 duration = 1.1
 
-[node name="NoteWarning" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=831304217]
+[node name="NoteWarning" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=917303003]
 custom_minimum_size = Vector2(520, 0)
 clip_contents = false
 layout_mode = 0
@@ -161,11 +170,11 @@ text = "NE LE REGARDE PAS"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
-script = ExtResource("6_bky6r")
+script = ExtResource("6_hubol")
 delay = 2.8
 duration = 0.8
 
-[node name="NoteCorridor" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1132417897]
+[node name="NoteCorridor" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1362128440]
 custom_minimum_size = Vector2(520, 0)
 clip_contents = false
 layout_mode = 0
@@ -181,147 +190,127 @@ text = "il est dans le couloir"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
-script = ExtResource("6_bky6r")
+script = ExtResource("6_hubol")
 delay = 4.2
 duration = 1.3
 
-[node name="@Control@16" type="Control" parent="Margin/Layout" unique_id=579555803]
+[node name="@Control@49" type="Control" parent="Margin/Layout" unique_id=264287161]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="@Label@17" type="Label" parent="Margin/Layout" unique_id=1268351018]
+[node name="@Label@50" type="Label" parent="Margin/Layout" unique_id=1534860669]
 layout_mode = 2
 theme_type_variation = &"StatementLabel"
 text = "Le patient ne se souvient de rien."
 
-[node name="@Control@18" type="Control" parent="Margin/Layout" unique_id=1788165977]
-custom_minimum_size = Vector2(0, 24)
+[node name="@Control@51" type="Control" parent="Margin/Layout" unique_id=847955574]
+custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Menu" type="VBoxContainer" parent="Margin/Layout" unique_id=865935418]
+[node name="Menu" type="VBoxContainer" parent="Margin/Layout" unique_id=527995510]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="StartButton" type="Button" parent="Margin/Layout/Menu" unique_id=1652622337]
+[node name="StartButton" type="Button" parent="Margin/Layout/Menu" unique_id=396260114]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Commencer"
 alignment = 0
 
-[node name="QuitButton" type="Button" parent="Margin/Layout/Menu" unique_id=1664091545]
+[node name="SettingsButton" type="Button" parent="Margin/Layout/Menu" unique_id=1054477826]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Paramètres"
+alignment = 0
+
+[node name="QuitButton" type="Button" parent="Margin/Layout/Menu" unique_id=481373309]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Quitter"
 alignment = 0
 
-[node name="BrightnessSpacer" type="Control" parent="Margin/Layout/Menu"]
-custom_minimum_size = Vector2(0, 8)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="BrightnessControl" parent="Margin/Layout/Menu" instance=ExtResource("9_bright")]
-layout_mode = 2
-
-[node name="SettingsRow" type="HBoxContainer" parent="Margin/Layout/Menu"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 40
-
-[node name="LanguageButton" type="Button" parent="Margin/Layout/Menu/SettingsRow"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Langue : Français"
-alignment = 0
-script = ExtResource("10_lang")
-
-[node name="FullscreenButton" type="Button" parent="Margin/Layout/Menu/SettingsRow"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Plein écran : désactivé"
-alignment = 0
-script = ExtResource("11_full")
-
-[node name="@Control@19" type="Control" parent="Margin/Layout" unique_id=1433131821]
+[node name="@Control@52" type="Control" parent="Margin/Layout" unique_id=2102515442]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="@HSeparator@20" type="HSeparator" parent="Margin/Layout" unique_id=1327240245]
+[node name="@HSeparator@53" type="HSeparator" parent="Margin/Layout" unique_id=334381334]
 layout_mode = 2
 
-[node name="@Control@21" type="Control" parent="Margin/Layout" unique_id=10167286]
+[node name="@Control@54" type="Control" parent="Margin/Layout" unique_id=682196908]
 custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Fields" type="VBoxContainer" parent="Margin/Layout" unique_id=1593115244]
+[node name="Fields" type="VBoxContainer" parent="Margin/Layout" unique_id=388750105]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="FieldIdentité" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=1200350657]
+[node name="FieldIdentité" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=975862959]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="@Label@22" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=70562572]
+[node name="@Label@55" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1231532975]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Identité .........."
 
-[node name="@Label@23" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1695091222]
+[node name="@Label@56" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=2016085962]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = " "
 
-[node name="@Label@24" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1843288903]
+[node name="@Label@57" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1893538363]
 layout_mode = 2
 theme_type_variation = &"FieldValueLabel"
 text = "inconnue"
 
-[node name="FieldAdmission" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=1319127396]
+[node name="FieldAdmission" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=1401233282]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="@Label@25" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=1713887077]
+[node name="@Label@58" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=637952080]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Admission ........."
 
-[node name="@Label@26" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=1737301955]
+[node name="@Label@59" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=1042634902]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = " "
 
-[node name="Redacted" type="ColorRect" parent="Margin/Layout/Fields/FieldAdmission" unique_id=699395204]
+[node name="Redacted" type="ColorRect" parent="Margin/Layout/Fields/FieldAdmission" unique_id=2039465891]
 custom_minimum_size = Vector2(132, 15)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
 color = Color(0.20392157, 0.19215687, 0.16862746, 1)
 
-[node name="FieldSortie" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=677029999]
+[node name="FieldSortie" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=945782924]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="@Label@27" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=348342475]
+[node name="@Label@60" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=1139912558]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Sortie ............"
 
-[node name="@Label@28" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=2146659019]
+[node name="@Label@61" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=427927438]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = " "
 
-[node name="@Label@29" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=1321041452]
+[node name="@Label@62" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=1837540615]
 layout_mode = 2
 theme_type_variation = &"FieldValueLabel"
 text = "non autorisée"
 
-[node name="Stamp" type="PanelContainer" parent="." unique_id=824904538]
+[node name="Stamp" type="PanelContainer" parent="." unique_id=769990226]
 modulate = Color(0.5568628, 0.105882354, 0.09019608, 0.85)
 layout_mode = 0
 anchor_left = 1.0
@@ -338,25 +327,45 @@ rotation = -0.12217305
 mouse_filter = 2
 theme_type_variation = &"StampPanel"
 
-[node name="StampLabel" type="Label" parent="Stamp" unique_id=1476378374]
+[node name="StampLabel" type="Label" parent="Stamp" unique_id=648665203]
 layout_mode = 2
 theme_type_variation = &"StampLabel"
 text = "NON RÉCLAMÉ"
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1325549395]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1843989787]
 copy_mode = 2
 
-[node name="FilmGrain" type="ColorRect" parent="." unique_id=983083991]
-material = SubResource("ShaderMaterial_8vx4p")
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=485723322]
+material = SubResource("ShaderMaterial_wrgne")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Fade" type="ColorRect" parent="." unique_id=176269856]
+[node name="Fade" type="ColorRect" parent="." unique_id=1875091129]
 unique_name_in_owner = true
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0.043137256, 0.043137256, 0.039215688, 1)
+
+[node name="SettingsMenu" type="Control" parent="." unique_id=210569723 instance=ExtResource("8_tdapf")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_2nypq")
+script = ExtResource("9_v41fp")
+
+[node name="HelpMenu" type="Control" parent="." unique_id=1516783676 instance=ExtResource("10_7shrw")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_2nypq")
+script = ExtResource("11_viowm")

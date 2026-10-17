@@ -1,0 +1,180 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_8qvh5"]
+[ext_resource type="Script" path="res://scripts/ui/HelpMenu.gd" id="2_irw6g"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_1f40b"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="4_5ntcg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ims3f"]
+shader = ExtResource("3_1f40b")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ljxi0"]
+shader = ExtResource("4_5ntcg")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="HelpMenu" type="Control" unique_id=2036660668]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_8qvh5")
+script = ExtResource("2_irw6g")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1151702479]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=2016147225]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=459410384]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=1323906359]
+layout_mode = 2
+
+[node name="@Label@2" type="Label" parent="Margin/Layout/Header" unique_id=239447888]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "FICHE D'INSTRUCTIONS"
+
+[node name="@Control@3" type="Control" parent="Margin/Layout/Header" unique_id=574705913]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@4" type="Label" parent="Margin/Layout/Header" unique_id=1524119258]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@5" type="Control" parent="Margin/Layout" unique_id=629880935]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@6" type="HSeparator" parent="Margin/Layout" unique_id=21760608]
+layout_mode = 2
+
+[node name="@Control@7" type="Control" parent="Margin/Layout" unique_id=1913047767]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=386875975]
+layout_mode = 2
+theme_type_variation = &"PowerTitleLabel"
+text = "COMMANDES"
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Margin/Layout/Title" unique_id=1622184003]
+copy_mode = 2
+
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=1559663443]
+material = SubResource("ShaderMaterial_ims3f")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="@Control@8" type="Control" parent="Margin/Layout" unique_id=1717542277]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Columns" type="HBoxContainer" parent="Margin/Layout" unique_id=67337695]
+layout_mode = 2
+theme_override_constants/separation = 56
+
+[node name="Left" type="VBoxContainer" parent="Margin/Layout/Columns" unique_id=697378698]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="@Label@9" type="Label" parent="Margin/Layout/Columns/Left" unique_id=2121619801]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DÉPLACEMENT"
+
+[node name="Movement" type="VBoxContainer" parent="Margin/Layout/Columns/Left" unique_id=984024729]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Right" type="VBoxContainer" parent="Margin/Layout/Columns" unique_id=798465816]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="@Label@10" type="Label" parent="Margin/Layout/Columns/Right" unique_id=207551668]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "POUVOIRS"
+
+[node name="Powers" type="VBoxContainer" parent="Margin/Layout/Columns/Right" unique_id=1921064121]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="@Control@11" type="Control" parent="Margin/Layout/Columns/Right" unique_id=1116212852]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@Label@12" type="Label" parent="Margin/Layout/Columns/Right" unique_id=1958059732]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "SYSTÈME"
+
+[node name="System" type="VBoxContainer" parent="Margin/Layout/Columns/Right" unique_id=176375021]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="@Control@13" type="Control" parent="Margin/Layout" unique_id=1928040288]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="Margin/Layout" unique_id=9033539]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Retour"
+alignment = 0
+
+[node name="@Control@14" type="Control" parent="Margin/Layout" unique_id=469657287]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=903746418]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=906172666]
+material = SubResource("ShaderMaterial_ljxi0")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

@@ -1,0 +1,146 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_mkji7"]
+[ext_resource type="Script" path="res://scripts/Intro.gd" id="2_capyo"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HoldToSkip.tscn" id="3_b2a04"]
+[ext_resource type="Script" path="res://scripts/ui/HoldToSkip.gd" id="4_r2s4q"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="5_gy60b"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nukyp"]
+shader = ExtResource("5_gy60b")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="Intro" type="Control" unique_id=1155340260]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_mkji7")
+script = ExtResource("2_capyo")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1426787474]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=2126448881]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1336046826]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=2085518483]
+layout_mode = 2
+
+[node name="@Label@15" type="Label" parent="Margin/Layout/Header" unique_id=1158808599]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "CENTRE HOSPITALIER SAINT-AUBIN"
+
+[node name="@Control@16" type="Control" parent="Margin/Layout/Header" unique_id=1273335811]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@17" type="Label" parent="Margin/Layout/Header" unique_id=2138809907]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "03 h 12"
+
+[node name="@Control@18" type="Control" parent="Margin/Layout" unique_id=1626551229]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@19" type="HSeparator" parent="Margin/Layout" unique_id=1767571633]
+layout_mode = 2
+
+[node name="@Control@20" type="Control" parent="Margin/Layout" unique_id=1663396581]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Counter" type="Label" parent="Margin/Layout" unique_id=1812676]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+theme_override_colors/font_color = Color(0.5568628, 0.105882354, 0.09019608, 1)
+text = "1 / 4"
+
+[node name="@Control@21" type="Control" parent="Margin/Layout" unique_id=159711935]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Card" type="Label" parent="Margin/Layout" unique_id=197082695]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+theme_type_variation = &"StoryLabel"
+autowrap_mode = 3
+
+[node name="@Control@22" type="Control" parent="Margin/Layout" unique_id=532723678]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="@HSeparator@23" type="HSeparator" parent="Margin/Layout" unique_id=344143619]
+layout_mode = 2
+
+[node name="@Control@24" type="Control" parent="Margin/Layout" unique_id=1835430125]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Bottom" type="HBoxContainer" parent="Margin/Layout" unique_id=707418199]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="Margin/Layout/Bottom" unique_id=1983156523]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Entrée pour continuer"
+
+[node name="@Control@25" type="Control" parent="Margin/Layout/Bottom" unique_id=152783036]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HoldToSkip" type="HBoxContainer" parent="Margin/Layout/Bottom" unique_id=426104257 instance=ExtResource("3_b2a04")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+script = ExtResource("4_r2s4q")
+text = "Maintenir Échap pour passer l'intro"
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1784140979]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=1359843684]
+material = SubResource("ShaderMaterial_nukyp")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Fade" type="ColorRect" parent="." unique_id=1930932824]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)

@@ -1,11 +1,11 @@
-[gd_resource type="Theme" format=3 uid="uid://cvuro6u0bye2s"]
+[gd_resource type="Theme" format=3]
 
-[ext_resource type="FontFile" uid="uid://4beygokqf3w1" path="res://assets/fonts/CourierPrime-Regular.ttf" id="1_dmo1k"]
-[ext_resource type="FontFile" uid="uid://b8xah7bvuyxdr" path="res://assets/fonts/NothingYouCouldDo.ttf" id="2_hg030"]
-[ext_resource type="FontFile" uid="uid://dt1af0q0o1up1" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="3_0k4c7"]
-[ext_resource type="FontFile" uid="uid://b3hqlg7lkcgai" path="res://assets/fonts/RockSalt-Regular.ttf" id="4_as4xt"]
-[ext_resource type="FontFile" uid="uid://c0kfdxho1236l" path="res://assets/fonts/IBMPlexSansCondensed-Bold.ttf" id="5_tl55s"]
-[ext_resource type="FontFile" uid="uid://cgyey1uun075d" path="res://assets/fonts/CourierPrime-Bold.ttf" id="6_hyhcv"]
+[ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Regular.ttf" id="1_dmo1k"]
+[ext_resource type="FontFile" path="res://assets/fonts/NothingYouCouldDo.ttf" id="2_hg030"]
+[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="3_0k4c7"]
+[ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Bold.ttf" id="4_as4xt"]
+[ext_resource type="FontFile" path="res://assets/fonts/RockSalt-Regular.ttf" id="5_tl55s"]
+[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Bold.ttf" id="6_hyhcv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fruy8"]
 content_margin_left = 22.0
@@ -39,21 +39,69 @@ color = Color(0.16470589, 0.15686275, 0.14117648, 1)
 base_font = ExtResource("3_0k4c7")
 spacing_glyph = 3
 
-[sub_resource type="FontVariation" id="FontVariation_4bhux"]
-base_font = ExtResource("5_tl55s")
-spacing_glyph = 6
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4bhux"]
+content_margin_left = 9.0
+content_margin_top = 2.0
+content_margin_right = 9.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.41960785, 0.4, 0.36078432, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2q3dt"]
-bg_color = Color(0.16470589, 0.15686275, 0.14117648, 1)
+content_margin_left = 9.0
+content_margin_top = 2.0
+content_margin_right = 9.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5568628, 0.105882354, 0.09019608, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8rck"]
-bg_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+content_margin_left = 9.0
+content_margin_top = 2.0
+content_margin_right = 9.0
+content_margin_bottom = 2.0
+bg_color = Color(0.08627451, 0.08235294, 0.07450981, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.41960785, 0.4, 0.36078432, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="FontVariation" id="FontVariation_60ubf"]
 base_font = ExtResource("6_hyhcv")
-spacing_glyph = 4
+spacing_glyph = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4nry"]
+bg_color = Color(0.16470589, 0.15686275, 0.14117648, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6shv"]
+bg_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_u6m57"]
+base_font = ExtResource("4_as4xt")
+spacing_glyph = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4npe"]
 content_margin_left = 18.0
 content_margin_top = 6.0
 content_margin_right = 18.0
@@ -106,11 +154,26 @@ HeaderLabel/base_type = &"Label"
 HeaderLabel/colors/font_color = Color(0.41960785, 0.4, 0.36078432, 1)
 HeaderLabel/font_sizes/font_size = 14
 HeaderLabel/fonts/font = SubResource("FontVariation_5iv2t")
+HelpButton/base_type = &"Button"
+HelpButton/colors/font_color = Color(0.41960785, 0.4, 0.36078432, 1)
+HelpButton/font_sizes/font_size = 20
+HelpButton/fonts/font = ExtResource("4_as4xt")
+HelpButton/styles/disabled = SubResource("StyleBoxFlat_4bhux")
+HelpButton/styles/focus = SubResource("StyleBoxFlat_2q3dt")
+HelpButton/styles/hover = SubResource("StyleBoxFlat_2q3dt")
+HelpButton/styles/normal = SubResource("StyleBoxFlat_4bhux")
+HelpButton/styles/pressed = SubResource("StyleBoxFlat_4bhux")
+KeyCap/base_type = &"PanelContainer"
+KeyCap/styles/panel = SubResource("StyleBoxFlat_g8rck")
+KeyCapLabel/base_type = &"Label"
+KeyCapLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+KeyCapLabel/font_sizes/font_size = 18
+KeyCapLabel/fonts/font = ExtResource("4_as4xt")
 Label/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 NoteLoud/base_type = &"RichTextLabel"
 NoteLoud/colors/default_color = Color(0.6392157, 0.13725491, 0.10980392, 1)
 NoteLoud/font_sizes/normal_font_size = 26
-NoteLoud/fonts/normal_font = ExtResource("4_as4xt")
+NoteLoud/fonts/normal_font = ExtResource("5_tl55s")
 NoteQuiet/base_type = &"RichTextLabel"
 NoteQuiet/colors/default_color = Color(0.6392157, 0.6039216, 0.53333336, 1)
 NoteQuiet/font_sizes/normal_font_size = 30
@@ -118,27 +181,36 @@ NoteQuiet/fonts/normal_font = ExtResource("2_hg030")
 PowerTitleLabel/base_type = &"Label"
 PowerTitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 PowerTitleLabel/font_sizes/font_size = 64
-PowerTitleLabel/fonts/font = SubResource("FontVariation_4bhux")
+PowerTitleLabel/fonts/font = SubResource("FontVariation_60ubf")
 ReportTitleLabel/base_type = &"Label"
 ReportTitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 ReportTitleLabel/constants/line_spacing = -20
 ReportTitleLabel/font_sizes/font_size = 84
-ReportTitleLabel/fonts/font = SubResource("FontVariation_4bhux")
+ReportTitleLabel/fonts/font = SubResource("FontVariation_60ubf")
 StaminaBar/base_type = &"ProgressBar"
-StaminaBar/styles/background = SubResource("StyleBoxFlat_2q3dt")
-StaminaBar/styles/fill = SubResource("StyleBoxFlat_g8rck")
+StaminaBar/styles/background = SubResource("StyleBoxFlat_m4nry")
+StaminaBar/styles/fill = SubResource("StyleBoxFlat_o6shv")
 StampLabel/base_type = &"Label"
 StampLabel/colors/font_color = Color(1, 1, 1, 1)
 StampLabel/font_sizes/font_size = 26
-StampLabel/fonts/font = SubResource("FontVariation_60ubf")
+StampLabel/fonts/font = SubResource("FontVariation_u6m57")
 StampPanel/base_type = &"PanelContainer"
-StampPanel/styles/panel = SubResource("StyleBoxFlat_m4nry")
+StampPanel/styles/panel = SubResource("StyleBoxFlat_s4npe")
 StatementLabel/base_type = &"Label"
 StatementLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 StatementLabel/font_sizes/font_size = 22
 StatementLabel/fonts/font = ExtResource("1_dmo1k")
+StepTitleLabel/base_type = &"Label"
+StepTitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+StepTitleLabel/font_sizes/font_size = 40
+StepTitleLabel/fonts/font = SubResource("FontVariation_60ubf")
+StoryLabel/base_type = &"Label"
+StoryLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+StoryLabel/constants/line_spacing = 10
+StoryLabel/font_sizes/font_size = 30
+StoryLabel/fonts/font = ExtResource("1_dmo1k")
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 TitleLabel/constants/line_spacing = -22
 TitleLabel/font_sizes/font_size = 88
-TitleLabel/fonts/font = SubResource("FontVariation_4bhux")
+TitleLabel/fonts/font = SubResource("FontVariation_60ubf")

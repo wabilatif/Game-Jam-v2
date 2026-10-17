@@ -1,0 +1,166 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_wxnu7"]
+[ext_resource type="Script" path="res://scripts/ui/SettingsMenu.gd" id="2_nh2kd"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_2itnm"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BrightnessControl.tscn" id="4_shycq"]
+[ext_resource type="Script" path="res://scripts/ui/BrightnessControl.gd" id="5_jvpra"]
+[ext_resource type="Script" path="res://scripts/ui/LanguageButton.gd" id="6_h6tww"]
+[ext_resource type="Script" path="res://scripts/ui/FullscreenButton.gd" id="7_rbwj6"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="8_uab20"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_llyjd"]
+shader = ExtResource("3_2itnm")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bb51c"]
+shader = ExtResource("8_uab20")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="SettingsMenu" type="Control" unique_id=210569723]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_wxnu7")
+script = ExtResource("2_nh2kd")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1263875339]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1624319893]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=566914664]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=301288941]
+layout_mode = 2
+
+[node name="@Label@2" type="Label" parent="Margin/Layout/Header" unique_id=1993293337]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "RÉGLAGES DU PATIENT"
+
+[node name="@Control@3" type="Control" parent="Margin/Layout/Header" unique_id=1678134318]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@4" type="Label" parent="Margin/Layout/Header" unique_id=1953759882]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@5" type="Control" parent="Margin/Layout" unique_id=926281542]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@6" type="HSeparator" parent="Margin/Layout" unique_id=1376338636]
+layout_mode = 2
+
+[node name="@Control@7" type="Control" parent="Margin/Layout" unique_id=1906260922]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=508578573]
+layout_mode = 2
+theme_type_variation = &"ReportTitleLabel"
+text = "PARAMÈTRES"
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Margin/Layout/Title" unique_id=147406145]
+copy_mode = 2
+
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=240517886]
+material = SubResource("ShaderMaterial_llyjd")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="@Control@8" type="Control" parent="Margin/Layout" unique_id=412724493]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Options" type="VBoxContainer" parent="Margin/Layout" unique_id=278796248]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="BrightnessControl" type="HBoxContainer" parent="Margin/Layout/Options" unique_id=727087266 instance=ExtResource("4_shycq")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 20
+script = ExtResource("5_jvpra")
+
+[node name="LanguageButton" type="Button" parent="Margin/Layout/Options" unique_id=1682538280]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"ChoiceButton"
+text = "Langue : Français"
+alignment = 0
+script = ExtResource("6_h6tww")
+
+[node name="FullscreenButton" type="Button" parent="Margin/Layout/Options" unique_id=929530556]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"ChoiceButton"
+text = "Plein écran : désactivé"
+alignment = 0
+script = ExtResource("7_rbwj6")
+
+[node name="@Control@9" type="Control" parent="Margin/Layout" unique_id=1389646013]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="Margin/Layout" unique_id=896018231]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Retour"
+alignment = 0
+
+[node name="@Control@10" type="Control" parent="Margin/Layout" unique_id=579650007]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=347056361]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=1390935361]
+material = SubResource("ShaderMaterial_bb51c")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/HoldToSkip.gd" id="1_ei2ii"]
+
+[node name="HoldToSkip" type="HBoxContainer" unique_id=426104257]
+mouse_filter = 2
+theme_override_constants/separation = 14
+script = ExtResource("1_ei2ii")
+
+[node name="Label" type="Label" parent="." unique_id=996148768]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Maintenir Échap pour passer"
+
+[node name="Gauge" type="ProgressBar" parent="." unique_id=717006263]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 3)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"StaminaBar"
+show_percentage = false
