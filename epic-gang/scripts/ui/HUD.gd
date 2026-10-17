@@ -28,6 +28,11 @@ const POWER_NAME_WIDTH := 18
 const COLOR_READY: Color = Color("cfc8b8")
 const COLOR_COOLDOWN: Color = Color("6b665c")
 const COLOR_EXHAUSTED: Color = Color("8e1b17")
+## Pertes rendues visibles : recharges rallongées (bras), souffle qui revient
+## mal (coeur), jauge écourtée (endurance).
+const COLOR_SLOW_COOLDOWN: Color = Color("a3231c")
+const COLOR_WEAK_HEART: Color = Color("c2665c")
+const SHORT_STAMINA_SCALE := 0.5
 ## Secondes par caractère pour l'effet machine à écrire des messages.
 const TYPE_SPEED := 0.025
 ## Effet de course : vitesse d'apparition, et respiration (inspirations/s)
@@ -56,9 +61,17 @@ var _player: Node
 var _sprint_intensity := 0.0
 var _exhaustion := 0.0
 var _breath_phase := 0.0
+var _moment: SacrificeMoment
+var _ear_icon: EarLossIcon
 
 
 func _ready() -> void:
+	_moment = SacrificeMoment.new()
+	add_child(_moment)
+	_ear_icon = EarLossIcon.new()
+	_ear_icon.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_ear_icon.position = Vector2(-86, -96)
+	add_child(_ear_icon)
 	reset()
 
 
@@ -100,12 +113,17 @@ func set_powers(powers: Array[String]) -> void:
 
 
 func set_sacrifices(sacrifices: Array[String]) -> void:
+	var added: Array[String] = sacrifices.filter(func(id: String) -> bool: return not _sacrifices.has(id))
 	_sacrifices = sacrifices.duplicate()
 	var lines: Array[String] = []
 	for id in _sacrifices:
 		lines.append(tr(String(SACRIFICE_NAMES.get(id, id))))
 	_sacrifice_text.text = "\n".join(lines)
 	_sacrifice_panel.visible = not _sacrifices.is_empty()
+	# Une nouvelle perte : on la fait ressentir avant qu'elle rejoigne la liste.
+	if not added.is_empty():
+		var phrase := tr(String(SACRIFICE_NAMES.get(added.back(), added.back())))
+		_moment.play(phrase, _sacrifice_panel.get_global_rect().get_center())
 
 
 func show_message(message: String, duration: float) -> void:
@@ -143,6 +161,8 @@ func reset() -> void:
 	_sprint_intensity = 0.0
 	_exhaustion = 0.0
 	_sprint_fx.visible = false
+	_moment.stop()
+	_ear_icon.visible = false
 
 
 # =======================================================================
@@ -160,7 +180,18 @@ func _update_stamina() -> void:
 	# La jauge n'apparait que lorsqu'elle n'est pas pleine.
 	_stamina_bar.visible = ratio < 0.995
 	var exhausted: bool = _player.has_method("is_exhausted") and _player.is_exhausted()
-	_stamina_bar.modulate = COLOR_EXHAUSTED if exhausted else Color.WHITE
+	var lost: Callable = func(id: String) -> bool: return _sacrifices.has(id)
+	var recovering: bool = not (_player.has_method("is_sprinting") and _player.is_sprinting())
+	if exhausted:
+		_stamina_bar.modulate = COLOR_EXHAUSTED
+	elif lost.call("heart") and recovering:
+		_stamina_bar.modulate = COLOR_WEAK_HEART
+	else:
+		_stamina_bar.modulate = Color.WHITE
+	# Endurance sacrifiée : la jauge elle-même est deux fois plus courte.
+	_stamina_bar.pivot_offset = _stamina_bar.size / 2.0
+	_stamina_bar.scale.x = SHORT_STAMINA_SCALE if lost.call("stamina") else 1.0
+	_ear_icon.visible = lost.call("hearing")
 
 
 func _update_sprint_fx(delta: float) -> void:
@@ -192,7 +223,7 @@ func _update_power_rows() -> void:
 		var remaining: float = _get_cooldown_remaining(id)
 		if remaining > 0.0:
 			label.text = "[%d] %s %4.1f s" % [key, power_name, remaining]
-			label.modulate = COLOR_COOLDOWN
+			label.modulate = COLOR_SLOW_COOLDOWN if _sacrifices.has("arm") else COLOR_COOLDOWN
 		elif remaining < 0.0:
 			label.text = "[%d] %s ..." % [key, power_name]
 			label.modulate = COLOR_COOLDOWN

@@ -84,7 +84,7 @@ func play_sacrifice_effect(sacrifice_id: String) -> void:
 		"vision":
 			EffectsManager.flash_screen(Color(0, 0, 0, 1.0), 0.8)
 		"leg", "stamina", "arm", "heart":
-			EffectsManager.flash_screen(Color(0.8, 0.0, 0.0, 0.5), 0.5)
+			pass # le battement rouge du HUD (SacrificeMoment) s'en charge
 		"light":
 			EffectsManager.flash_screen(Color(0, 0, 0, 0.9), 0.5)
 		_:

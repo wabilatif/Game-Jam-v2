@@ -34,6 +34,9 @@ const HEART_RECOVERY_MULTIPLIER: float = 0.5
 const REFLEXES_SENSITIVITY_MULTIPLIER: float = 0.55
 const LIGHT_ENERGY_MULTIPLIER: float = 0.45
 const LIGHT_RANGE_MULTIPLIER: float = 0.55
+## Sacrifice "light" : la lampe grésille (coupures par seconde, durée d'une coupure).
+const LIGHT_FLICKER_RATE: float = 0.7
+const LIGHT_FLICKER_DURATION: Vector2 = Vector2(0.08, 0.35)
 const POWER_KEYS: Array[String] = [
 	"shockwave", "spectral_vision", "speed_boost", "spectral_trap"
 ]
@@ -56,6 +59,9 @@ const FOV_SMOOTHING: float = 8.0
 const FLASHLIGHT_RANGE: float = 18.0
 const FLASHLIGHT_ANGLE: float = 32.0
 const FLASHLIGHT_ENERGY: float = 3.0
+const TORCH_SCENE: PackedScene = preload("res://assets/ui/torch.glb")
+const TORCH_LENGTH: float = 0.2
+const TORCH_CENTER: Vector3 = Vector3(0.0, 0.0, -0.07)
 
 # --- Bonus "corps" : mains et pieds proceduraux (aucun asset requis) -------
 const SKIN_COLOR: Color = Color(0.78, 0.62, 0.52)
@@ -117,6 +123,7 @@ var _flashlight: SpotLight3D
 var _base_fov: float = 75.0
 var _camera_base_y: float = 0.0
 var _bob_phase: float = 0.0
+var _light_flicker_left: float = 0.0
 var _last_step_index: int = 0
 
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -466,6 +473,7 @@ func _process(delta: float) -> void:
 	_update_fov(delta)
 	_update_hands(delta)
 	_update_feet(delta)
+	_update_light_flicker(delta)
 
 
 # =======================================================================
@@ -567,31 +575,52 @@ func _build_foot() -> Node3D:
 	return foot
 
 
-## La lampe est tenue par la main droite : corps metal + verre qui s'allume.
+## La lampe est tenue par la main droite : modele torch.glb (verre a l'avant,
+## axe -Z) + disque de verre qui s'allume avec la lampe.
 func _attach_flashlight_to_hand() -> void:
-	var metal: StandardMaterial3D = _make_material(Color(0.12, 0.12, 0.13))
-	metal.metallic = 0.6
-	var body := CylinderMesh.new()
-	body.top_radius = 0.03
-	body.bottom_radius = 0.03
-	body.height = 0.18
-	_add_mesh(_right_hand, body, metal, Vector3(0.0, 0.0, -0.06), Vector3(PI / 2.0, 0.0, 0.0))
+	var torch: Node3D = TORCH_SCENE.instantiate()
+	torch.name = "Torch"
+	_right_hand.add_child(torch)
+	_fit_torch(torch)
 
 	_lens_material = StandardMaterial3D.new()
 	_lens_material.albedo_color = Color(0.9, 0.9, 0.8)
 	_lens_material.emission_enabled = true
 	_lens_material.emission = Color(1.0, 0.95, 0.75)
+	# Pastille de verre posee sur l'avant de la lampe, a la taille de sa tete.
+	var head: AABB = _local_bounds(torch)
 	var lens := CylinderMesh.new()
-	lens.top_radius = 0.042
-	lens.bottom_radius = 0.032
-	lens.height = 0.035
-	_add_mesh(_right_hand, lens, _lens_material, Vector3(0.0, 0.0, -0.16), Vector3(PI / 2.0, 0.0, 0.0))
+	lens.top_radius = minf(head.size.x, head.size.y) * 0.38
+	lens.bottom_radius = lens.top_radius
+	lens.height = 0.004
+	var front: float = head.position.z
+	_add_mesh(_right_hand, lens, _lens_material, Vector3(head.get_center().x, head.get_center().y, front - 0.002), Vector3(PI / 2.0, 0.0, 0.0))
 
 	if _flashlight != null:
 		_flashlight.get_parent().remove_child(_flashlight)
 		_right_hand.add_child(_flashlight)
-		_flashlight.position = Vector3(0.0, 0.0, -0.19)
+		_flashlight.position = Vector3(head.get_center().x, head.get_center().y, front - 0.02)
 		_flashlight.rotation = Vector3.ZERO
+
+
+## Met la lampe a la bonne taille (TORCH_LENGTH) et centree dans la main.
+func _fit_torch(torch: Node3D) -> void:
+	var bounds: AABB = _local_bounds(torch)
+	torch.scale = Vector3.ONE * (TORCH_LENGTH / maxf(bounds.size.z, 0.001))
+	bounds = _local_bounds(torch)
+	torch.position += TORCH_CENTER - bounds.get_center()
+
+
+## Boite englobante des maillages de `node`, dans le repere de la main droite.
+func _local_bounds(node: Node3D) -> AABB:
+	var to_hand: Transform3D = _right_hand.global_transform.affine_inverse()
+	var box := AABB()
+	var first := true
+	for mesh: MeshInstance3D in node.find_children("*", "MeshInstance3D", true, false):
+		var part: AABB = to_hand * mesh.global_transform * mesh.get_aabb()
+		box = part if first else box.merge(part)
+		first = false
+	return box
 
 
 func _update_lens() -> void:
@@ -722,6 +751,18 @@ func _get_mouse_sensitivity() -> float:
 
 func _get_stamina_recovery_multiplier() -> float:
 	return HEART_RECOVERY_MULTIPLIER if has_sacrifice("heart") else 1.0
+
+
+## Sacrifice "light" : la lampe affaiblie grésille par à-coups irréguliers.
+func _update_light_flicker(delta: float) -> void:
+	if _flashlight == null or not _flashlight.visible or not has_sacrifice("light"):
+		return
+	var base_energy: float = FLASHLIGHT_ENERGY * LIGHT_ENERGY_MULTIPLIER
+	if _light_flicker_left > 0.0:
+		_light_flicker_left -= delta
+		_flashlight.light_energy = base_energy * randf_range(0.05, 0.5) if _light_flicker_left > 0.0 else base_energy
+	elif randf() < LIGHT_FLICKER_RATE * delta:
+		_light_flicker_left = randf_range(LIGHT_FLICKER_DURATION.x, LIGHT_FLICKER_DURATION.y)
 
 
 ## Sacrifice "light" : portee et intensite de la lampe reduites.

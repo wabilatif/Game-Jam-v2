@@ -9,12 +9,19 @@ var _vignette_mat: ShaderMaterial
 var _flash: ColorRect
 var _vision_tween: Tween
 var _flash_tween: Tween
-var _spectral_tint: ColorRect
-var _spectral_tween: Tween
-var _xray_material: StandardMaterial3D
+var _xray_material: ShaderMaterial
 var _revealed_meshes: Array[MeshInstance3D] = []
+## Effets "dans le monde", sous le HUD : une seule passe (world_fx.gdshader).
+var _world_fx: ColorRect
+var _world_mat: ShaderMaterial
+var _world_tweens: Dictionary[String, Tween] = {}
 
-const SPECTRAL_TINT := Color(0.35, 0.55, 0.75, 0.16)
+const WORLD_FX_LAYER := 1
+const WORLD_UNIFORMS: Array[String] = ["vision", "spectral", "boost", "shock"]
+const SHOCK_DURATION := 0.75
+const SHAKE_DURATION := 0.35
+const SHAKE_STRENGTH := 0.06
+const BOOST_DURATION := 5.0
 
 ## Luminosite reglable par le joueur (1.0 = rendu d'origine du niveau, trop
 ## sombre pour beaucoup). Memorisee entre les parties dans user://settings.cfg.
@@ -64,16 +71,26 @@ func set_vision_effect(impaired: bool) -> void:
 		_vision_tween.kill()
 	_vision_tween = create_tween()
 	_vision_tween.tween_property(_vignette_mat, "shader_parameter/strength", 0.9 if impaired else 0.0, 1.0)
+	_tween_world("vision", 1.0 if impaired else 0.0, 1.5)
 
 
-## Vision spectrale : teinte froide à l'écran et monstre visible en rouge
-## à travers les murs. Indépendante de la perte de vue (set_vision_effect).
+## Vision spectrale : le monde passe en bleu froid qui tremble, et le monstre
+## apparaît avec un contour rouge pulsant, à travers les murs. Indépendante de
+## la perte de vue (set_vision_effect).
 func set_spectral_vision(enabled: bool) -> void:
-	if _spectral_tween:
-		_spectral_tween.kill()
-	_spectral_tween = create_tween()
-	_spectral_tween.tween_property(_spectral_tint, "color:a", SPECTRAL_TINT.a if enabled else 0.0, 0.4)
+	_tween_world("spectral", 1.0 if enabled else 0.0, 0.4)
 	_set_monster_xray(enabled)
+
+
+## Effet visuel d'un pouvoir activé. `position` : poitrine du joueur.
+func play_power_vfx(power_id: String, position: Vector3) -> void:
+	match power_id:
+		"shockwave":
+			_play_shockwave(position)
+		"speed_boost":
+			_tween_world("boost", 1.0, 0.15)
+			_world_tweens["boost"].tween_interval(BOOST_DURATION - 0.55)
+			_world_tweens["boost"].tween_method(_set_world.bind("boost"), 1.0, 0.0, 0.4)
 
 
 ## Flash plein écran qui s'estompe.
@@ -92,8 +109,9 @@ func spawn_power_light(position: Vector3, color: Color) -> void:
 		return
 	var light := OmniLight3D.new()
 	light.light_color = color
-	light.light_energy = 8.0
-	light.omni_range = 10.0
+	# Assez pour marquer l'activation sans saturer le brouillard.
+	light.light_energy = 2.5
+	light.omni_range = 6.0
 	scene.add_child(light)
 	light.global_position = position
 	var tween := create_tween()
@@ -107,9 +125,10 @@ func reset_effects() -> void:
 		_vision_tween.kill()
 	if _flash_tween:
 		_flash_tween.kill()
-	if _spectral_tween:
-		_spectral_tween.kill()
-	_spectral_tint.color.a = 0.0
+	for uniform: String in WORLD_UNIFORMS:
+		if _world_tweens.has(uniform):
+			_world_tweens[uniform].kill()
+		_set_world(0.0, uniform)
 	_set_monster_xray(false)
 	_vignette_mat.set_shader_parameter("strength", 0.0)
 	_flash.color = Color(1, 1, 1, 0)
@@ -145,20 +164,23 @@ void fragment() {
 	layer.add_child(_vignette)
 	_vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	_spectral_tint = ColorRect.new()
-	_spectral_tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_spectral_tint.color = Color(SPECTRAL_TINT, 0.0)
-	layer.add_child(_spectral_tint)
-	_spectral_tint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Calque "monde" sous le HUD (couche 10) : le décor est touché, pas le texte.
+	var world_layer := CanvasLayer.new()
+	world_layer.layer = WORLD_FX_LAYER
+	add_child(world_layer)
+	_world_mat = ShaderMaterial.new()
+	_world_mat.shader = load("res://assets/vfx/world_fx.gdshader")
+	_world_fx = ColorRect.new()
+	_world_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_world_fx.material = _world_mat
+	_world_fx.visible = false
+	world_layer.add_child(_world_fx)
+	_world_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	# Matériau superposé au monstre : ignore la profondeur, donc visible
-	# à travers les murs.
-	_xray_material = StandardMaterial3D.new()
-	_xray_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_xray_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_xray_material.no_depth_test = true
-	_xray_material.disable_fog = true
-	_xray_material.albedo_color = Color(0.95, 0.1, 0.06, 0.85)
+	# Contour du monstre en vision spectrale : ignore la profondeur, donc
+	# visible à travers les murs.
+	_xray_material = ShaderMaterial.new()
+	_xray_material.shader = load("res://assets/vfx/spectral_outline.gdshader")
 	_xray_material.render_priority = 10
 
 	_flash = ColorRect.new()
@@ -194,3 +216,97 @@ func _set_monster_xray(enabled: bool) -> void:
 		for mesh: MeshInstance3D in monster.find_children("*", "MeshInstance3D", true, false):
 			mesh.material_overlay = _xray_material
 			_revealed_meshes.append(mesh)
+
+
+func _set_world(value: float, uniform: String) -> void:
+	_world_mat.set_shader_parameter(uniform, value)
+	# Le calque ne coûte rien quand aucun effet n'est actif.
+	_world_fx.visible = WORLD_UNIFORMS.any(func(u: String) -> bool:
+		var v: Variant = _world_mat.get_shader_parameter(u)
+		return v != null and float(v) > 0.001)
+
+
+func _tween_world(uniform: String, target: float, duration: float) -> void:
+	if _world_tweens.has(uniform):
+		_world_tweens[uniform].kill()
+	var current: Variant = _world_mat.get_shader_parameter(uniform)
+	var tween := create_tween()
+	tween.tween_method(_set_world.bind(uniform), 0.0 if current == null else float(current), target, duration)
+	_world_tweens[uniform] = tween
+
+
+## Onde de choc : anneau qui déforme l'air autour du joueur, secousse de la
+## caméra et poussière soulevée au sol.
+func _play_shockwave(position: Vector3) -> void:
+	# L'onde part du joueur, donc du centre de son regard.
+	_world_mat.set_shader_parameter("shock_center", Vector2(0.5, 0.55))
+	var camera := get_viewport().get_camera_3d()
+	if camera != null:
+		_shake(camera)
+	if _world_tweens.has("shock"):
+		_world_tweens["shock"].kill()
+	var tween := create_tween()
+	tween.tween_method(_set_world.bind("shock"), 0.001, 1.0, SHOCK_DURATION).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_callback(_set_world.bind(0.0, "shock"))
+	_world_tweens["shock"] = tween
+	_spawn_dust(position - Vector3.UP * 1.2)
+
+
+func _shake(camera: Camera3D) -> void:
+	var tween := create_tween()
+	var steps := 7
+	for i in steps:
+		var amount := SHAKE_STRENGTH * (1.0 - float(i) / steps)
+		tween.tween_property(camera, "h_offset", randf_range(-amount, amount), SHAKE_DURATION / steps)
+		tween.parallel().tween_property(camera, "v_offset", randf_range(-amount, amount), SHAKE_DURATION / steps)
+	tween.tween_property(camera, "h_offset", 0.0, 0.05)
+	tween.parallel().tween_property(camera, "v_offset", 0.0, 0.05)
+
+
+## Anneau de poussière qui part du sol.
+func _spawn_dust(ground: Vector3) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var process := ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
+	process.emission_ring_axis = Vector3.UP
+	process.emission_ring_radius = 0.4
+	process.emission_ring_inner_radius = 0.2
+	process.emission_ring_height = 0.05
+	process.direction = Vector3.UP
+	process.spread = 25.0
+	process.radial_velocity_min = 5.0
+	process.radial_velocity_max = 8.0
+	process.initial_velocity_min = 0.3
+	process.initial_velocity_max = 1.0
+	process.gravity = Vector3(0, -1.5, 0)
+	process.damping_min = 4.0
+	process.damping_max = 6.0
+	process.scale_min = 0.6
+	process.scale_max = 1.4
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.75, 0.78, 0.82, 0.5))
+	fade.set_color(1, Color(0.75, 0.78, 0.82, 0.0))
+	var ramp := GradientTexture1D.new()
+	ramp.gradient = fade
+	process.color_ramp = ramp
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.35, 0.35)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	quad.material = mat
+	var dust := GPUParticles3D.new()
+	dust.amount = 48
+	dust.lifetime = 0.9
+	dust.one_shot = true
+	dust.explosiveness = 1.0
+	dust.process_material = process
+	dust.draw_pass_1 = quad
+	scene.add_child(dust)
+	dust.global_position = ground
+	dust.emitting = true
+	dust.finished.connect(dust.queue_free)

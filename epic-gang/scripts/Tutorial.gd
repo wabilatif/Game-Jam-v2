@@ -230,10 +230,10 @@ func _on_power_activated(power_id: String) -> void:
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null:
 		audio.play_power_effect(power_id, position)
+	var effects := get_node_or_null("/root/EffectsManager")
+	if effects != null:
+		effects.play_power_vfx(power_id, position)
 	if power_id == "shockwave":
-		var effects := get_node_or_null("/root/EffectsManager")
-		if effects != null:
-			effects.flash_screen(Color(0.85, 0.9, 1.0, 0.45), 0.5)
 		if _step == Step.USE:
 			get_node("/root/UIManager").show_message(tr("Étourdi pendant 3 s. Dans le vrai jeu, profites-en pour fuir."), 3.5)
 			_advance()

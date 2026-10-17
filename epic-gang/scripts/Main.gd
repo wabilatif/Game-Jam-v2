@@ -45,8 +45,6 @@ const POWER_FAILURE_MESSAGES: Dictionary = {
 
 # Effet du pouvoir a hauteur de poitrine du joueur.
 const POWER_EFFECT_HEIGHT: float = 1.2
-const SHOCKWAVE_FLASH_COLOR: Color = Color(0.85, 0.9, 1.0, 0.45)
-const SHOCKWAVE_FLASH_DURATION: float = 0.5
 
 # References aux objets du monde.
 @onready var hospital: Node3D = $Hospital
@@ -595,12 +593,11 @@ func _on_power_activated(power_id: String) -> void:
         [power_id, position]
     )
 
-    if power_id == "shockwave":
-        _call_manager(
-            "EffectsManager",
-            "flash_screen",
-            [SHOCKWAVE_FLASH_COLOR, SHOCKWAVE_FLASH_DURATION]
-        )
+    _call_manager(
+        "EffectsManager",
+        "play_power_vfx",
+        [power_id, position]
+    )
 
 
 func _on_power_activation_failed(
@@ -696,6 +693,12 @@ func _on_restart_requested() -> void:
 
 func _on_main_menu_requested() -> void:
     get_tree().paused = false
+
+    # Les Autoloads survivent au changement de scene : sans ce reset, la
+    # vision spectrale ou le flou d'un sacrifice resteraient sur le menu.
+    _call_manager("PowerManager", "reset_powers")
+    _call_manager("AudioManager", "reset_audio")
+    _call_manager("EffectsManager", "reset_effects")
 
     var menu_path := "res://scenes/MainMenu.tscn"
 
