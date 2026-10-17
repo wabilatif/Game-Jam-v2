@@ -1,11 +1,11 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" format=3 uid="uid://cvuro6u0bye2s"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Regular.ttf" id="1_dmo1k"]
-[ext_resource type="FontFile" path="res://assets/fonts/NothingYouCouldDo.ttf" id="2_hg030"]
-[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="3_0k4c7"]
-[ext_resource type="FontFile" path="res://assets/fonts/RockSalt-Regular.ttf" id="4_as4xt"]
-[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Bold.ttf" id="5_tl55s"]
-[ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Bold.ttf" id="6_hyhcv"]
+[ext_resource type="FontFile" uid="uid://4beygokqf3w1" path="res://assets/fonts/CourierPrime-Regular.ttf" id="1_dmo1k"]
+[ext_resource type="FontFile" uid="uid://b8xah7bvuyxdr" path="res://assets/fonts/NothingYouCouldDo.ttf" id="2_hg030"]
+[ext_resource type="FontFile" uid="uid://dt1af0q0o1up1" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="3_0k4c7"]
+[ext_resource type="FontFile" uid="uid://b3hqlg7lkcgai" path="res://assets/fonts/RockSalt-Regular.ttf" id="4_as4xt"]
+[ext_resource type="FontFile" uid="uid://c0kfdxho1236l" path="res://assets/fonts/IBMPlexSansCondensed-Bold.ttf" id="5_tl55s"]
+[ext_resource type="FontFile" uid="uid://cgyey1uun075d" path="res://assets/fonts/CourierPrime-Bold.ttf" id="6_hyhcv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fruy8"]
 content_margin_left = 22.0
