@@ -1,0 +1,151 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/HidingSpot.gd" id="1_spot"]
+
+[sub_resource type="StandardMaterial3D" id="mat_frame"]
+albedo_color = Color(0.62, 0.65, 0.65, 1)
+metallic = 0.75
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="mat_mattress"]
+albedo_color = Color(0.18, 0.28, 0.26, 1)
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="mat_sheet"]
+albedo_color = Color(0.82, 0.84, 0.82, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_blanket"]
+albedo_color = Color(0.24, 0.34, 0.38, 1)
+roughness = 0.75
+
+[sub_resource type="BoxShape3D" id="shape_bed_top"]
+size = Vector3(1.2, 0.45, 2.2)
+
+[sub_resource type="BoxShape3D" id="shape_interaction"]
+size = Vector3(2.4, 1.8, 2.6)
+
+[sub_resource type="BoxMesh" id="mesh_leg"]
+material = SubResource("mat_frame")
+size = Vector3(0.06, 0.48, 0.06)
+
+[sub_resource type="BoxMesh" id="mesh_platform"]
+material = SubResource("mat_frame")
+size = Vector3(1.16, 0.05, 2.06)
+
+[sub_resource type="BoxMesh" id="mesh_headpost"]
+material = SubResource("mat_frame")
+size = Vector3(0.06, 0.85, 0.06)
+
+[sub_resource type="BoxMesh" id="mesh_crossbar"]
+material = SubResource("mat_frame")
+size = Vector3(1.1, 0.05, 0.05)
+
+[sub_resource type="BoxMesh" id="mesh_mattress"]
+material = SubResource("mat_mattress")
+size = Vector3(1.1, 0.16, 1.96)
+
+[sub_resource type="BoxMesh" id="mesh_blanket"]
+material = SubResource("mat_blanket")
+size = Vector3(1.12, 0.05, 1.35)
+
+[sub_resource type="BoxMesh" id="mesh_pillow"]
+material = SubResource("mat_sheet")
+size = Vector3(0.7, 0.09, 0.42)
+
+[node name="BedHidingSpot" type="Node3D"]
+script = ExtResource("1_spot")
+prompt_hide = "[E] Se cacher sous le lit"
+prompt_exit = "[E] Sortir"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Col_BedTop" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+shape = SubResource("shape_bed_top")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Leg_FL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.24, 0.95)
+mesh = SubResource("mesh_leg")
+
+[node name="Leg_FR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.24, 0.95)
+mesh = SubResource("mesh_leg")
+
+[node name="Leg_BL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.24, -0.95)
+mesh = SubResource("mesh_leg")
+
+[node name="Leg_BR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.24, -0.95)
+mesh = SubResource("mesh_leg")
+
+[node name="Platform" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49, 0)
+mesh = SubResource("mesh_platform")
+
+[node name="HeadPost_L" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.525, -1.03)
+mesh = SubResource("mesh_headpost")
+
+[node name="HeadPost_R" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 0.525, -1.03)
+mesh = SubResource("mesh_headpost")
+
+[node name="HeadCrossbar" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, -1.03)
+mesh = SubResource("mesh_crossbar")
+
+[node name="FootCrossbar" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 1.03)
+mesh = SubResource("mesh_crossbar")
+
+[node name="Mattress" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59, 0)
+mesh = SubResource("mesh_mattress")
+
+[node name="Blanket" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.69, 0.28)
+mesh = SubResource("mesh_blanket")
+
+[node name="Pillow" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.70, -0.68)
+mesh = SubResource("mesh_pillow")
+
+[node name="UnderBedLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+light_color = Color(0.85, 0.92, 0.88, 1)
+light_energy = 0.35
+omni_range = 3.0
+omni_attenuation = 1.0
+
+[node name="HidingPoint" type="Marker3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -1.25, 0)
+
+[node name="ExitPoint" type="Marker3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.15, 0.05, 0)
+
+[node name="InteractionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("shape_interaction")
+
+[node name="PromptLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+visible = false
+billboard = 1
+no_depth_test = true
+text = "[E] Se cacher sous le lit"
+font_size = 28
+outline_size = 8
+modulate = Color(0.96, 0.94, 0.85, 1)
+outline_modulate = Color(0.05, 0.05, 0.05, 0.9)
+
