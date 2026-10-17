@@ -1,97 +1,180 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/SacrificeMenu.gd" id="1_menu"]
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_7cviv"]
+[ext_resource type="Script" path="res://scripts/ui/SacrificeMenu.gd" id="2_cwgp1"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_bixer"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="4_dtt2x"]
 
-[node name="SacrificeMenu" type="Control"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7liws"]
+shader = ExtResource("3_bixer")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8s1n3"]
+shader = ExtResource("4_dtt2x")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="SacrificeMenu" type="Control" unique_id=183107800]
+process_mode = 3
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_menu")
+theme = ExtResource("1_7cviv")
+script = ExtResource("2_cwgp1")
 
-[node name="Dim" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
+[node name="Dim" type="ColorRect" parent="." unique_id=670291897]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.7)
+color = Color(0.043137256, 0.043137256, 0.039215688, 0.93)
 
-[node name="Center" type="CenterContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
+[node name="Margin" type="MarginContainer" parent="." unique_id=1630421074]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
 
-[node name="Panel" type="PanelContainer" parent="Center"]
-custom_minimum_size = Vector2(620, 0)
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1421353289]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=1410720036]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+[node name="@Label@42" type="Label" parent="Margin/Layout/Header" unique_id=581319411]
 layout_mode = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 24
+theme_type_variation = &"HeaderLabel"
+text = "FORMULAIRE DE CONSENTEMENT"
 
-[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+[node name="@Control@43" type="Control" parent="Margin/Layout/Header" unique_id=345033359]
 layout_mode = 2
-theme_override_constants/separation = 10
+size_flags_horizontal = 3
+mouse_filter = 2
 
-[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="@Label@44" type="Label" parent="Margin/Layout/Header" unique_id=581487237]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@45" type="Control" parent="Margin/Layout" unique_id=301224447]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@46" type="HSeparator" parent="Margin/Layout" unique_id=2002765665]
+layout_mode = 2
+
+[node name="@Control@47" type="Control" parent="Margin/Layout" unique_id=322062862]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=1325468605]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 16
+theme_type_variation = &"HeaderLabel"
+theme_override_colors/font_color = Color(0.5568628, 0.105882354, 0.09019608, 1)
 text = "POUVOIR DÉCOUVERT"
-horizontal_alignment = 1
 
-[node name="PowerName" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="@Control@48" type="Control" parent="Margin/Layout" unique_id=511224828]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PowerName" type="Label" parent="Margin/Layout" unique_id=1117747851]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Pouvoir"
-horizontal_alignment = 1
+theme_type_variation = &"PowerTitleLabel"
+text = "ONDE DE CHOC"
 
-[node name="PowerDescription" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/PowerName" unique_id=53034569]
+material = SubResource("ShaderMaterial_7liws")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="@Control@49" type="Control" parent="Margin/Layout" unique_id=2953771]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PowerDescription" type="Label" parent="Margin/Layout" unique_id=7208310]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Description du pouvoir."
-horizontal_alignment = 1
-autowrap_mode = 3
+theme_type_variation = &"FieldLabel"
+text = "Étourdit le monstre 3 s, à moins de 8 m. Recharge 12 s."
 
-[node name="Separator" type="HSeparator" parent="Center/Panel/Margin/VBox"]
+[node name="@Control@50" type="Control" parent="Margin/Layout" unique_id=41007266]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Prompt" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="Prompt" type="Label" parent="Margin/Layout" unique_id=1230633873]
 layout_mode = 2
-text = "Pour l'obtenir, vous devez sacrifier définitivement :"
-horizontal_alignment = 1
+theme_type_variation = &"StatementLabel"
+text = "En échange, je cède pour toujours :"
 
-[node name="Choices" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
+[node name="@Control@51" type="Control" parent="Margin/Layout" unique_id=1008755968]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Choices" type="VBoxContainer" parent="Margin/Layout" unique_id=255625828]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
-[node name="Buttons" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+[node name="@Control@52" type="Control" parent="Margin/Layout" unique_id=982257249]
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
-theme_override_constants/separation = 16
-alignment = 1
+mouse_filter = 2
 
-[node name="RejectButton" type="Button" parent="Center/Panel/Margin/VBox/Buttons"]
+[node name="Buttons" type="HBoxContainer" parent="Margin/Layout" unique_id=997122194]
+layout_mode = 2
+theme_override_constants/separation = 48
+
+[node name="RejectButton" type="Button" parent="Margin/Layout/Buttons" unique_id=1753457937]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Refuser"
+alignment = 0
 
-[node name="AcceptButton" type="Button" parent="Center/Panel/Margin/VBox/Buttons"]
+[node name="AcceptButton" type="Button" parent="Margin/Layout/Buttons" unique_id=1579928418]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 44)
 layout_mode = 2
-disabled = true
-text = "Accepter le sacrifice"
+size_flags_horizontal = 0
+text = "Signer"
+alignment = 0
+
+[node name="@Control@53" type="Control" parent="Margin/Layout" unique_id=783529427]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=125067507]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=73918483]
+material = SubResource("ShaderMaterial_8s1n3")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

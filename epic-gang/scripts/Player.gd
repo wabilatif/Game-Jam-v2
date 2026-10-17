@@ -33,7 +33,10 @@ const ACCELERATION: float = 40.0        # m/s^2 pour atteindre la vitesse voulue
 const DECELERATION: float = 55.0        # m/s^2 pour s'arreter (freinage net)
 const BOB_FREQUENCY: float = 1.3        # radians par metre parcouru
 const BOB_AMPLITUDE: float = 0.035      # metres
-const SPRINT_FOV_BONUS: float = 8.0
+const SPRINT_FOV_BONUS: float = 12.0
+const SPRINT_BOB_MULTIPLIER: float = 1.8 # balancement plus fort en sprint
+const SPRINT_ROLL: float = 0.026         # ~1.5 degres d'inclinaison a chaque pas
+const ROLL_SMOOTHING: float = 8.0
 const BOOST_FOV_BONUS: float = 5.0
 const FOV_SMOOTHING: float = 8.0
 const FLASHLIGHT_RANGE: float = 18.0
@@ -199,6 +202,7 @@ func reset_player() -> void:
 	_bob_phase = 0.0
 	_last_step_index = 0
 	camera.position.y = _camera_base_y
+	camera.rotation.z = 0.0
 	camera.fov = _base_fov
 	set_flashlight(flashlight_on_at_start)
 	set_controls_enabled(true)
@@ -295,15 +299,21 @@ func _create_flashlight() -> void:
 func _update_head_bob(delta: float) -> void:
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
 	var moving: bool = horizontal_speed > 0.5 and is_on_floor()
+	var target_roll: float = 0.0
 	if moving:
 		_bob_phase += horizontal_speed * BOB_FREQUENCY * delta
 		var step_index: int = int(floor(_bob_phase / PI))
 		if step_index != _last_step_index:
 			_last_step_index = step_index
 			footstep.emit(_is_sprinting)
-		camera.position.y = _camera_base_y + sin(_bob_phase) * BOB_AMPLITUDE
+		var amplitude: float = BOB_AMPLITUDE * (SPRINT_BOB_MULTIPLIER if _is_sprinting else 1.0)
+		camera.position.y = _camera_base_y + sin(_bob_phase) * amplitude
+		# En sprint, la tete penche d'un cote puis de l'autre a chaque pas.
+		if _is_sprinting:
+			target_roll = sin(_bob_phase * 0.5) * SPRINT_ROLL
 	else:
 		camera.position.y = lerpf(camera.position.y, _camera_base_y, minf(10.0 * delta, 1.0))
+	camera.rotation.z = lerpf(camera.rotation.z, target_roll, minf(ROLL_SMOOTHING * delta, 1.0))
 
 
 func _update_fov(delta: float) -> void:

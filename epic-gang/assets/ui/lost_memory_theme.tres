@@ -1,9 +1,9 @@
 [gd_resource type="Theme" format=3]
 
 [ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Regular.ttf" id="1_dmo1k"]
-[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="2_hg030"]
-[ext_resource type="FontFile" path="res://assets/fonts/RockSalt-Regular.ttf" id="3_0k4c7"]
-[ext_resource type="FontFile" path="res://assets/fonts/NothingYouCouldDo.ttf" id="4_as4xt"]
+[ext_resource type="FontFile" path="res://assets/fonts/NothingYouCouldDo.ttf" id="2_hg030"]
+[ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Regular.ttf" id="3_0k4c7"]
+[ext_resource type="FontFile" path="res://assets/fonts/RockSalt-Regular.ttf" id="4_as4xt"]
 [ext_resource type="FontFile" path="res://assets/fonts/IBMPlexSansCondensed-Bold.ttf" id="5_tl55s"]
 [ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Bold.ttf" id="6_hyhcv"]
 
@@ -36,18 +36,24 @@ content_margin_bottom = 4.0
 color = Color(0.16470589, 0.15686275, 0.14117648, 1)
 
 [sub_resource type="FontVariation" id="FontVariation_5iv2t"]
-base_font = ExtResource("2_hg030")
+base_font = ExtResource("3_0k4c7")
 spacing_glyph = 3
 
 [sub_resource type="FontVariation" id="FontVariation_4bhux"]
 base_font = ExtResource("5_tl55s")
 spacing_glyph = 6
 
-[sub_resource type="FontVariation" id="FontVariation_2q3dt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2q3dt"]
+bg_color = Color(0.16470589, 0.15686275, 0.14117648, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8rck"]
+bg_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_60ubf"]
 base_font = ExtResource("6_hyhcv")
 spacing_glyph = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8rck"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4nry"]
 content_margin_left = 18.0
 content_margin_top = 6.0
 content_margin_right = 18.0
@@ -67,6 +73,7 @@ corner_radius_bottom_left = 3
 default_font = ExtResource("1_dmo1k")
 default_font_size = 20
 Button/colors/font_color = Color(0.41960785, 0.4, 0.36078432, 1)
+Button/colors/font_disabled_color = Color(0.23921569, 0.22745098, 0.20392157, 1)
 Button/colors/font_focus_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 Button/colors/font_hover_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 Button/colors/font_hover_pressed_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
@@ -78,6 +85,8 @@ Button/styles/focus = SubResource("StyleBoxFlat_urbm0")
 Button/styles/hover = SubResource("StyleBoxEmpty_ygsan")
 Button/styles/normal = SubResource("StyleBoxEmpty_5bbys")
 Button/styles/pressed = SubResource("StyleBoxEmpty_4kicf")
+ChoiceButton/base_type = &"Button"
+ChoiceButton/font_sizes/font_size = 24
 FieldLabel/base_type = &"Label"
 FieldLabel/colors/font_color = Color(0.41960785, 0.4, 0.36078432, 1)
 FieldLabel/font_sizes/font_size = 18
@@ -88,6 +97,11 @@ FieldValueLabel/font_sizes/font_size = 18
 FieldValueLabel/fonts/font = ExtResource("1_dmo1k")
 HSeparator/constants/separation = 1
 HSeparator/styles/separator = SubResource("StyleBoxLine_bvrrb")
+HandLabel/base_type = &"Label"
+HandLabel/colors/font_color = Color(0.6392157, 0.13725491, 0.10980392, 1)
+HandLabel/constants/line_spacing = -6
+HandLabel/font_sizes/font_size = 26
+HandLabel/fonts/font = ExtResource("2_hg030")
 HeaderLabel/base_type = &"Label"
 HeaderLabel/colors/font_color = Color(0.41960785, 0.4, 0.36078432, 1)
 HeaderLabel/font_sizes/font_size = 14
@@ -96,22 +110,29 @@ Label/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 NoteLoud/base_type = &"RichTextLabel"
 NoteLoud/colors/default_color = Color(0.6392157, 0.13725491, 0.10980392, 1)
 NoteLoud/font_sizes/normal_font_size = 26
-NoteLoud/fonts/normal_font = ExtResource("3_0k4c7")
+NoteLoud/fonts/normal_font = ExtResource("4_as4xt")
 NoteQuiet/base_type = &"RichTextLabel"
 NoteQuiet/colors/default_color = Color(0.6392157, 0.6039216, 0.53333336, 1)
 NoteQuiet/font_sizes/normal_font_size = 30
-NoteQuiet/fonts/normal_font = ExtResource("4_as4xt")
+NoteQuiet/fonts/normal_font = ExtResource("2_hg030")
+PowerTitleLabel/base_type = &"Label"
+PowerTitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
+PowerTitleLabel/font_sizes/font_size = 64
+PowerTitleLabel/fonts/font = SubResource("FontVariation_4bhux")
 ReportTitleLabel/base_type = &"Label"
 ReportTitleLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 ReportTitleLabel/constants/line_spacing = -20
 ReportTitleLabel/font_sizes/font_size = 84
 ReportTitleLabel/fonts/font = SubResource("FontVariation_4bhux")
+StaminaBar/base_type = &"ProgressBar"
+StaminaBar/styles/background = SubResource("StyleBoxFlat_2q3dt")
+StaminaBar/styles/fill = SubResource("StyleBoxFlat_g8rck")
 StampLabel/base_type = &"Label"
 StampLabel/colors/font_color = Color(1, 1, 1, 1)
 StampLabel/font_sizes/font_size = 26
-StampLabel/fonts/font = SubResource("FontVariation_2q3dt")
+StampLabel/fonts/font = SubResource("FontVariation_60ubf")
 StampPanel/base_type = &"PanelContainer"
-StampPanel/styles/panel = SubResource("StyleBoxFlat_g8rck")
+StampPanel/styles/panel = SubResource("StyleBoxFlat_m4nry")
 StatementLabel/base_type = &"Label"
 StatementLabel/colors/font_color = Color(0.8117647, 0.78431374, 0.72156864, 1)
 StatementLabel/font_sizes/font_size = 22

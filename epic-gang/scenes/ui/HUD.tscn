@@ -1,102 +1,112 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1_hud"]
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_6ll6g"]
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="2_ig75s"]
+[ext_resource type="Shader" path="res://assets/ui/sprint_rush.gdshader" id="3_4ed8p"]
 
-[node name="HUD" type="Control"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rnyu1"]
+shader = ExtResource("3_4ed8p")
+shader_parameter/intensity = null
+shader_parameter/exhaustion = null
+shader_parameter/pulse = null
+shader_parameter/exhaust_color = null
+
+[node name="HUD" type="Control" unique_id=1646657396]
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_hud")
+theme = ExtResource("1_6ll6g")
+script = ExtResource("2_ig75s")
 
-[node name="SacrificePanel" type="VBoxContainer" parent="."]
+[node name="SprintFX" type="ColorRect" parent="." unique_id=793610633]
 unique_name_in_owner = true
-layout_mode = 1
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 280.0
-offset_bottom = 140.0
+visible = false
+material = SubResource("ShaderMaterial_rnyu1")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="SacrificeTitle" type="Label" parent="SacrificePanel"]
+[node name="SacrificePanel" type="VBoxContainer" parent="." unique_id=1349462607]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 32.0
+offset_right = 40.0
+offset_bottom = 32.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="SacrificeTitle" type="Label" parent="SacrificePanel" unique_id=1499902529]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.2, 0.2, 1)
+theme_type_variation = &"HeaderLabel"
 text = "SACRIFICES"
 
-[node name="SacrificeText" type="Label" parent="SacrificePanel"]
+[node name="SacrificeText" type="Label" parent="SacrificePanel" unique_id=1723936590]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"HandLabel"
 
-[node name="PowerPanel" type="VBoxContainer" parent="."]
+[node name="PowerPanel" type="VBoxContainer" parent="." unique_id=915918272]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 2
+layout_mode = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -170.0
-offset_right = 360.0
-offset_bottom = -24.0
+offset_left = 40.0
+offset_top = -32.0
+offset_bottom = -32.0
 grow_vertical = 0
 mouse_filter = 2
-alignment = 2
+theme_override_constants/separation = 2
 
-[node name="PowerTitle" type="Label" parent="PowerPanel"]
+[node name="PowerTitle" type="Label" parent="PowerPanel" unique_id=1820663343]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.2, 0.2, 1)
+theme_type_variation = &"HeaderLabel"
 text = "POUVOIRS"
 
-[node name="PowerList" type="VBoxContainer" parent="PowerPanel"]
+[node name="PowerList" type="VBoxContainer" parent="PowerPanel" unique_id=675960367]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="MessageLabel" type="Label" parent="."]
+[node name="MessageLabel" type="Label" parent="." unique_id=1443636713]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 5
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -320.0
-offset_top = 48.0
-offset_right = 320.0
-offset_bottom = 100.0
+offset_left = -400.0
+offset_top = 36.0
+offset_right = 400.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 22
+theme_type_variation = &"StatementLabel"
 horizontal_alignment = 1
-autowrap_mode = 3
 
-[node name="TimerLabel" type="Label" parent="."]
+[node name="TimerLabel" type="Label" parent="." unique_id=1980138438]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 1
+layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -140.0
-offset_top = 20.0
-offset_right = -24.0
-offset_bottom = 46.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 20
+offset_left = -200.0
+offset_top = 32.0
+offset_right = -40.0
+theme_type_variation = &"HeaderLabel"
 horizontal_alignment = 2
 
-[node name="StaminaBar" type="ProgressBar" parent="."]
+[node name="StaminaBar" type="ProgressBar" parent="." unique_id=1143248082]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -120.0
-offset_top = -52.0
-offset_right = 120.0
-offset_bottom = -36.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_left = -130.0
+offset_top = -44.0
+offset_right = 130.0
+offset_bottom = -41.0
 mouse_filter = 2
+theme_type_variation = &"StaminaBar"
 value = 100.0
 show_percentage = false

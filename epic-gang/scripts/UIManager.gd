@@ -70,8 +70,9 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	# Le HUD n'apparait que dans une scene de jeu (un joueur existe).
-	_hud.visible = _is_gameplay_active() and not _game_over
+	# Le HUD n'apparait que dans une scene de jeu (un joueur existe),
+	# et s'efface derriere les menus plein ecran.
+	_hud.visible = _is_gameplay_active() and not (_game_over or _pause_open or _sacrifice_open)
 
 
 func _unhandled_input(event: InputEvent) -> void:
