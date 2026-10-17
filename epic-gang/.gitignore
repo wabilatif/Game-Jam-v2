@@ -1,0 +1,32 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+# Cache et fichiers d'importation internes de Godot 4
+.godot/
+
+# Anciens dossiers de cache (si survol de Godot 3)
+.import/
+
+# Fichiers de configuration de l'éditeur propres à chaque développeur
+.mono/
+data_*/
+
+# Fichiers d'exportation de builds (pour ne pas pousser les .exe, .apk, .pck, etc.)
+build/
+bin/
+exports/
+*.apk
+*.aab
+*.exe
+*.zip
+*.tar.gz
+
+# Fichiers temporaires ou logs
+*.tmp
+*.log
+
+# Fichiers d'environnement système / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
