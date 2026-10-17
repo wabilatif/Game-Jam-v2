@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://scripts/Hospital.gd" id="1_hospital"]
 [ext_resource type="PackedScene" path="res://scenes/HidingSpot.tscn" id="2_hiding_spot"]
+[ext_resource type="PackedScene" path="res://scenes/BedHidingSpot.tscn" id="3_bed_spot"]
 
 [sub_resource type="Environment" id="Environment_hospital"]
 background_mode = 1
@@ -114,6 +115,8 @@ emission_energy_multiplier = 0.5
 
 [node name="Hospital" type="Node3D"]
 script = ExtResource("1_hospital")
+walkable_bounds = Rect2(-11, -23, 64, 46)
+broken_tube_name = &"Tube_Center3"
 
 [node name="Geometry" type="Node3D" parent="."]
 
@@ -129,603 +132,1099 @@ script = ExtResource("1_hospital")
 environment = SubResource("Environment_hospital")
 
 [node name="Floor" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, -0.2, 0)
 use_collision = true
-size = Vector3(80.4, 0.4, 24.4)
+size = Vector3(62.4, 0.4, 44.4)
 material = SubResource("mat_floor")
 
 [node name="Ceiling" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 3.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 3.2, 0)
 use_collision = true
-size = Vector3(80.4, 0.4, 24.4)
+size = Vector3(62.4, 0.4, 44.4)
 material = SubResource("mat_ceiling")
 
-[node name="Start_W_01" type="CSGBox3D" parent="Geometry/Walls"]
+[node name="Wall_West_Outer" type="CSGBox3D" parent="Geometry/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.5, 0)
 use_collision = true
-size = Vector3(0.4, 3, 12.4)
+size = Vector3(0.4, 3, 44.4)
 material = SubResource("mat_wall")
 
-[node name="Wainscot_Start_W_01" type="CSGBox3D" parent="Geometry/Wainscot"]
+[node name="Wall_East_Outer" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 1.5, 0)
+use_collision = true
+size = Vector3(0.4, 3, 44.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_North_Outer" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, -22)
+use_collision = true
+size = Vector3(62.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_South_Outer" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, 22)
+use_collision = true
+size = Vector3(62.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Start_N" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, -5)
+use_collision = true
+size = Vector3(10.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Start_S" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 5)
+use_collision = true
+size = Vector3(10.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Start_E_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3.25)
+use_collision = true
+size = Vector3(0.4, 3, 3.7)
+material = SubResource("mat_wall")
+
+[node name="Wall_Start_E_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3.25)
+use_collision = true
+size = Vector3(0.4, 3, 3.7)
+material = SubResource("mat_wall")
+
+[node name="Wall_Corr_Start_N" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.5, -2.8)
+use_collision = true
+size = Vector3(2.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Corr_Start_S" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.5, 2.8)
+use_collision = true
+size = Vector3(2.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_WestVoid_N1" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.5, -8.6)
+use_collision = true
+size = Vector3(0.4, 3, 7.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_WestVoid_S1" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.5, 8.6)
+use_collision = true
+size = Vector3(0.4, 3, 7.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_WestVoid_N2" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.5, -19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_WestVoid_S2" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.5, 19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NC_WestEnd" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room9_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room9_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room9_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, -19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room9_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, -19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NC_MidCross" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room10_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room10_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room10_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, -19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room10_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, -19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NC_EastCross" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.0, 1.5, -17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NC_EastCap" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.8, 1.5, -15.0)
+use_collision = true
+size = Vector3(0.4, 3, 5.8)
+material = SubResource("mat_wall")
+
+[node name="Wall_SC_WestEnd" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room11_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room11_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room11_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, 19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room11_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, 19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SC_MidCross" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room12_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room12_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room12_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, 19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Room12_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, 19.9)
+use_collision = true
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SC_EastCross" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.0, 1.5, 17.8)
+use_collision = true
+size = Vector3(5.8, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SC_EastCap" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.8, 1.5, 15.0)
+use_collision = true
+size = Vector3(0.4, 3, 5.8)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_NW_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, -7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_NW_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, -7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, -12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, -12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, -2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, -2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_W_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, -11.5)
+use_collision = true
+size = Vector3(0.4, 3, 1.6)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_W_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, -5.8)
+use_collision = true
+size = Vector3(0.4, 3, 6.2)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_E_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, -9.15)
+use_collision = true
+size = Vector3(0.4, 3, 6.3)
+material = SubResource("mat_wall")
+
+[node name="Wall_NW_E_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, -3.45)
+use_collision = true
+size = Vector3(0.4, 3, 1.5)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_NE_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, -7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_NE_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, -7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, -12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, -12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, -2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, -2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_W_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, -11.5)
+use_collision = true
+size = Vector3(0.4, 3, 1.6)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_W_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, -5.8)
+use_collision = true
+size = Vector3(0.4, 3, 6.2)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_E_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, -9.15)
+use_collision = true
+size = Vector3(0.4, 3, 6.3)
+material = SubResource("mat_wall")
+
+[node name="Wall_NE_E_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, -3.45)
+use_collision = true
+size = Vector3(0.4, 3, 1.5)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_SW_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, 7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_SW_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, 7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, 2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, 2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 1.5, 12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.5, 12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_W_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, 3.45)
+use_collision = true
+size = Vector3(0.4, 3, 1.5)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_W_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.5, 9.15)
+use_collision = true
+size = Vector3(0.4, 3, 6.3)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_E_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, 5.8)
+use_collision = true
+size = Vector3(0.4, 3, 6.2)
+material = SubResource("mat_wall")
+
+[node name="Wall_SW_E_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 1.5, 11.5)
+use_collision = true
+size = Vector3(0.4, 3, 1.6)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_SE_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, 7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Div_SE_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, 7.5)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_N_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, 2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_N_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, 2.8)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_S_W" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 1.5, 12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_S_E" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 1.5, 12.2)
+use_collision = true
+size = Vector3(5.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_W_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, 3.45)
+use_collision = true
+size = Vector3(0.4, 3, 1.5)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_W_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 1.5, 9.15)
+use_collision = true
+size = Vector3(0.4, 3, 6.3)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_E_Top" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, 5.8)
+use_collision = true
+size = Vector3(0.4, 3, 6.2)
+material = SubResource("mat_wall")
+
+[node name="Wall_SE_E_Bot" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 1.5, 11.5)
+use_collision = true
+size = Vector3(0.4, 3, 1.6)
+material = SubResource("mat_wall")
+
+[node name="Wall_Exit_N" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.9, 1.5, -2.8)
+use_collision = true
+size = Vector3(8.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wall_Exit_S" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.9, 1.5, 2.8)
+use_collision = true
+size = Vector3(8.4, 3, 0.4)
+material = SubResource("mat_wall")
+
+[node name="Wainscot_Wall_West_Outer" type="CSGBox3D" parent="Geometry/Wainscot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.55, 0)
-size = Vector3(0.46, 1.1, 12.44)
+size = Vector3(0.46, 1.10, 44.46)
 material = SubResource("mat_wainscot")
 
-[node name="Start_N_02" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, -6)
-use_collision = true
-size = Vector3(10.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Start_N_02" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.55, -6)
-size = Vector3(10.44, 1.1, 0.46)
+[node name="Wainscot_Wall_East_Outer" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 0.55, 0)
+size = Vector3(0.46, 1.10, 44.46)
 material = SubResource("mat_wainscot")
 
-[node name="Start_S_03" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 6)
-use_collision = true
-size = Vector3(10.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Start_S_03" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.55, 6)
-size = Vector3(10.44, 1.1, 0.46)
+[node name="Wainscot_Wall_North_Outer" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0.55, -22)
+size = Vector3(62.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Start_E_04" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
-use_collision = true
-size = Vector3(0.4, 3, 4.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Start_E_04" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -4)
-size = Vector3(0.46, 1.1, 4.44)
+[node name="Wainscot_Wall_South_Outer" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0.55, 22)
+size = Vector3(62.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Start_E_05" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
-use_collision = true
-size = Vector3(0.4, 3, 4.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Start_E_05" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 4)
-size = Vector3(0.46, 1.1, 4.44)
+[node name="Wainscot_Wall_Start_N" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.55, -5)
+size = Vector3(10.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_06" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 1.5, -2)
-use_collision = true
-size = Vector3(7.2, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_06" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.55, -2)
-size = Vector3(7.24, 1.1, 0.46)
+[node name="Wainscot_Wall_Start_S" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.55, 5)
+size = Vector3(10.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_07" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.5, -2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_07" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.55, -2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_Start_E_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -3.25)
+size = Vector3(0.46, 1.10, 3.76)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_08" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.5, -2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_08" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.55, -2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_Start_E_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 3.25)
+size = Vector3(0.46, 1.10, 3.76)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_09" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 1.5, -2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_09" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.55, -2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_Corr_Start_N" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.55, -2.8)
+size = Vector3(2.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_10" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 1.5, -2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_10" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 0.55, -2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_Corr_Start_S" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.55, 2.8)
+size = Vector3(2.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_N_11" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.6, 1.5, -2)
-use_collision = true
-size = Vector3(7.2, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_N_11" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.6, 0.55, -2)
-size = Vector3(7.24, 1.1, 0.46)
+[node name="Wainscot_Wall_WestVoid_N1" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, -8.6)
+size = Vector3(0.46, 1.10, 7.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_10" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 1.5, 2)
-use_collision = true
-size = Vector3(7.2, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_10" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.55, 2)
-size = Vector3(7.24, 1.1, 0.46)
+[node name="Wainscot_Wall_WestVoid_S1" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 8.6)
+size = Vector3(0.46, 1.10, 7.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_11" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.5, 2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_11" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.55, 2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_WestVoid_N2" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, -19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_12" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.5, 2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_12" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.55, 2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_WestVoid_S2" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_13" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 1.5, 2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_13" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.55, 2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_NC_WestEnd" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0, 0.55, -17.8)
+size = Vector3(5.86, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_14" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 1.5, 2)
-use_collision = true
-size = Vector3(8, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_14" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 0.55, 2)
-size = Vector3(8.04, 1.1, 0.46)
+[node name="Wainscot_Wall_Room9_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, -17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Corr_S_15" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.6, 1.5, 2)
-use_collision = true
-size = Vector3(7.2, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Corr_S_15" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.6, 0.55, 2)
-size = Vector3(7.24, 1.1, 0.46)
+[node name="Wainscot_Wall_Room9_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, -17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_outer_14" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1.5, -12)
-use_collision = true
-size = Vector3(50.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_outer_14" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0.55, -12)
-size = Vector3(50.44, 1.1, 0.46)
+[node name="Wainscot_Wall_Room9_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, -19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_15" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_15" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room9_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, -19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_16" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_16" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_NC_MidCross" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0, 0.55, -17.8)
+size = Vector3(5.86, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_17" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_17" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room10_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, -17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_18" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_18" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room10_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, -17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_19" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_19" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room10_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, -19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_N_div_20" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 1.5, -7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_N_div_20" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 0.55, -7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room10_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, -19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_outer_19" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1.5, 12)
-use_collision = true
-size = Vector3(50.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_outer_19" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0.55, 12)
-size = Vector3(50.44, 1.1, 0.46)
+[node name="Wainscot_Wall_NC_EastCross" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.0, 0.55, -17.8)
+size = Vector3(5.86, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_20" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_20" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_NC_EastCap" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.8, 0.55, -15.0)
+size = Vector3(0.46, 1.10, 5.86)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_21" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_21" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_SC_WestEnd" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0, 0.55, 17.8)
+size = Vector3(5.86, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_22" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_22" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room11_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, 17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_23" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_23" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room11_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, 17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_24" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_24" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room11_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, 19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Room_S_div_25" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 1.5, 7)
-use_collision = true
-size = Vector3(0.4, 3, 10.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Room_S_div_25" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 0.55, 7)
-size = Vector3(0.46, 1.1, 10.44)
+[node name="Wainscot_Wall_Room11_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, 19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Exit_W_24" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 1.5, -4.25)
-use_collision = true
-size = Vector3(0.4, 3, 5.9)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Exit_W_24" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 0.55, -4.25)
-size = Vector3(0.46, 1.1, 5.94)
+[node name="Wainscot_Wall_SC_MidCross" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0, 0.55, 17.8)
+size = Vector3(5.86, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Exit_W_25" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 1.5, 4.25)
-use_collision = true
-size = Vector3(0.4, 3, 5.9)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Exit_W_25" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 0.55, 4.25)
-size = Vector3(0.46, 1.1, 5.94)
+[node name="Wainscot_Wall_Room12_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, 17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Exit_N_26" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 1.5, -7)
-use_collision = true
-size = Vector3(14.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Exit_N_26" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0.55, -7)
-size = Vector3(14.44, 1.1, 0.46)
+[node name="Wainscot_Wall_Room12_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, 17.8)
+size = Vector3(5.46, 1.10, 0.46)
 material = SubResource("mat_wainscot")
 
-[node name="Exit_S_27" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 1.5, 7)
-use_collision = true
-size = Vector3(14.4, 3, 0.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Exit_S_27" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0.55, 7)
-size = Vector3(14.44, 1.1, 0.46)
+[node name="Wainscot_Wall_Room12_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, 19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Exit_E_28" type="CSGBox3D" parent="Geometry/Walls"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 1.5, 0)
-use_collision = true
-size = Vector3(0.4, 3, 14.4)
-material = SubResource("mat_wall")
-
-[node name="Wainscot_Exit_E_28" type="CSGBox3D" parent="Geometry/Wainscot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 0.55, 0)
-size = Vector3(0.46, 1.1, 14.44)
+[node name="Wainscot_Wall_Room12_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, 19.9)
+size = Vector3(0.46, 1.10, 4.46)
 material = SubResource("mat_wainscot")
 
-[node name="Lintel_N1" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.575, -2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Wainscot_Wall_SC_EastCross" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.0, 0.55, 17.8)
+size = Vector3(5.86, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SC_EastCap" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.8, 0.55, 15.0)
+size = Vector3(0.46, 1.10, 5.86)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_NW_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, -7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_NW_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, -7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, -12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, -12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, -2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, -2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_W_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, -11.5)
+size = Vector3(0.46, 1.10, 1.66)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_W_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, -5.8)
+size = Vector3(0.46, 1.10, 6.26)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_E_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, -9.15)
+size = Vector3(0.46, 1.10, 6.36)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NW_E_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, -3.45)
+size = Vector3(0.46, 1.10, 1.56)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_NE_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, -7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_NE_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, -7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, -12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, -12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, -2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, -2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_W_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, -11.5)
+size = Vector3(0.46, 1.10, 1.66)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_W_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, -5.8)
+size = Vector3(0.46, 1.10, 6.26)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_E_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, -9.15)
+size = Vector3(0.46, 1.10, 6.36)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_NE_E_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, -3.45)
+size = Vector3(0.46, 1.10, 1.56)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_SW_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, 7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_SW_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, 7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, 2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, 2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4, 0.55, 12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 0.55, 12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_W_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, 3.45)
+size = Vector3(0.46, 1.10, 1.56)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_W_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.55, 9.15)
+size = Vector3(0.46, 1.10, 6.36)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_E_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, 5.8)
+size = Vector3(0.46, 1.10, 6.26)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SW_E_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 0.55, 11.5)
+size = Vector3(0.46, 1.10, 1.66)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_SE_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, 7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Div_SE_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, 7.5)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_N_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, 2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_N_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, 2.8)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_S_W" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4, 0.55, 12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_S_E" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.6, 0.55, 12.2)
+size = Vector3(5.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_W_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, 3.45)
+size = Vector3(0.46, 1.10, 1.56)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_W_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 0.55, 9.15)
+size = Vector3(0.46, 1.10, 6.36)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_E_Top" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, 5.8)
+size = Vector3(0.46, 1.10, 6.26)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_SE_E_Bot" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 0.55, 11.5)
+size = Vector3(0.46, 1.10, 1.66)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Exit_N" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.9, 0.55, -2.8)
+size = Vector3(8.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Wainscot_Wall_Exit_S" type="CSGBox3D" parent="Geometry/Wainscot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.9, 0.55, 2.8)
+size = Vector3(8.46, 1.10, 0.46)
+material = SubResource("mat_wainscot")
+
+[node name="Lintel_Start_E" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
+size = Vector3(0.4, 0.6, 3.2)
 material = SubResource("mat_dark")
 
-[node name="Lintel_N2" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.575, -2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_Room9_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, -17.8)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_N3" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 2.575, -2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_Room10_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, -17.8)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_N4" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.575, -2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_Room11_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, 17.8)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_N5" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 2.575, -2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_Room12_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, 17.8)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_S1" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.575, 2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_Div_NW" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, -7.5)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_S2" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.575, 2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_NW_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, -12.2)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_S3" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 2.575, 2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_NW_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, -2.8)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_S4" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.575, 2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_NW_W" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 2.7, -9.8)
+size = Vector3(0.4, 0.6, 2.2)
 material = SubResource("mat_dark")
 
-[node name="Lintel_S5" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 2.575, 2)
-use_collision = true
-size = Vector3(2, 0.85, 0.44)
+[node name="Lintel_NW_E" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 2.7, -5.1)
+size = Vector3(0.4, 0.6, 2.2)
 material = SubResource("mat_dark")
 
-[node name="Lintel_Start" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.575, 0)
-use_collision = true
-size = Vector3(0.44, 0.85, 3.6)
+[node name="Lintel_Div_NE" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, -7.5)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Lintel_Exit" type="CSGBox3D" parent="Geometry/DoorFrames"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 2.575, 0)
-use_collision = true
-size = Vector3(0.44, 0.85, 3)
+[node name="Lintel_NE_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, -12.2)
+size = Vector3(2.2, 0.6, 0.4)
 material = SubResource("mat_dark")
 
-[node name="Bed_N1" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.3, -10.8)
+[node name="Lintel_NE_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, -2.8)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_NE_W" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 2.7, -9.8)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="Lintel_NE_E" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 2.7, -5.1)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="Lintel_Div_SW" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, 7.5)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SW_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, 2.8)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SW_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 2.7, 12.2)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SW_W" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 2.7, 5.1)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SW_E" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2, 2.7, 9.8)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="Lintel_Div_SE" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, 7.5)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SE_N" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, 2.8)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SE_S" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 2.7, 12.2)
+size = Vector3(2.2, 0.6, 0.4)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SE_W" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8, 2.7, 5.1)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="Lintel_SE_E" type="CSGBox3D" parent="Geometry/DoorFrames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.2, 2.7, 9.8)
+size = Vector3(0.4, 0.6, 2.2)
+material = SubResource("mat_dark")
+
+[node name="BedSpot_WardA_1" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, -9.8)
+
+[node name="BedSpot_WardA_2" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0, -9.8)
+
+[node name="BedSpot_Surgery" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 32.0, 0, -5.2)
+
+[node name="BedSpot_WardB_1" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, 5.2)
+
+[node name="BedSpot_Recovery" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0, 9.8)
+
+[node name="BedSpot_Radiology" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 32.0, 0, 5.2)
+
+[node name="BedSpot_Morgue" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.0, 0, 19.8)
+
+[node name="BedSpot_Pathology" parent="Geometry/Props" instance=ExtResource("3_bed_spot")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 35.0, 0, 19.8)
+
+[node name="Wardrobe_ExamA" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 18.5, 0, -3.8)
+
+[node name="Wardrobe_SurgeryPrep" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 27.2, 0, -8.5)
+
+[node name="Wardrobe_Darkroom" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 36.8, 0, 10.8)
+
+[node name="Wardrobe_Pharmacy" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0, -20.8)
+
+[node name="Wardrobe_Archives" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0, -20.8)
+
+[node name="Wardrobe_Start" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -8.5, 0, 3.8)
+
+[node name="Desk_Reception" type="CSGBox3D" parent="Geometry/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0.45, -3.2)
 use_collision = true
-size = Vector3(2, 0.6, 0.9)
+size = Vector3(2.4, 0.9, 1.2)
 material = SubResource("mat_prop")
 
-[node name="HidingSpot_N1" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, -11.5)
-
-[node name="Bed_S1" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.3, 10.8)
+[node name="Cabinet_Archives" type="CSGBox3D" parent="Geometry/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.0, 1.0, -21.0)
 use_collision = true
-size = Vector3(2, 0.6, 0.9)
+size = Vector3(2.6, 2.0, 0.8)
 material = SubResource("mat_prop")
 
-[node name="HidingSpot_S1" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 11.5, 0, 11.5)
-
-[node name="Bed_N2" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 0.3, -10.8)
+[node name="Cabinet_Pharmacy" type="CSGBox3D" parent="Geometry/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.0, 1.0, -21.0)
 use_collision = true
-size = Vector3(2, 0.6, 0.9)
+size = Vector3(2.6, 2.0, 0.8)
 material = SubResource("mat_prop")
 
-[node name="HidingSpot_N2" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5, 0, -11.5)
-
-[node name="Bed_S2" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 0.3, 10.8)
+[node name="Table_Morgue" type="CSGBox3D" parent="Geometry/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.0, 0.45, 19.8)
 use_collision = true
-size = Vector3(2, 0.6, 0.9)
+size = Vector3(2.2, 0.9, 1.0)
 material = SubResource("mat_prop")
-
-[node name="HidingSpot_S2" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 21.5, 0, 11.5)
-
-[node name="Bed_N3" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5, 0.3, -10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_N3" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.5, 0, -11.5)
-
-[node name="Bed_S3" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5, 0.3, 10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_S3" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 31.5, 0, 11.5)
-
-[node name="Bed_N4" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0.3, -10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_N4" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.5, 0, -11.5)
-
-[node name="Bed_S4" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0.3, 10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_S4" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 41.5, 0, 11.5)
-
-[node name="Bed_N5" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.5, 0.3, -10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_N5" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.5, 0, -11.5)
-
-[node name="Bed_S5" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.5, 0.3, 10.8)
-use_collision = true
-size = Vector3(2, 0.6, 0.9)
-material = SubResource("mat_prop")
-
-[node name="HidingSpot_S5" parent="Geometry/Props" instance=ExtResource("2_hiding_spot")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 51.5, 0, 11.5)
-
-[node name="Gurney_Start" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0.4, -4.6)
-use_collision = true
-size = Vector3(2, 0.8, 0.8)
-material = SubResource("mat_prop")
-
-[node name="Desk_Exit" type="CSGBox3D" parent="Geometry/Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, 0.4, -5.5)
-use_collision = true
-size = Vector3(2.4, 0.8, 1)
-material = SubResource("mat_prop")
-
-[node name="ExitPad" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, 0.01, 0)
-size = Vector3(3, 0.04, 3)
-material = SubResource("mat_exit")
 
 [node name="ExitDoor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.74, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.5, 0, 0)
 
 [node name="Door" type="CSGBox3D" parent="ExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.075, 0)
-size = Vector3(0.12, 2.15, 1.1)
+size = Vector3(0.12, 2.15, 1.6)
 material = SubResource("mat_dark")
 
 [node name="Window" type="CSGBox3D" parent="ExitDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 1.65, 0)
-size = Vector3(0.13, 0.3, 0.35)
+size = Vector3(0.13, 0.35, 0.45)
 material = SubResource("mat_window")
 
 [node name="Backlight" type="OmniLight3D" parent="ExitDoor"]
@@ -733,89 +1232,68 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.7, 0)
 light_color = Color(0.56078434, 0.6627451, 0.7137255, 1)
 light_energy = 1.2
 light_volumetric_fog_energy = 2.5
-omni_range = 9
+omni_range = 9.0
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -5, 0, 0)
 
 [node name="MonsterSpawn" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 0)
 
 [node name="ExitMarker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.5, 0, 0)
 
 [node name="PowerSpawnPoints" type="Node3D" parent="."]
 
 [node name="PowerSpawn0_Shockwave" type="Marker3D" parent="PowerSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0.5, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 0.5, -9.8)
 
 [node name="PowerSpawn1_SpectralVision" type="Marker3D" parent="PowerSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 0.5, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 0.5, -19.8)
 
 [node name="PowerSpawn2_SpeedBoost" type="Marker3D" parent="PowerSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.5, 0.5, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.0, 0.5, 9.8)
 
 [node name="PowerSpawn3_SpectralTrap" type="Marker3D" parent="PowerSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0.5, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, 0.5, 19.8)
 
 [node name="PatrolPoints" type="Node3D" parent="."]
 
 [node name="Patrol01" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
 
 [node name="Patrol02" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -15)
 
 [node name="Patrol03" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, -15)
 
 [node name="Patrol04" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, -15)
 
 [node name="Patrol05" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 0)
 
 [node name="Patrol06" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 0, 0)
 
 [node name="Patrol07" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 0)
 
 [node name="Patrol08" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 15)
 
 [node name="Patrol09" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 15)
 
 [node name="Patrol10" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 15)
 
 [node name="Patrol11" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
 
 [node name="Patrol12" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
-
-[node name="Patrol13" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
-
-[node name="Patrol14" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 7)
-
-[node name="Patrol15" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
-
-[node name="Patrol16" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
-
-[node name="Patrol17" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -7)
-
-[node name="Patrol18" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
-
-[node name="Patrol19" type="Marker3D" parent="PatrolPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 0)
 
 [node name="Tubes" type="Node3D" parent="."]
 
@@ -830,303 +1308,116 @@ material = SubResource("mat_tube")
 [node name="Light" type="OmniLight3D" parent="Tubes/Tube_Start"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor1" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.96, 0)
+[node name="Tube_ReceptionDoor" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor1"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_ReceptionDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor1"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_ReceptionDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor2" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.96, 0)
+[node name="Tube_Center1" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor2"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Center1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor2"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Center1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor3" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.96, 0)
+[node name="Tube_Center2" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor3"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Center2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor3"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Center2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor4" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 2.96, 0)
+[node name="Tube_Center3" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor4"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Center3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor4"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Center3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor5" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 2.96, 0)
+[node name="Tube_Center4" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor5"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Center4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor5"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Center4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
-[node name="Tube_Corridor6" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 2.96, 0)
+[node name="Tube_Center5" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 2.96, 0)
 
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor6"]
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Center5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 size = Vector3(1.3, 0.04, 0.14)
 material = SubResource("mat_tube")
 
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor6"]
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Center5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_Corridor7" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 2.96, 0)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Corridor7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Corridor7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomN1" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.96, -6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomN1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomN1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomS1" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.96, 6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomS1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomS1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomN2" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.96, -6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomN2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomN2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomS2" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.96, 6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomS2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomS2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomN3" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 2.96, -6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomN3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomN3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomS3" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 2.96, 6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomS3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomS3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomN4" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.96, -6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomN4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomN4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomS4" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.96, 6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomS4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomS4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomN5" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 2.96, -6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomN5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomN5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
-omni_attenuation = 1.2
-
-[node name="Tube_RoomS5" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 2.96, 6.5)
-
-[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_RoomS5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1.3, 0.04, 0.14)
-material = SubResource("mat_tube")
-
-[node name="Light" type="OmniLight3D" parent="Tubes/Tube_RoomS5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
-light_volumetric_fog_energy = 1.5
-shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
 omni_attenuation = 1.2
 
 [node name="Tube_Exit" type="Node3D" parent="Tubes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 2.96, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 2.96, 0)
 
 [node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Exit"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1136,8 +1427,314 @@ material = SubResource("mat_tube")
 [node name="Light" type="OmniLight3D" parent="Tubes/Tube_Exit"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 0.9
+light_energy = 0.95
 light_volumetric_fog_energy = 1.5
 shadow_enabled = true
-omni_range = 7.5
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_NorthWest" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.96, -15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_NorthWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_NorthWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_NorthMiddle" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 2.96, -15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_NorthMiddle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_NorthMiddle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_NorthEast" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 2.96, -15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_NorthEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_NorthEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_SouthWest" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.96, 15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_SouthWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_SouthWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_SouthMiddle" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 2.96, 15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_SouthMiddle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_SouthMiddle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_SouthEast" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 2.96, 15)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_SouthEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_SouthEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room1" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, -9.8)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room2" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, -5.1)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room3" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, -9.8)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room4" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, -5.1)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room5" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, 5.1)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room6" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, 9.8)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room7" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, 5.1)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room8" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, 9.8)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room9" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, -19.9)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room10" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, -19.9)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room11" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.96, 19.9)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
+omni_attenuation = 1.2
+
+[node name="Tube_Room12" type="Node3D" parent="Tubes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2.96, 19.9)
+
+[node name="Mesh" type="CSGBox3D" parent="Tubes/Tube_Room12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(1.3, 0.04, 0.14)
+material = SubResource("mat_tube")
+
+[node name="Light" type="OmniLight3D" parent="Tubes/Tube_Room12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 0.95
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+omni_range = 8.5
 omni_attenuation = 1.2
