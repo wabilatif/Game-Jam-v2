@@ -1,0 +1,242 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_lhij4"]
+[ext_resource type="Script" path="res://scripts/GameOverScreen.gd" id="2_wdbrb"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_xfpdw"]
+[ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="4_ln0yf"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="5_ns8sj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hubol"]
+shader = ExtResource("3_xfpdw")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vx4p"]
+shader = ExtResource("5_ns8sj")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="GameOverScreen" type="Control" unique_id=1391934458]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_lhij4")
+script = ExtResource("2_wdbrb")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1748592168]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.043137256, 0.043137256, 0.039215688, 0.96)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=620203746]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1620999188]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=775072581]
+layout_mode = 2
+
+[node name="@Label@44" type="Label" parent="Margin/Layout/Header" unique_id=1560505441]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "COMPTE RENDU"
+
+[node name="@Control@45" type="Control" parent="Margin/Layout/Header" unique_id=45211743]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@46" type="Label" parent="Margin/Layout/Header" unique_id=1080003522]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@47" type="Control" parent="Margin/Layout" unique_id=464059010]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@48" type="HSeparator" parent="Margin/Layout" unique_id=524183113]
+layout_mode = 2
+
+[node name="@Control@49" type="Control" parent="Margin/Layout" unique_id=1401208185]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=442113721]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ReportTitleLabel"
+text = "DISPARU"
+
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=698417406]
+material = SubResource("ShaderMaterial_hubol")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="@Control@50" type="Control" parent="Margin/Layout" unique_id=1757997840]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Statement" type="Label" parent="Margin/Layout" unique_id=350302829]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatementLabel"
+text = "Le patient n'a jamais été retrouvé."
+
+[node name="@Control@51" type="Control" parent="Margin/Layout" unique_id=433128799]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Fields" type="VBoxContainer" parent="Margin/Layout" unique_id=576460993]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FieldCause" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=240255357]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="@Label@52" type="Label" parent="Margin/Layout/Fields/FieldCause" unique_id=1896880957]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Cause ............."
+
+[node name="@Label@53" type="Label" parent="Margin/Layout/Fields/FieldCause" unique_id=1076299311]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = " "
+
+[node name="CauseValue" type="Label" parent="Margin/Layout/Fields/FieldCause" unique_id=65996842]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "inconnue"
+
+[node name="FieldDossier" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=836284961]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="@Label@54" type="Label" parent="Margin/Layout/Fields/FieldDossier" unique_id=242952440]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Dossier ..........."
+
+[node name="@Label@55" type="Label" parent="Margin/Layout/Fields/FieldDossier" unique_id=903363845]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = " "
+
+[node name="@Label@56" type="Label" parent="Margin/Layout/Fields/FieldDossier" unique_id=100079860]
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "clos"
+
+[node name="@Control@57" type="Control" parent="Margin/Layout" unique_id=233271499]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Menu" type="VBoxContainer" parent="Margin/Layout" unique_id=538688474]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RestartButton" type="Button" parent="Margin/Layout/Menu" unique_id=1489284206]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Recommencer"
+alignment = 0
+
+[node name="MainMenuButton" type="Button" parent="Margin/Layout/Menu" unique_id=548728528]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Menu principal"
+alignment = 0
+
+[node name="@Control@58" type="Control" parent="Margin/Layout" unique_id=244595293]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Stamp" type="PanelContainer" parent="." unique_id=1329807547]
+unique_name_in_owner = true
+modulate = Color(0.5568628, 0.105882354, 0.09019608, 0.85)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -100.0
+offset_right = -96.0
+offset_bottom = -100.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = -0.12217305
+mouse_filter = 2
+theme_type_variation = &"StampPanel"
+
+[node name="StampLabel" type="Label" parent="Stamp" unique_id=624006572]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StampLabel"
+text = "DISPARU"
+
+[node name="Note" type="RichTextLabel" parent="." unique_id=901247294]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 0)
+clip_contents = false
+layout_mode = 0
+anchor_left = 0.55
+anchor_top = 0.44
+anchor_right = 0.55
+anchor_bottom = 0.44
+rotation = -0.10471976
+mouse_filter = 2
+theme_type_variation = &"NoteLoud"
+bbcode_enabled = true
+text = "IL M'A TROUVÉ"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("4_ln0yf")
+delay = 1.2
+duration = 0.9
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=999317023]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=1844726121]
+material = SubResource("ShaderMaterial_8vx4p")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

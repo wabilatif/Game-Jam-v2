@@ -1,0 +1,174 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_v5pi0"]
+[ext_resource type="Script" path="res://scripts/PauseMenu.gd" id="2_cctyv"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_csaq8"]
+[ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="4_rw35d"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="5_px486"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hubol"]
+shader = ExtResource("3_csaq8")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vx4p"]
+shader = ExtResource("5_px486")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="PauseMenu" type="Control" unique_id=1353351306]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_v5pi0")
+script = ExtResource("2_cctyv")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=757589506]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.043137256, 0.043137256, 0.039215688, 0.9)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1630978486]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1503361610]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=1899192316]
+layout_mode = 2
+
+[node name="@Label@32" type="Label" parent="Margin/Layout/Header" unique_id=2103773205]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "CENTRE HOSPITALIER SAINT-AUBIN"
+
+[node name="@Control@33" type="Control" parent="Margin/Layout/Header" unique_id=793220768]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@34" type="Label" parent="Margin/Layout/Header" unique_id=1766879933]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@35" type="Control" parent="Margin/Layout" unique_id=1203372109]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@36" type="HSeparator" parent="Margin/Layout" unique_id=1680026126]
+layout_mode = 2
+
+[node name="@Control@37" type="Control" parent="Margin/Layout" unique_id=1239400689]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=930564282]
+layout_mode = 2
+theme_type_variation = &"ReportTitleLabel"
+text = "CONSULTATION
+SUSPENDUE"
+
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=1791256745]
+material = SubResource("ShaderMaterial_hubol")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="NoteNeverStops" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1131410694]
+custom_minimum_size = Vector2(520, 0)
+clip_contents = false
+layout_mode = 0
+offset_left = 540.0
+offset_top = 122.0
+offset_right = 540.0
+offset_bottom = 122.0
+rotation = -0.08726646
+mouse_filter = 2
+theme_type_variation = &"NoteQuiet"
+bbcode_enabled = true
+text = "lui ne s'arrête jamais"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("4_rw35d")
+delay = 0.5
+
+[node name="@Control@40" type="Control" parent="Margin/Layout" unique_id=1980352676]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@Label@41" type="Label" parent="Margin/Layout" unique_id=1477454641]
+layout_mode = 2
+theme_type_variation = &"StatementLabel"
+text = "Consultation interrompue à la demande du patient."
+
+[node name="@Control@42" type="Control" parent="Margin/Layout" unique_id=1758222570]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Menu" type="VBoxContainer" parent="Margin/Layout" unique_id=542359713]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ResumeButton" type="Button" parent="Margin/Layout/Menu" unique_id=678447845]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Reprendre"
+alignment = 0
+
+[node name="RestartButton" type="Button" parent="Margin/Layout/Menu" unique_id=869683616]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Recommencer"
+alignment = 0
+
+[node name="MainMenuButton" type="Button" parent="Margin/Layout/Menu" unique_id=1011827061]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Menu principal"
+alignment = 0
+
+[node name="@Control@43" type="Control" parent="Margin/Layout" unique_id=1364198785]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=112648832]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=1393403894]
+material = SubResource("ShaderMaterial_8vx4p")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

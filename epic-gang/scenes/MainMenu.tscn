@@ -1,0 +1,332 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_ucygd"]
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="2_mipys"]
+[ext_resource type="PackedScene" path="res://scenes/MenuBackground.tscn" id="3_8a8k8"]
+[ext_resource type="Script" path="res://scripts/MenuBackground.gd" id="4_7la6k"]
+[ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="5_2nypq"]
+[ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="6_bky6r"]
+[ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="7_l4mxc"]
+
+[sub_resource type="Gradient" id="Gradient_5faoh"]
+offsets = PackedFloat32Array(0, 1, 0.5)
+colors = PackedColorArray(0.043137256, 0.043137256, 0.039215688, 0.94, 0.043137256, 0.043137256, 0.039215688, 0.05, 0.043137256, 0.043137256, 0.039215688, 0.6)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ptake"]
+gradient = SubResource("Gradient_5faoh")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hubol"]
+shader = ExtResource("5_2nypq")
+shader_parameter/ghost_color = null
+shader_parameter/bleed_color = null
+shader_parameter/ghost_offset_px = null
+shader_parameter/tremble_px = null
+shader_parameter/tear_px = null
+shader_parameter/erosion = null
+shader_parameter/crisis_chance = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vx4p"]
+shader = ExtResource("7_l4mxc")
+shader_parameter/grain_strength = null
+shader_parameter/vignette_strength = null
+shader_parameter/flicker_strength = null
+shader_parameter/flicker_chance = null
+
+[node name="MainMenu" type="Control" unique_id=1269555991]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_ucygd")
+script = ExtResource("2_mipys")
+
+[node name="MenuBackground" type="Node3D" parent="." unique_id=298200069 instance=ExtResource("3_8a8k8")]
+script = ExtResource("4_7la6k")
+
+[node name="Shade" type="TextureRect" parent="." unique_id=1313326566]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_ptake")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1674829698]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 52
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=389277895]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=2043648658]
+layout_mode = 2
+
+[node name="@Label@2" type="Label" parent="Margin/Layout/Header" unique_id=1649316847]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "CENTRE HOSPITALIER SAINT-AUBIN"
+
+[node name="@Control@3" type="Control" parent="Margin/Layout/Header" unique_id=1578445114]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="@Label@4" type="Label" parent="Margin/Layout/Header" unique_id=1920295660]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DOSSIER N° 0447"
+
+[node name="@Control@5" type="Control" parent="Margin/Layout" unique_id=972101318]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@Label@6" type="Label" parent="Margin/Layout" unique_id=371738888]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "SERVICE DE NEUROLOGIE  ·  DOSSIER INCOMPLET"
+
+[node name="@Control@7" type="Control" parent="Margin/Layout" unique_id=2023196368]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@HSeparator@8" type="HSeparator" parent="Margin/Layout" unique_id=2139836530]
+layout_mode = 2
+
+[node name="@Control@9" type="Control" parent="Margin/Layout" unique_id=503028139]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/Layout" unique_id=811238121]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "LOST
+MEMORY"
+
+[node name="InkDamage" type="ColorRect" parent="Margin/Layout/Title" unique_id=2032844623]
+material = SubResource("ShaderMaterial_hubol")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -16.0
+offset_right = 44.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="NoteForget" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1365857522]
+custom_minimum_size = Vector2(520, 0)
+clip_contents = false
+layout_mode = 0
+offset_left = 250.0
+offset_top = 18.0
+offset_right = 250.0
+offset_bottom = 18.0
+rotation = -0.06981317
+mouse_filter = 2
+theme_type_variation = &"NoteQuiet"
+bbcode_enabled = true
+text = "[s]je ne me souviens pas[/s]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("6_bky6r")
+delay = 1.4
+duration = 1.1
+
+[node name="NoteWarning" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=831304217]
+custom_minimum_size = Vector2(520, 0)
+clip_contents = false
+layout_mode = 0
+offset_left = 440.0
+offset_top = 52.0
+offset_right = 440.0
+offset_bottom = 52.0
+rotation = -0.12217305
+mouse_filter = 2
+theme_type_variation = &"NoteLoud"
+bbcode_enabled = true
+text = "NE LE REGARDE PAS"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("6_bky6r")
+delay = 2.8
+duration = 0.8
+
+[node name="NoteCorridor" type="RichTextLabel" parent="Margin/Layout/Title" unique_id=1132417897]
+custom_minimum_size = Vector2(520, 0)
+clip_contents = false
+layout_mode = 0
+offset_left = 480.0
+offset_top = 110.0
+offset_right = 480.0
+offset_bottom = 110.0
+rotation = -0.04363323
+mouse_filter = 2
+theme_type_variation = &"NoteQuiet"
+bbcode_enabled = true
+text = "il est dans le couloir"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("6_bky6r")
+delay = 4.2
+duration = 1.3
+
+[node name="@Control@16" type="Control" parent="Margin/Layout" unique_id=579555803]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="@Label@17" type="Label" parent="Margin/Layout" unique_id=1268351018]
+layout_mode = 2
+theme_type_variation = &"StatementLabel"
+text = "Le patient ne se souvient de rien."
+
+[node name="@Control@18" type="Control" parent="Margin/Layout" unique_id=1788165977]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Menu" type="VBoxContainer" parent="Margin/Layout" unique_id=865935418]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StartButton" type="Button" parent="Margin/Layout/Menu" unique_id=1652622337]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Commencer"
+alignment = 0
+
+[node name="QuitButton" type="Button" parent="Margin/Layout/Menu" unique_id=1664091545]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Quitter"
+alignment = 0
+
+[node name="@Control@19" type="Control" parent="Margin/Layout" unique_id=1433131821]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="@HSeparator@20" type="HSeparator" parent="Margin/Layout" unique_id=1327240245]
+layout_mode = 2
+
+[node name="@Control@21" type="Control" parent="Margin/Layout" unique_id=10167286]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Fields" type="VBoxContainer" parent="Margin/Layout" unique_id=1593115244]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FieldIdentité" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=1200350657]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="@Label@22" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=70562572]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Identité .........."
+
+[node name="@Label@23" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1695091222]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = " "
+
+[node name="@Label@24" type="Label" parent="Margin/Layout/Fields/FieldIdentité" unique_id=1843288903]
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "inconnue"
+
+[node name="FieldAdmission" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=1319127396]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="@Label@25" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=1713887077]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Admission ........."
+
+[node name="@Label@26" type="Label" parent="Margin/Layout/Fields/FieldAdmission" unique_id=1737301955]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = " "
+
+[node name="Redacted" type="ColorRect" parent="Margin/Layout/Fields/FieldAdmission" unique_id=699395204]
+custom_minimum_size = Vector2(132, 15)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+color = Color(0.20392157, 0.19215687, 0.16862746, 1)
+
+[node name="FieldSortie" type="HBoxContainer" parent="Margin/Layout/Fields" unique_id=677029999]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="@Label@27" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=348342475]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Sortie ............"
+
+[node name="@Label@28" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=2146659019]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = " "
+
+[node name="@Label@29" type="Label" parent="Margin/Layout/Fields/FieldSortie" unique_id=1321041452]
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "non autorisée"
+
+[node name="Stamp" type="PanelContainer" parent="." unique_id=824904538]
+modulate = Color(0.5568628, 0.105882354, 0.09019608, 0.85)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -100.0
+offset_right = -96.0
+offset_bottom = -100.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = -0.12217305
+mouse_filter = 2
+theme_type_variation = &"StampPanel"
+
+[node name="StampLabel" type="Label" parent="Stamp" unique_id=1476378374]
+layout_mode = 2
+theme_type_variation = &"StampLabel"
+text = "NON RÉCLAMÉ"
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1325549395]
+copy_mode = 2
+
+[node name="FilmGrain" type="ColorRect" parent="." unique_id=983083991]
+material = SubResource("ShaderMaterial_8vx4p")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Fade" type="ColorRect" parent="." unique_id=176269856]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)
