@@ -20,7 +20,20 @@ const SPRINT_TIME_NORMAL: float = 4.0
 const SPRINT_TIME_STAMINA: float = 2.0
 const STAMINA_RECOVERY_TIME: float = 3.0
 
-const VALID_SACRIFICES: Array[String] = ["hearing", "leg", "vision", "stamina"]
+## Sacrifices du contrat (hearing, leg, vision, stamina) + sacrifices ajoutes :
+##   arm       : les pouvoirs rechargent plus lentement (gere par PowerManager)
+##   heart     : le souffle recupere deux fois moins vite
+##   reflexes  : la camera repond moins bien (sensibilite reduite)
+##   light     : la lampe torche faiblit
+##   memory    : la mini-map disparait (HUD/MiniMap, gere par lecture de has_sacrifice)
+const VALID_SACRIFICES: Array[String] = [
+	"hearing", "leg", "vision", "stamina",
+	"arm", "heart", "reflexes", "light", "memory",
+]
+const HEART_RECOVERY_MULTIPLIER: float = 0.5
+const REFLEXES_SENSITIVITY_MULTIPLIER: float = 0.55
+const LIGHT_ENERGY_MULTIPLIER: float = 0.45
+const LIGHT_RANGE_MULTIPLIER: float = 0.55
 const POWER_KEYS: Array[String] = [
 	"shockwave", "spectral_vision", "speed_boost", "spectral_trap"
 ]
@@ -138,6 +151,8 @@ func apply_sacrifice(sacrifice_id: String) -> bool:
 	# AudioManager / EffectsManager via le signal ci-dessous (Main.gd).
 	if sacrifice_id == "stamina":
 		_stamina = minf(_stamina, _get_max_sprint_time())
+	elif sacrifice_id == "light":
+		_refresh_flashlight_stats()
 
 	sacrifice_applied.emit(sacrifice_id)
 	return true
@@ -280,7 +295,7 @@ func hide_in_spot(spot: Node3D) -> bool:
 
 	var ui_mgr: Node = get_node_or_null("/root/UIManager")
 	if ui_mgr != null and ui_mgr.has_method("show_message"):
-		ui_mgr.show_message("Vous êtes caché. Le monstre s'éloigne...", 3.0)
+		ui_mgr.show_message(tr("Vous êtes caché. Le monstre s'éloigne..."), 3.0)
 
 	hidden_state_changed.emit(true)
 	return true
@@ -314,7 +329,7 @@ func exit_hiding_spot() -> void:
 
 	var ui_mgr: Node = get_node_or_null("/root/UIManager")
 	if ui_mgr != null and ui_mgr.has_method("show_message"):
-		ui_mgr.show_message("Vous êtes sorti de la cachette.", 1.5)
+		ui_mgr.show_message(tr("Vous êtes sorti de la cachette."), 1.5)
 
 	hidden_state_changed.emit(false)
 
@@ -330,6 +345,7 @@ func reset_player() -> void:
 		collision_mask = _saved_collision_mask
 		collision_layer = _saved_collision_layer
 	_applied_sacrifices.clear()
+	_refresh_flashlight_stats()
 	_speed_modifier = 1.0
 	_speed_modifier_time_left = 0.0
 	_stamina = SPRINT_TIME_NORMAL
@@ -380,15 +396,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		var motion := event as InputEventMouseMotion
 		_look_delta = (_look_delta + motion.relative).limit_length(80.0)
 		if _is_hidden:
-			rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
+			rotate_y(-motion.relative.x * _get_mouse_sensitivity())
 			var diff := wrapf(rotation.y - _hiding_yaw_center, -PI, PI)
 			diff = clampf(diff, -HIDING_YAW_LIMIT, HIDING_YAW_LIMIT)
 			rotation.y = _hiding_yaw_center + diff
-			head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
+			head.rotate_x(-motion.relative.y * _get_mouse_sensitivity())
 			head.rotation.x = clampf(head.rotation.x, -0.6, 0.6)
 		else:
-			rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
-			head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
+			rotate_y(-motion.relative.x * _get_mouse_sensitivity())
+			head.rotate_x(-motion.relative.y * _get_mouse_sensitivity())
 			head.rotation.x = clampf(head.rotation.x, -MAX_PITCH, MAX_PITCH)
 		return
 
@@ -698,6 +714,25 @@ func _update_fov(delta: float) -> void:
 	camera.fov = lerpf(camera.fov, target_fov, minf(FOV_SMOOTHING * delta, 1.0))
 
 
+func _get_mouse_sensitivity() -> float:
+	if has_sacrifice("reflexes"):
+		return MOUSE_SENSITIVITY * REFLEXES_SENSITIVITY_MULTIPLIER
+	return MOUSE_SENSITIVITY
+
+
+func _get_stamina_recovery_multiplier() -> float:
+	return HEART_RECOVERY_MULTIPLIER if has_sacrifice("heart") else 1.0
+
+
+## Sacrifice "light" : portee et intensite de la lampe reduites.
+func _refresh_flashlight_stats() -> void:
+	if _flashlight == null:
+		return
+	var weak: bool = has_sacrifice("light")
+	_flashlight.light_energy = FLASHLIGHT_ENERGY * (LIGHT_ENERGY_MULTIPLIER if weak else 1.0)
+	_flashlight.spot_range = FLASHLIGHT_RANGE * (LIGHT_RANGE_MULTIPLIER if weak else 1.0)
+
+
 func _get_max_sprint_time() -> float:
 	return SPRINT_TIME_STAMINA if has_sacrifice("stamina") else SPRINT_TIME_NORMAL
 
@@ -722,7 +757,8 @@ func _update_stamina(delta: float, wants_sprint: bool) -> void:
 	else:
 		_is_sprinting = false
 		# Recuperation complete (depuis zero) en STAMINA_RECOVERY_TIME secondes.
-		_stamina = minf(_stamina + (max_time / STAMINA_RECOVERY_TIME) * delta, max_time)
+		var recovery: float = (max_time / STAMINA_RECOVERY_TIME) * _get_stamina_recovery_multiplier()
+		_stamina = minf(_stamina + recovery * delta, max_time)
 		if _exhausted and _stamina >= max_time:
 			_exhausted = false
 

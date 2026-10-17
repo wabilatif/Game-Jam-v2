@@ -2,7 +2,43 @@
 
 A 3D first-person horror game developed in Godot 4 during a 24-hour game jam by a team of 7 people.
 
-The player is trapped in an abandoned hospital, hunted by a monster. To escape, they must acquire four powers. Each power demands a permanent sacrifice: hearing, a leg, sight, or stamina. The exit only unlocks once all four powers are obtained.
+The player is trapped in an abandoned hospital, hunted by a monster. To escape, they must find every **secret** hidden in the hospital (5 per game); the exit only works once all of them have been found. Along the way, the player can pick up four **powers** that help against the monster. Each power demands a permanent sacrifice. Powers are an aid, they are not required to win.
+
+Powers and secrets are placed **randomly at every launch** (inside the rooms, never in furniture, never too close to the start or to the exit).
+
+A **mini-map** (top-left) is revealed progressively as the player explores: walls hide what lies behind them, and the exit only shows up once it has been spotted. Press **M** to open the large map (the game keeps running). **Brightness** is adjustable (see Controls) and saved between games.
+
+## Doors and noise
+
+Some doorways (5 per game, drawn at random, never all of them) have a hinged door. **E** opens / closes it, and the noise depends on how you open it:
+
+| Action | Sound | Noise radius |
+|---|---|---|
+| Open while **sprinting** | Loud slam | 22 m |
+| Open while walking | Slow creak | 7 m |
+| Close | Soft creak | 5 m |
+
+The monster opens doors by itself (a closed door never blocks it), and the player hears it through the 3D sound.
+
+### Noise API for the monster (`NoiseManager` autoload)
+
+The monster asks what it hears **from where it stands** (nothing in `Monster.gd` is required for the game to run; this is the hook to use):
+
+```gdscript
+var heard: Dictionary = NoiseManager.get_noise_heard_at(global_position)
+if not heard.is_empty():
+    # heard.position  : where the noise was made (point to investigate)
+    # heard.intensity : 0..1 (1 = right next to it)
+    # heard.distance, heard.age, heard.source ("door_slam", "door_creak"...)
+    pass
+# consume_noise_heard_at(global_position) returns a noise only once.
+```
+
+Difficulty is tuned in one place: `NoiseManager.set_difficulty(NoiseManager.Difficulty.HARD)` (or `hearing_multiplier = 1.5`) extends how far the monster hears; base radii are the `RADIUS_*` constants. New noises: `NoiseManager.emit_noise(position, radius, &"source")`.
+
+## Languages
+
+The game is available in **French** (default) and **English**: the "Langue / Language" button in the main menu and the pause menu switches instantly, and the choice is saved. The French text is the translation key; to translate a new sentence, use `tr("texte français")` in code and add one line to `epic-gang/scripts/TranslationsEN.gd`.
 
 ## Powers
 
@@ -15,12 +51,19 @@ The player is trapped in an abandoned hospital, hunted by a monster. To escape, 
 
 ## Sacrifices
 
+Each power offers 5 sacrifices drawn at random among those still available (9 in total). A sacrifice can only be given once per game.
+
 | Sacrifice | Permanent Effect |
 |---|---|
 | Hearing | Audio cues used to locate the monster are heavily muffled |
 | Leg | Movement speed reduced by 25% |
 | Sight | Impaired vision |
 | Stamina | Sprint duration reduced by half |
+| Arm | Powers recharge 50% slower |
+| Heart | Stamina recovers twice as slowly |
+| Reflexes | Camera responds worse (lower mouse sensitivity) |
+| Light | The flashlight is much weaker |
+| Memory | The mini-map is lost for good |
 
 ## Controls
 
@@ -30,6 +73,10 @@ The player is trapped in an abandoned hospital, hunted by a monster. To escape, 
 | Look | Mouse |
 | Sprint | Shift |
 | Powers | 1, 2, 3, 4 (top row) |
+| Map | M (large map; small map is always top-left) |
+| Open / close a door, hide | E |
+| Fullscreen | F11, Alt+Enter, or the "Fullscreen" button in the menus (not available when the game runs inside the Godot editor's embedded Game tab: launch it in its own window) |
+| Brightness | `+` / `-` in game, or the slider in the main menu and pause menu |
 
 ## Installation
 

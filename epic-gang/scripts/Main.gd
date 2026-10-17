@@ -11,6 +11,21 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/Player.tscn")
 const MONSTER_SCENE: PackedScene = preload("res://scenes/Monster.tscn")
 const PICKUP_SCENE: PackedScene = preload("res://scenes/PowerPickup.tscn")
 const EXIT_SCENE: PackedScene = preload("res://scenes/ExitDoor.tscn")
+const SECRET_SCENE: PackedScene = preload("res://scenes/Secret.tscn")
+
+# Fragments de memoire lus au ramassage d'un secret (tires au hasard,
+# sans repetition tant qu'il y en a assez).
+const SECRET_NOTES: Array[String] = [
+    "Le patient de la chambre 12 n'a jamais quitte sa chambre.",
+    "Ils ont retire quelque chose de moi pendant la nuit.",
+    "La porte du fond ne s'ouvre qu'a ceux qui se souviennent.",
+    "Ne cherche pas le couloir B. Il te cherche deja.",
+    "J'ai signe sans lire. Tout le monde signe sans lire.",
+    "Le bruit dans les murs n'est pas celui des tuyaux.",
+    "Dossier 7 : sujet reveille. Procedure d'oubli echouee.",
+    "Quelqu'un a efface mon nom du registre.",
+]
+const SECRET_MESSAGE_DURATION: float = 5.0
 
 # Identifiants officiels du contrat V3.
 const POWER_IDS: Array[String] = [
@@ -42,6 +57,9 @@ var exit_door: Area3D
 
 # Association entre chaque pouvoir et son pickup.
 var pickups_by_power: Dictionary = {}
+
+# Secrets a retrouver pour pouvoir gagner.
+var secrets: Array[Area3D] = []
 
 
 # ============================================================
@@ -137,6 +155,9 @@ func _spawn_world_objects() -> bool:
 
         pickups_by_power[power_id] = pickup
 
+    # Creation des secrets : positions aleatoires fournies par Hospital.
+    _spawn_secrets()
+
     # Creation de la sortie.
     add_child(exit_door)
 
@@ -145,6 +166,37 @@ func _spawn_world_objects() -> bool:
     )
 
     return true
+
+
+func _spawn_secrets() -> void:
+    var points: Array[Vector3] = []
+
+    if hospital.has_method("get_secret_spawn_points"):
+        points = hospital.call("get_secret_spawn_points")
+    else:
+        push_warning("Hospital : get_secret_spawn_points() absente.")
+
+    var notes: Array[String] = SECRET_NOTES.duplicate()
+    notes.shuffle()
+
+    for i in range(points.size()):
+        var secret: Area3D = SECRET_SCENE.instantiate() as Area3D
+
+        if secret == null:
+            push_error("Impossible de creer un secret.")
+            continue
+
+        # Proprietes definies avant _ready du secret.
+        secret.set("secret_id", i)
+        secret.set("note", notes[i % notes.size()])
+
+        add_child(secret)
+        secret.global_position = points[i]
+
+        secrets.append(secret)
+
+    # Le compteur de GameManager doit connaitre le total avant start_game.
+    GameManager.set_secret_total(secrets.size())
 
 
 func _initialize_world() -> void:
@@ -195,6 +247,12 @@ func _connect_signals() -> void:
         _connect_once(
             pickup, "power_discovered",
             _on_pickup_discovered
+        )
+
+    # Secrets.
+    for secret in secrets:
+        _connect_once(
+            secret, "secret_found", _on_secret_found
         )
 
     # Gestion des pouvoirs.
@@ -478,6 +536,49 @@ func _on_sacrifice_completed(
 
 
 # ============================================================
+# 7b. SECRETS
+# ============================================================
+
+func _on_secret_found(secret: Area3D) -> void:
+    if not GameManager.collect_secret():
+        return
+
+    var found: int = GameManager.get_secrets_found()
+    var total: int = GameManager.get_secret_total()
+    var note: String = tr(str(secret.get("note")))
+
+    var message: String = tr("Secret %d/%d : « %s »") % [found, total, note]
+
+    if GameManager.are_all_secrets_found():
+        message += " " + tr("La sortie t'attend.")
+        _call_manager("AudioManager", "play_sfx", ["door_open"])
+    else:
+        _call_manager("AudioManager", "play_sfx", ["power_found"])
+
+    _call_manager(
+        "UIManager",
+        "show_message",
+        [message, SECRET_MESSAGE_DURATION]
+    )
+
+
+func _get_missing_secrets_message() -> String:
+    var remaining: int = GameManager.get_secrets_remaining()
+
+    if remaining <= 1:
+        return tr("Il reste un secret a retrouver.")
+
+    return tr("Il reste %d secrets a retrouver.") % remaining
+
+
+func _player_has_sacrifice(sacrifice_id: String) -> bool:
+    if not is_instance_valid(player):
+        return false
+
+    return bool(player.call("has_sacrifice", sacrifice_id))
+
+
+# ============================================================
 # 8. ACTIVATION DES POUVOIRS
 # ============================================================
 
@@ -506,7 +607,7 @@ func _on_power_activation_failed(
     power_id: String,
     reason: String
 ) -> void:
-    var message: String = POWER_FAILURE_MESSAGES.get(reason, reason)
+    var message: String = tr(String(POWER_FAILURE_MESSAGES.get(reason, reason)))
 
     if reason == "cooldown":
         message = message % ceili(
@@ -538,7 +639,7 @@ func _on_exit_reached() -> void:
         _call_manager(
             "UIManager",
             "show_message",
-            ["Il faut debloquer les quatre pouvoirs.", 3.0]
+            [_get_missing_secrets_message(), 3.5]
         )
         return
 

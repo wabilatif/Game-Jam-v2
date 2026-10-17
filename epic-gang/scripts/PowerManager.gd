@@ -7,7 +7,15 @@ signal power_activated(power_id: String)
 signal power_activation_failed(power_id: String, reason: String)
 
 const POWER_IDS: Array[String] = ["shockwave", "spectral_vision", "speed_boost", "spectral_trap"]
-const SACRIFICE_IDS: Array[String] = ["hearing", "leg", "vision", "stamina"]
+const SACRIFICE_IDS: Array[String] = [
+	"hearing", "leg", "vision", "stamina",
+	"arm", "heart", "reflexes", "light", "memory",
+]
+## Sacrifice "arm" : les pouvoirs rechargent 50 % plus lentement.
+const ARM_COOLDOWN_MULTIPLIER := 1.5
+## Le menu propose au plus ce nombre de sacrifices, tires au hasard parmi ceux
+## qui restent (le formulaire doit tenir a l'ecran, et chaque partie change).
+const MAX_OFFERED_SACRIFICES := 5
 const COOLDOWNS: Dictionary[String, float] = {
 	"shockwave": 12.0,
 	"spectral_vision": 15.0,
@@ -30,6 +38,7 @@ var _used_sacrifices: Array[String] = []
 var _choice_in_progress := false
 var _pending_power_id := ""
 var _cooldowns: Dictionary[String, float] = {}
+var _offered_sacrifices: Dictionary = {} # power_id -> Array[String] (offre figee)
 
 
 func _ready() -> void:
@@ -51,7 +60,7 @@ func discover_power(power_id: String) -> void:
 	_choice_in_progress = true
 	_pending_power_id = power_id
 	power_discovered.emit(power_id)
-	sacrifice_choice_requested.emit(power_id, get_available_sacrifices(power_id))
+	sacrifice_choice_requested.emit(power_id, get_offered_sacrifices(power_id))
 
 
 func get_available_sacrifices(power_id: String) -> Array[String]:
@@ -62,6 +71,26 @@ func get_available_sacrifices(power_id: String) -> Array[String]:
 		if not _used_sacrifices.has(sacrifice_id):
 			available.append(sacrifice_id)
 	return available
+
+
+## Sacrifices proposes pour ce pouvoir : MAX_OFFERED_SACRIFICES au hasard parmi
+## les disponibles. L'offre est memorisee : refuser puis revenir ne la change pas
+## (elle est seulement completee si un sacrifice a ete pris entre-temps).
+func get_offered_sacrifices(power_id: String) -> Array[String]:
+	var available: Array[String] = get_available_sacrifices(power_id)
+	var offered: Array[String] = []
+	for sacrifice_id: String in _offered_sacrifices.get(power_id, []):
+		if available.has(sacrifice_id):
+			offered.append(sacrifice_id)
+	var pool: Array[String] = []
+	for sacrifice_id in available:
+		if not offered.has(sacrifice_id):
+			pool.append(sacrifice_id)
+	pool.shuffle()
+	while offered.size() < MAX_OFFERED_SACRIFICES and not pool.is_empty():
+		offered.append(pool.pop_back())
+	_offered_sacrifices[power_id] = offered.duplicate()
+	return offered
 
 
 func accept_sacrifice(power_id: String, sacrifice_id: String) -> bool:
@@ -94,10 +123,17 @@ func activate_power(power_id: String) -> bool:
 	if not failure_reason.is_empty():
 		power_activation_failed.emit(power_id, failure_reason)
 		return false
-	_cooldowns[power_id] = COOLDOWNS[power_id]
+	_cooldowns[power_id] = COOLDOWNS[power_id] * _get_cooldown_multiplier()
 	set_process(true)
 	power_activated.emit(power_id)
 	return true
+
+
+func _get_cooldown_multiplier() -> float:
+	var player := get_tree().get_first_node_in_group("player")
+	if player != null and player.has_method("has_sacrifice") and player.has_sacrifice("arm"):
+		return ARM_COOLDOWN_MULTIPLIER
+	return 1.0
 
 
 func has_power(power_id: String) -> bool:
@@ -120,6 +156,7 @@ func reset_powers() -> void:
 	_unlocked_powers.clear()
 	_used_sacrifices.clear()
 	_cooldowns.clear()
+	_offered_sacrifices.clear()
 	_clear_pending_choice()
 	set_process(false)
 

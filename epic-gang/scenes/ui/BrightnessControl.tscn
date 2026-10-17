@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/BrightnessControl.gd" id="1_bright"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_track"]
+bg_color = Color(0.2, 0.19, 0.17, 1)
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fill"]
+bg_color = Color(0.68, 0.65, 0.58, 1)
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fill_hi"]
+bg_color = Color(0.83, 0.8, 0.72, 1)
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+
+[node name="BrightnessControl" type="HBoxContainer"]
+size_flags_horizontal = 0
+theme_override_constants/separation = 20
+script = ExtResource("1_bright")
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "LUMINOSITÉ"
+
+[node name="Slider" type="HSlider" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 28)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_fill_hi")
+min_value = 60.0
+max_value = 300.0
+step = 10.0
+value = 150.0
+
+[node name="Value" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "150 %"

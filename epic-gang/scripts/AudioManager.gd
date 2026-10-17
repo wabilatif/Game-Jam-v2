@@ -75,7 +75,7 @@ func set_vision_effect(impaired: bool) -> void:
 
 
 ## Effet de transition d'un sacrifice (son + flash).
-## sacrifice_id : "hearing", "leg", "vision", "stamina"
+## sacrifice_id : "hearing", "leg", "vision", "stamina", "arm", "heart", "reflexes", "light", "memory"
 func play_sacrifice_effect(sacrifice_id: String) -> void:
 	play_sfx("sacrifice")
 	match sacrifice_id:
@@ -83,8 +83,10 @@ func play_sacrifice_effect(sacrifice_id: String) -> void:
 			EffectsManager.flash_screen(Color(1, 1, 1, 0.6), 0.4)
 		"vision":
 			EffectsManager.flash_screen(Color(0, 0, 0, 1.0), 0.8)
-		"leg", "stamina":
+		"leg", "stamina", "arm", "heart":
 			EffectsManager.flash_screen(Color(0.8, 0.0, 0.0, 0.5), 0.5)
+		"light":
+			EffectsManager.flash_screen(Color(0, 0, 0, 0.9), 0.5)
 		_:
 			EffectsManager.flash_screen(Color(1, 1, 1, 0.4), 0.3)
 

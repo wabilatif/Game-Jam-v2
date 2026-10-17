@@ -11,6 +11,9 @@ signal game_started
 signal game_over(won: bool, reason: String)
 signal exit_opened
 signal game_restarted
+# Secrets a retrouver : la sortie ne s'ouvre qu'apres les avoir tous trouves.
+signal secret_collected(found: int, total: int)
+signal all_secrets_found
 
 
 # ============================================================
@@ -23,6 +26,11 @@ var _game_time: float = 0.0
 
 var _exit_is_open: bool = false
 var _restart_pending: bool = false
+
+# Le total est fourni par Main a chaque chargement de la scene
+# (set_secret_total) ; seul le nombre trouve est remis a zero.
+var _secret_total: int = 0
+var _secrets_found: int = 0
 
 
 # ============================================================
@@ -62,6 +70,7 @@ func start_game() -> void:
 
     _exit_is_open = false
     _restart_pending = false
+    _secrets_found = 0
 
     # Les Autoloads persistent entre les scenes.
     _reset_persistent_systems()
@@ -113,19 +122,49 @@ func can_open_exit() -> bool:
     if not _game_running or _game_over:
         return false
 
-    var manager := get_node_or_null("/root/PowerManager")
+    # Les pouvoirs sont une aide (ils ne conditionnent plus la victoire) :
+    # il faut avoir retrouve tous les secrets.
+    return are_all_secrets_found()
 
-    if manager == null:
+
+# Nombre de secrets de la partie (appele par Main apres leur creation).
+func set_secret_total(total: int) -> void:
+    _secret_total = maxi(total, 0)
+    _secrets_found = mini(_secrets_found, _secret_total)
+
+
+# Un secret vient d'etre ramasse. Renvoie false si la partie n'est pas
+# en cours ou si tous les secrets sont deja trouves.
+func collect_secret() -> bool:
+    if not _game_running or _game_over:
         return false
 
-    if not manager.has_method("get_unlocked_powers"):
+    if _secrets_found >= _secret_total:
         return false
 
-    var powers: Array = manager.call(
-        "get_unlocked_powers"
-    )
+    _secrets_found += 1
+    secret_collected.emit(_secrets_found, _secret_total)
 
-    return powers.size() == 4
+    if _secrets_found >= _secret_total:
+        all_secrets_found.emit()
+
+    return true
+
+
+func get_secrets_found() -> int:
+    return _secrets_found
+
+
+func get_secret_total() -> int:
+    return _secret_total
+
+
+func get_secrets_remaining() -> int:
+    return maxi(_secret_total - _secrets_found, 0)
+
+
+func are_all_secrets_found() -> bool:
+    return _secrets_found >= _secret_total
 
 
 func open_exit() -> void:
@@ -173,6 +212,7 @@ func restart_game() -> void:
     _game_over = false
     _game_time = 0.0
     _exit_is_open = false
+    _secrets_found = 0
 
     # Nettoyer les gestionnaires persistants.
     _reset_persistent_systems()

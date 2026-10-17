@@ -42,6 +42,26 @@ const SACRIFICE_INFO: Dictionary = {
 		"name": "Souffle",
 		"desc": "votre sprint durera 2 s au lieu de 4",
 	},
+	"arm": {
+		"name": "Bras",
+		"desc": "vos pouvoirs rechargeront 50 % plus lentement",
+	},
+	"heart": {
+		"name": "Cœur",
+		"desc": "votre souffle reviendra deux fois moins vite",
+	},
+	"reflexes": {
+		"name": "Réflexes",
+		"desc": "votre regard répondra mal, la caméra sera lourde",
+	},
+	"light": {
+		"name": "Lumière",
+		"desc": "votre lampe n'éclairera plus que faiblement",
+	},
+	"memory": {
+		"name": "Mémoire",
+		"desc": "vous perdrez votre mini-map : plus de plan de l\u2019hôpital",
+	},
 }
 
 const CHOICE_WIDTH := 210
@@ -73,8 +93,8 @@ func open(power_id: String, sacrifices: Array[String]) -> void:
 	_accept_button.disabled = true
 
 	var info: Dictionary = POWER_INFO.get(power_id, {})
-	_power_name.text = String(info.get("name", power_id)).to_upper()
-	_power_description.text = String(info.get("desc", ""))
+	_power_name.text = tr(String(info.get("name", power_id))).to_upper()
+	_power_description.text = tr(String(info.get("desc", "")))
 
 	for child in _choices.get_children():
 		_choices.remove_child(child)
@@ -84,7 +104,7 @@ func open(power_id: String, sacrifices: Array[String]) -> void:
 	if sacrifices.is_empty():
 		var empty := Label.new()
 		empty.theme_type_variation = "FieldLabel"
-		empty.text = "Plus rien à céder."
+		empty.text = tr("Plus rien à céder.")
 		_choices.add_child(empty)
 	for sacrifice_id in sacrifices:
 		var row := _make_choice(sacrifice_id)
@@ -121,7 +141,7 @@ func _set_neighbors(control: Control, up: Control, down: Control, left: Control,
 ## La case devient [X] et la ligne s'éclaire une fois cochée.
 func _make_choice(sacrifice_id: String) -> Control:
 	var info: Dictionary = SACRIFICE_INFO.get(sacrifice_id, {})
-	var sacrifice_name := String(info.get("name", sacrifice_id)).to_upper()
+	var sacrifice_name := tr(String(info.get("name", sacrifice_id))).to_upper()
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 24)
 
@@ -136,7 +156,7 @@ func _make_choice(sacrifice_id: String) -> Control:
 
 	var description := Label.new()
 	description.theme_type_variation = "FieldLabel"
-	description.text = String(info.get("desc", ""))
+	description.text = tr(String(info.get("desc", "")))
 	description.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(description)
 

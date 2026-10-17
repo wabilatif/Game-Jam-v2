@@ -76,6 +76,10 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _handle_fullscreen_key(event):
+		return
+	if _handle_brightness_key(event):
+		return
 	if not event.is_action_pressed("ui_cancel"):
 		return
 	if not _is_gameplay_active() or _game_over or _sacrifice_open:
@@ -152,6 +156,68 @@ func reset_ui() -> void:
 # =======================================================================
 # PRIVE
 # =======================================================================
+
+## F11 (ou Alt+Entree) : bascule plein ecran / fenetre, partout (menus compris).
+## L'interface suit : stretch "canvas_items" + HUD et menus ancres a l'ecran.
+func _handle_fullscreen_key(event: InputEvent) -> bool:
+	var key_event := event as InputEventKey
+	if key_event == null or not key_event.pressed or key_event.echo:
+		return false
+	var is_f11: bool = key_event.keycode == KEY_F11
+	var is_alt_enter: bool = key_event.alt_pressed \
+			and (key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER)
+	if not is_f11 and not is_alt_enter:
+		return false
+	toggle_fullscreen()
+	get_viewport().set_input_as_handled()
+	return true
+
+
+## Bascule plein ecran / fenetre. Renvoie false si c'est impossible : le jeu
+## lance DANS l'editeur Godot (onglet Game integre) ne peut pas passer en
+## plein ecran, il faut le lancer dans sa propre fenetre.
+func toggle_fullscreen() -> bool:
+	if is_fullscreen_available() == false:
+		if _is_gameplay_active():
+			show_message(tr("Plein écran impossible : jeu intégré à l'éditeur Godot (onglet Game)."), 5.0)
+		return false
+	var window: Window = get_window()
+	window.mode = Window.MODE_WINDOWED if is_fullscreen() else Window.MODE_FULLSCREEN
+	return true
+
+
+func is_fullscreen() -> bool:
+	var mode: Window.Mode = get_window().mode
+	return mode == Window.MODE_FULLSCREEN or mode == Window.MODE_EXCLUSIVE_FULLSCREEN
+
+
+func is_fullscreen_available() -> bool:
+	return not Engine.is_embedded_in_editor()
+
+
+## Raccourcis de luminosite en jeu : touche "+" / "-" (pave numerique compris).
+## Le reglage (et sa sauvegarde) vit dans EffectsManager.
+func _handle_brightness_key(event: InputEvent) -> bool:
+	var key_event := event as InputEventKey
+	if key_event == null or not key_event.pressed:
+		return false
+	var direction: int = 0
+	match key_event.keycode:
+		KEY_EQUAL, KEY_PLUS, KEY_KP_ADD:
+			direction = 1
+		KEY_MINUS, KEY_KP_SUBTRACT:
+			direction = -1
+		_:
+			return false
+	var effects: Node = get_node_or_null("/root/EffectsManager")
+	if effects == null or not _is_gameplay_active() or _game_over:
+		return false
+	effects.change_brightness(direction)
+	if not _pause_open and not _sacrifice_open:
+		show_message(tr("Luminosité : %d %%") % roundi(effects.get_brightness() * 100.0), 1.2)
+	get_viewport().set_input_as_handled()
+	return true
+
 
 func _is_gameplay_active() -> bool:
 	return get_tree().get_first_node_in_group("player") != null

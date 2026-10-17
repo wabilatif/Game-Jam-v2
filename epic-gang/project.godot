@@ -17,7 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Localization="*res://scripts/Localization.gd"
 GameManager="*res://scripts/GameManager.gd"
+NoiseManager="*res://scripts/NoiseManager.gd"
 PowerManager="*res://scripts/PowerManager.gd"
 AudioManager="*res://scripts/AudioManager.gd"
 EffectsManager="*res://scripts/EffectsManager.gd"
@@ -27,6 +29,10 @@ UIManager="*res://scripts/UIManager.gd"
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[internationalization]
+
+locale/fallback="fr"
 
 [dotnet]
 

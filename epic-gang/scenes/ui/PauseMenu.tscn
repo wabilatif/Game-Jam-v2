@@ -5,6 +5,9 @@
 [ext_resource type="Shader" path="res://assets/ui/ink_damage.gdshader" id="3_csaq8"]
 [ext_resource type="Script" path="res://scripts/HandwrittenNote.gd" id="4_rw35d"]
 [ext_resource type="Shader" path="res://assets/ui/film_grain.gdshader" id="5_px486"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BrightnessControl.tscn" id="9_bright"]
+[ext_resource type="Script" path="res://scripts/ui/LanguageButton.gd" id="10_lang"]
+[ext_resource type="Script" path="res://scripts/ui/FullscreenButton.gd" id="11_full"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hubol"]
 shader = ExtResource("3_csaq8")
@@ -157,6 +160,33 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Menu principal"
 alignment = 0
+
+[node name="BrightnessSpacer" type="Control" parent="Margin/Layout/Menu"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BrightnessControl" parent="Margin/Layout/Menu" instance=ExtResource("9_bright")]
+layout_mode = 2
+
+[node name="SettingsRow" type="HBoxContainer" parent="Margin/Layout/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 40
+
+[node name="LanguageButton" type="Button" parent="Margin/Layout/Menu/SettingsRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Langue : Français"
+alignment = 0
+script = ExtResource("10_lang")
+
+[node name="FullscreenButton" type="Button" parent="Margin/Layout/Menu/SettingsRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Plein écran : désactivé"
+alignment = 0
+script = ExtResource("11_full")
 
 [node name="@Control@43" type="Control" parent="Margin/Layout" unique_id=1364198785]
 layout_mode = 2

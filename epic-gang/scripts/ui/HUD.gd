@@ -18,6 +18,11 @@ const SACRIFICE_NAMES: Dictionary = {
 	"leg": "ma jambe ne répond plus",
 	"vision": "tout est flou",
 	"stamina": "je n'arrive plus à courir",
+	"arm": "mon bras ne répond plus",
+	"heart": "mon cœur s'essouffle",
+	"reflexes": "je n'arrive plus à bouger la tête",
+	"light": "la lampe s'éteint doucement",
+	"memory": "je ne retrouve plus mon chemin",
 }
 const POWER_NAME_WIDTH := 18
 const COLOR_READY: Color = Color("cfc8b8")
@@ -36,6 +41,8 @@ const BREATH_RATE := Vector2(1.3, 2.6)
 @onready var _power_list: VBoxContainer = %PowerList
 @onready var _message_label: Label = %MessageLabel
 @onready var _timer_label: Label = %TimerLabel
+@onready var _secret_label: Label = %SecretLabel
+@onready var _mini_map: Control = %MiniMap
 @onready var _stamina_bar: ProgressBar = %StaminaBar
 @onready var _sprint_fx: ColorRect = %SprintFX
 @onready var _sprint_material: ShaderMaterial = _sprint_fx.material
@@ -55,11 +62,18 @@ func _ready() -> void:
 	reset()
 
 
+## Changement de langue en cours de partie : on re-ecrit la liste des sacrifices.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		set_sacrifices(_sacrifices)
+
+
 func _process(delta: float) -> void:
 	_update_stamina()
 	_update_sprint_fx(delta)
 	_update_power_rows()
 	_update_timer()
+	_update_secrets()
 
 
 # =======================================================================
@@ -89,7 +103,7 @@ func set_sacrifices(sacrifices: Array[String]) -> void:
 	_sacrifices = sacrifices.duplicate()
 	var lines: Array[String] = []
 	for id in _sacrifices:
-		lines.append(String(SACRIFICE_NAMES.get(id, id)))
+		lines.append(tr(String(SACRIFICE_NAMES.get(id, id))))
 	_sacrifice_text.text = "\n".join(lines)
 	_sacrifice_panel.visible = not _sacrifices.is_empty()
 
@@ -124,6 +138,8 @@ func reset() -> void:
 	set_sacrifices(no_sacrifices)
 	_stamina_bar.visible = false
 	_timer_label.text = ""
+	_secret_label.text = ""
+	_mini_map.reset()
 	_sprint_intensity = 0.0
 	_exhaustion = 0.0
 	_sprint_fx.visible = false
@@ -172,7 +188,7 @@ func _update_power_rows() -> void:
 	for id: String in _power_labels:
 		var label: Label = _power_labels[id]
 		var key: int = POWER_ORDER.find(id) + 1
-		var power_name: String = (String(POWER_NAMES.get(id, id)) + " ").rpad(POWER_NAME_WIDTH, ".")
+		var power_name: String = (tr(String(POWER_NAMES.get(id, id))) + " ").rpad(POWER_NAME_WIDTH, ".")
 		var remaining: float = _get_cooldown_remaining(id)
 		if remaining > 0.0:
 			label.text = "[%d] %s %4.1f s" % [key, power_name, remaining]
@@ -181,7 +197,7 @@ func _update_power_rows() -> void:
 			label.text = "[%d] %s ..." % [key, power_name]
 			label.modulate = COLOR_COOLDOWN
 		else:
-			label.text = "[%d] %s prêt" % [key, power_name]
+			label.text = "[%d] %s %s" % [key, power_name, tr("prêt")]
 			label.modulate = COLOR_READY
 
 
@@ -206,3 +222,16 @@ func _update_timer() -> void:
 		return
 	var total: int = int(game_manager.get_game_time())
 	_timer_label.text = "%02d:%02d" % [floori(total / 60.0), total % 60]
+
+
+## Compteur de secrets : "SECRETS 2/5".
+func _update_secrets() -> void:
+	var game_manager: Node = get_node_or_null("/root/GameManager")
+	if game_manager == null or not game_manager.has_method("get_secret_total"):
+		_secret_label.text = ""
+		return
+	var total: int = game_manager.get_secret_total()
+	if total <= 0:
+		_secret_label.text = ""
+		return
+	_secret_label.text = "SECRETS %d/%d" % [game_manager.get_secrets_found(), total]

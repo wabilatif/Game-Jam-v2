@@ -16,14 +16,47 @@ var _revealed_meshes: Array[MeshInstance3D] = []
 
 const SPECTRAL_TINT := Color(0.35, 0.55, 0.75, 0.16)
 
+## Luminosite reglable par le joueur (1.0 = rendu d'origine du niveau, trop
+## sombre pour beaucoup). Memorisee entre les parties dans user://settings.cfg.
+signal brightness_changed(value: float)
+
+const BRIGHTNESS_MIN: float = 0.6
+const BRIGHTNESS_MAX: float = 3.0
+const BRIGHTNESS_STEP: float = 0.1
+const BRIGHTNESS_DEFAULT: float = 1.8
+const SETTINGS_PATH: String = "user://settings.cfg"
+
+var _brightness: float = BRIGHTNESS_DEFAULT
+
 
 func _ready() -> void:
+	_load_settings()
 	_setup_overlay()
 
 
 # ---------------------------------------------------------------------------
 # API PUBLIQUE
 # ---------------------------------------------------------------------------
+
+## Luminosite actuelle (entre BRIGHTNESS_MIN et BRIGHTNESS_MAX).
+func get_brightness() -> float:
+	return _brightness
+
+
+## Regle la luminosite (bornee, arrondie au pas), la sauvegarde et previent
+## le niveau (Hospital) et les menus via brightness_changed.
+func set_brightness(value: float) -> void:
+	var clamped: float = snappedf(clampf(value, BRIGHTNESS_MIN, BRIGHTNESS_MAX), BRIGHTNESS_STEP)
+	if is_equal_approx(clamped, _brightness):
+		return
+	_brightness = clamped
+	_save_settings()
+	brightness_changed.emit(_brightness)
+
+
+func change_brightness(delta_steps: int) -> void:
+	set_brightness(_brightness + delta_steps * BRIGHTNESS_STEP)
+
 
 ## Perte de vue : vignette sombre permanente (appelée par Main sur "vision").
 func set_vision_effect(impaired: bool) -> void:
@@ -133,6 +166,21 @@ void fragment() {
 	_flash.color = Color(1, 1, 1, 0)
 	layer.add_child(_flash)
 	_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+
+func _load_settings() -> void:
+	var config := ConfigFile.new()
+	if config.load(SETTINGS_PATH) != OK:
+		return
+	var saved: float = float(config.get_value("display", "brightness", BRIGHTNESS_DEFAULT))
+	_brightness = snappedf(clampf(saved, BRIGHTNESS_MIN, BRIGHTNESS_MAX), BRIGHTNESS_STEP)
+
+
+func _save_settings() -> void:
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH) # conserve les autres reglages eventuels
+	config.set_value("display", "brightness", _brightness)
+	config.save(SETTINGS_PATH)
 
 
 func _set_monster_xray(enabled: bool) -> void:

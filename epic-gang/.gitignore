@@ -24,6 +24,8 @@ exports/
 # Fichiers temporaires ou logs
 *.tmp
 *.log
+*.uid
+*.tres
 
 # Fichiers d'environnement système / IDE
 .DS_Store
