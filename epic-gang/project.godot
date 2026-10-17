@@ -16,12 +16,17 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-PowerManager="*res://scripts/PowerManager.gd"
+AudioManager="*res://scripts/AudioManager.gd"
+EffectsManager="*res://scripts/EffectsManager.gd"
 
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[dotnet]
+
+project/assembly_name="Epic-gang"
 
 [physics]
 
