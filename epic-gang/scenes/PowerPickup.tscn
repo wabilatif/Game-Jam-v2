@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/PowerPickup.gd" id="1_5y5ns"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5nae1"]
+radius = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5y5ns"]
+albedo_color = Color(0.55, 0.85, 1, 1)
+emission_enabled = true
+emission = Color(0.55, 0.85, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_5nae1"]
+material = SubResource("StandardMaterial3D_5y5ns")
+size = Vector3(0.35, 0.35, 0.35)
+
+[node name="PowerPickup" type="Area3D" unique_id=1310352571]
+script = ExtResource("1_5y5ns")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=971079822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_5nae1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1871755375]
+transform = Transform3D(0.81654084, -0.5772877, 0, 0.40820402, 0.57738155, -0.70710677, 0.40820402, 0.57738155, 0.70710677, 0, 1, 0)
+mesh = SubResource("BoxMesh_5nae1")
