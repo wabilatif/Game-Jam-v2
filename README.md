@@ -99,9 +99,10 @@ epic-gang/            projet Godot (res://)
 
 ## Crédits
 
-- Deniz Demir
+- Adrien Grégoire
 - Ilann Amimer
 - Marc-Antoine Sadio
 - Abdoul Latif Wabi
-- Adrien Grégoire
+- Donata Contant
 - Mahammad Abdourahman Mohamed
+- Deniz Demir
