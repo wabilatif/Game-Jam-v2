@@ -23,6 +23,13 @@ const EXIT_TOLERANCE: float = 1.0
 ## Emprise de la map (x, z, largeur, profondeur) en coordonnees globales.
 @export var walkable_bounds: Rect2 = Rect2(-10.0, -12.0, 60.0, 24.0)
 
+## Ambiance (meme esthetique que MenuBackground) : un neon defaillant grille
+## souvent, les autres rarement. Purement visuel.
+@export var flicker_enabled: bool = true
+@export var broken_tube_name: StringName = &"Tube_Corridor3"
+const BROKEN_CHANCE: float = 0.06
+const NORMAL_CHANCE: float = 0.002
+
 @onready var player_spawn: Marker3D = $PlayerSpawn
 @onready var monster_spawn: Marker3D = $MonsterSpawn
 @onready var exit_marker: Marker3D = $ExitMarker
@@ -30,11 +37,22 @@ const EXIT_TOLERANCE: float = 1.0
 @onready var patrol_points: Node3D = $PatrolPoints
 
 var _exit_reachable_cache: int = -1 # -1 inconnu, 0 non, 1 oui
+var _tubes: Array[Node] = []
 
 
 func _ready() -> void:
 	add_to_group("hospital")
 	_validate()
+	var tubes_node: Node = get_node_or_null("Tubes")
+	if tubes_node != null:
+		_tubes = tubes_node.get_children()
+	set_process(flicker_enabled and not _tubes.is_empty())
+
+
+func _process(_delta: float) -> void:
+	for tube: Node in _tubes:
+		var chance: float = BROKEN_CHANCE if tube.name == broken_tube_name else NORMAL_CHANCE
+		(tube as Node3D).visible = randf() > chance
 
 
 # =======================================================================
