@@ -20,6 +20,19 @@ const POWER_IDS: Array[String] = [
     "spectral_trap"
 ]
 
+# Messages affiches quand un pouvoir echoue (raisons de PowerManager).
+const POWER_FAILURE_MESSAGES: Dictionary = {
+    "locked": "Ce pouvoir ne t'appartient pas encore.",
+    "cooldown": "Pas encore... (%d s)",
+    "out_of_range": "Le monstre est trop loin.",
+    "no_target": "Il n'y a rien ici.",
+}
+
+# Effet du pouvoir a hauteur de poitrine du joueur.
+const POWER_EFFECT_HEIGHT: float = 1.2
+const SHOCKWAVE_FLASH_COLOR: Color = Color(0.85, 0.9, 1.0, 0.45)
+const SHOCKWAVE_FLASH_DURATION: float = 0.5
+
 # References aux objets du monde.
 @onready var hospital: Node3D = $Hospital
 
@@ -471,11 +484,9 @@ func _on_sacrifice_completed(
 func _on_power_activated(power_id: String) -> void:
     var position := Vector3.ZERO
 
+    # L'effet part du joueur : le point vise peut etre a 50 m.
     if is_instance_valid(player):
-        position = player.global_position
-
-        if player.has_method("get_aim_position"):
-            position = player.call("get_aim_position")
+        position = player.global_position + Vector3.UP * POWER_EFFECT_HEIGHT
 
     _call_manager(
         "AudioManager",
@@ -483,15 +494,29 @@ func _on_power_activated(power_id: String) -> void:
         [power_id, position]
     )
 
+    if power_id == "shockwave":
+        _call_manager(
+            "EffectsManager",
+            "flash_screen",
+            [SHOCKWAVE_FLASH_COLOR, SHOCKWAVE_FLASH_DURATION]
+        )
+
 
 func _on_power_activation_failed(
-    _power_id: String,
+    power_id: String,
     reason: String
 ) -> void:
+    var message: String = POWER_FAILURE_MESSAGES.get(reason, reason)
+
+    if reason == "cooldown":
+        message = message % ceili(
+            PowerManager.get_cooldown_remaining(power_id)
+        )
+
     _call_manager(
         "UIManager",
         "show_message",
-        [reason, 2.5]
+        [message, 2.5]
     )
 
 

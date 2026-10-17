@@ -9,6 +9,12 @@ var _vignette_mat: ShaderMaterial
 var _flash: ColorRect
 var _vision_tween: Tween
 var _flash_tween: Tween
+var _spectral_tint: ColorRect
+var _spectral_tween: Tween
+var _xray_material: StandardMaterial3D
+var _revealed_meshes: Array[MeshInstance3D] = []
+
+const SPECTRAL_TINT := Color(0.35, 0.55, 0.75, 0.16)
 
 
 func _ready() -> void:
@@ -25,6 +31,16 @@ func set_vision_effect(impaired: bool) -> void:
 		_vision_tween.kill()
 	_vision_tween = create_tween()
 	_vision_tween.tween_property(_vignette_mat, "shader_parameter/strength", 0.9 if impaired else 0.0, 1.0)
+
+
+## Vision spectrale : teinte froide à l'écran et monstre visible en rouge
+## à travers les murs. Indépendante de la perte de vue (set_vision_effect).
+func set_spectral_vision(enabled: bool) -> void:
+	if _spectral_tween:
+		_spectral_tween.kill()
+	_spectral_tween = create_tween()
+	_spectral_tween.tween_property(_spectral_tint, "color:a", SPECTRAL_TINT.a if enabled else 0.0, 0.4)
+	_set_monster_xray(enabled)
 
 
 ## Flash plein écran qui s'estompe.
@@ -58,6 +74,10 @@ func reset_effects() -> void:
 		_vision_tween.kill()
 	if _flash_tween:
 		_flash_tween.kill()
+	if _spectral_tween:
+		_spectral_tween.kill()
+	_spectral_tint.color.a = 0.0
+	_set_monster_xray(false)
 	_vignette_mat.set_shader_parameter("strength", 0.0)
 	_flash.color = Color(1, 1, 1, 0)
 
@@ -92,8 +112,37 @@ void fragment() {
 	layer.add_child(_vignette)
 	_vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
+	_spectral_tint = ColorRect.new()
+	_spectral_tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_spectral_tint.color = Color(SPECTRAL_TINT, 0.0)
+	layer.add_child(_spectral_tint)
+	_spectral_tint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	# Matériau superposé au monstre : ignore la profondeur, donc visible
+	# à travers les murs.
+	_xray_material = StandardMaterial3D.new()
+	_xray_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_xray_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_xray_material.no_depth_test = true
+	_xray_material.disable_fog = true
+	_xray_material.albedo_color = Color(0.95, 0.1, 0.06, 0.85)
+	_xray_material.render_priority = 10
+
 	_flash = ColorRect.new()
 	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_flash.color = Color(1, 1, 1, 0)
 	layer.add_child(_flash)
 	_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+
+func _set_monster_xray(enabled: bool) -> void:
+	for mesh in _revealed_meshes:
+		if is_instance_valid(mesh):
+			mesh.material_overlay = null
+	_revealed_meshes.clear()
+	if not enabled:
+		return
+	for monster in get_tree().get_nodes_in_group("monster"):
+		for mesh: MeshInstance3D in monster.find_children("*", "MeshInstance3D", true, false):
+			mesh.material_overlay = _xray_material
+			_revealed_meshes.append(mesh)
