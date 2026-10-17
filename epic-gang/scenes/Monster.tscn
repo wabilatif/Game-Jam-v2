@@ -1,23 +1,58 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/Monster.gd" id="1_monster"]
+[ext_resource type="Script" path="res://scripts/MonsterModel.gd" id="2_model"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.4
 height = 1.8
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
-radius = 0.4
-height = 1.8
+[sub_resource type="StandardMaterial3D" id="Mat_skin"]
+albedo_color = Color(0.52, 0.55, 0.5, 1)
+roughness = 0.85
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
-albedo_color = Color(0.45, 0.05, 0.05, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_gown"]
+albedo_color = Color(0.33, 0.29, 0.26, 1)
+roughness = 1.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_face"]
-size = Vector3(0.3, 0.15, 0.3)
+[sub_resource type="StandardMaterial3D" id="Mat_eye"]
+albedo_color = Color(1, 0.15, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.1, 0.03, 1)
+emission_energy_multiplier = 4.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_face"]
-albedo_color = Color(1, 0.9, 0.2, 1)
+[sub_resource type="CapsuleMesh" id="Mesh_leg"]
+radius = 0.085
+height = 0.95
+
+[sub_resource type="CapsuleMesh" id="Mesh_arm"]
+radius = 0.05
+height = 0.9
+
+[sub_resource type="CapsuleMesh" id="Mesh_torso"]
+radius = 0.2
+height = 0.8
+
+[sub_resource type="SphereMesh" id="Mesh_head"]
+radius = 0.13
+height = 0.26
+
+[sub_resource type="SphereMesh" id="Mesh_eye"]
+radius = 0.02
+height = 0.04
+
+[sub_resource type="SphereMesh" id="Mesh_hand"]
+radius = 0.07
+height = 0.14
+
+[sub_resource type="CylinderMesh" id="Mesh_neck"]
+top_radius = 0.045
+bottom_radius = 0.06
+height = 0.14
+
+[sub_resource type="SphereMesh" id="Mesh_shoulder"]
+radius = 0.07
+height = 0.14
 
 [node name="Monster" type="CharacterBody3D"]
 collision_layer = 2
@@ -28,15 +63,93 @@ script = ExtResource("1_monster")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_body")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("CapsuleMesh_body")
-surface_material_override/0 = SubResource("StandardMaterial3D_body")
+[node name="Model" type="Node3D" parent="."]
+script = ExtResource("2_model")
 
-[node name="FaceMarker" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.35)
-mesh = SubResource("BoxMesh_face")
-surface_material_override/0 = SubResource("StandardMaterial3D_face")
+[node name="LegL" type="Node3D" parent="Model"]
+position = Vector3(-0.13, 0.95, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Model/LegL"]
+position = Vector3(0, -0.475, 0)
+mesh = SubResource("Mesh_leg")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="LegR" type="Node3D" parent="Model"]
+position = Vector3(0.13, 0.95, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Model/LegR"]
+position = Vector3(0, -0.475, 0)
+mesh = SubResource("Mesh_leg")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="Upper" type="Node3D" parent="Model"]
+position = Vector3(0, 0.95, 0)
+rotation = Vector3(-0.3, 0, 0)
+
+[node name="Torso" type="MeshInstance3D" parent="Model/Upper"]
+position = Vector3(0, 0.4, 0)
+scale = Vector3(1, 1, 0.65)
+mesh = SubResource("Mesh_torso")
+surface_material_override/0 = SubResource("Mat_gown")
+
+[node name="Neck" type="MeshInstance3D" parent="Model/Upper"]
+position = Vector3(0, 0.84, 0)
+mesh = SubResource("Mesh_neck")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="Head" type="Node3D" parent="Model/Upper"]
+position = Vector3(0, 0.98, -0.04)
+
+[node name="Skull" type="MeshInstance3D" parent="Model/Upper/Head"]
+scale = Vector3(0.85, 1.25, 1)
+mesh = SubResource("Mesh_head")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="EyeL" type="MeshInstance3D" parent="Model/Upper/Head"]
+position = Vector3(-0.055, 0.03, -0.115)
+mesh = SubResource("Mesh_eye")
+surface_material_override/0 = SubResource("Mat_eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="Model/Upper/Head"]
+position = Vector3(0.055, 0.03, -0.115)
+mesh = SubResource("Mesh_eye")
+surface_material_override/0 = SubResource("Mat_eye")
+
+[node name="ArmL" type="Node3D" parent="Model/Upper"]
+position = Vector3(-0.27, 0.75, 0)
+
+[node name="Shoulder" type="MeshInstance3D" parent="Model/Upper/ArmL"]
+mesh = SubResource("Mesh_shoulder")
+surface_material_override/0 = SubResource("Mat_gown")
+
+[node name="Mesh" type="MeshInstance3D" parent="Model/Upper/ArmL"]
+position = Vector3(0, -0.45, 0)
+mesh = SubResource("Mesh_arm")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="Hand" type="MeshInstance3D" parent="Model/Upper/ArmL"]
+position = Vector3(0, -0.95, 0)
+scale = Vector3(0.8, 1.6, 0.8)
+mesh = SubResource("Mesh_hand")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="ArmR" type="Node3D" parent="Model/Upper"]
+position = Vector3(0.27, 0.75, 0)
+
+[node name="Shoulder" type="MeshInstance3D" parent="Model/Upper/ArmR"]
+mesh = SubResource("Mesh_shoulder")
+surface_material_override/0 = SubResource("Mat_gown")
+
+[node name="Mesh" type="MeshInstance3D" parent="Model/Upper/ArmR"]
+position = Vector3(0, -0.45, 0)
+mesh = SubResource("Mesh_arm")
+surface_material_override/0 = SubResource("Mat_skin")
+
+[node name="Hand" type="MeshInstance3D" parent="Model/Upper/ArmR"]
+position = Vector3(0, -0.95, 0)
+scale = Vector3(0.8, 1.6, 0.8)
+mesh = SubResource("Mesh_hand")
+surface_material_override/0 = SubResource("Mat_skin")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.5
