@@ -8,6 +8,7 @@ signal player_died
 ## Hors contrat (bonus) : pour l'AudioManager / l'UI.
 signal footstep(is_sprinting: bool)
 signal flashlight_toggled(is_on: bool)
+signal hidden_state_changed(is_hidden: bool)
 
 # --- Valeurs du contrat -------------------------------------------------
 const BASE_SPEED: float = 5.0
@@ -79,6 +80,15 @@ var _speed_modifier_time_left: float = 0.0
 var _stamina: float = SPRINT_TIME_NORMAL
 var _exhausted: bool = false
 var _is_sprinting: bool = false
+
+var _is_hidden: bool = false
+var _current_hiding_spot: Node3D = null
+var _nearby_hiding_spot: Node3D = null
+var _saved_collision_mask: int = 1
+var _saved_collision_layer: int = 1
+var _saved_flashlight_state: bool = false
+var _hiding_yaw_center: float = 0.0
+const HIDING_YAW_LIMIT: float = 1.05
 
 var _hands_root: Node3D
 var _right_hand: Node3D
@@ -215,7 +225,110 @@ func is_flashlight_on() -> bool:
 	return _flashlight != null and _flashlight.visible
 
 
+func is_hidden() -> bool:
+	return _is_hidden
+
+
+func get_current_hiding_spot() -> Node3D:
+	return _current_hiding_spot
+
+
+func set_nearby_hiding_spot(spot: Node3D) -> void:
+	_nearby_hiding_spot = spot
+
+
+func clear_nearby_hiding_spot(spot: Node3D) -> void:
+	if _nearby_hiding_spot == spot:
+		_nearby_hiding_spot = null
+
+
+func hide_in_spot(spot: Node3D) -> bool:
+	if _dead or _is_hidden or spot == null or not _controls_enabled:
+		return false
+	if spot.has_method("is_occupied") and spot.is_occupied():
+		return false
+	if spot.has_method("hide_player") and not spot.hide_player(self):
+		return false
+
+	_is_hidden = true
+	_current_hiding_spot = spot
+	_saved_flashlight_state = is_flashlight_on()
+	set_flashlight(false)
+	velocity = Vector3.ZERO
+	_is_sprinting = false
+
+	var audio_mgr: Node = get_node_or_null("/root/AudioManager")
+	if audio_mgr != null and audio_mgr.has_method("play_sfx"):
+		audio_mgr.play_sfx("door_open")
+
+	var hide_pos: Vector3 = spot.global_position
+	var hide_rot: Vector3 = spot.global_rotation
+	if spot.has_method("get_hiding_position"):
+		hide_pos = spot.get_hiding_position()
+	if spot.has_method("get_hiding_rotation"):
+		hide_rot = spot.get_hiding_rotation()
+
+	global_position = hide_pos
+	rotation.y = hide_rot.y
+	_hiding_yaw_center = hide_rot.y
+	head.rotation.x = 0.0
+
+	_saved_collision_mask = collision_mask
+	_saved_collision_layer = collision_layer
+	collision_mask = 0
+	collision_layer = 0
+
+	var ui_mgr: Node = get_node_or_null("/root/UIManager")
+	if ui_mgr != null and ui_mgr.has_method("show_message"):
+		ui_mgr.show_message("Vous êtes caché. Le monstre s'éloigne...", 3.0)
+
+	hidden_state_changed.emit(true)
+	return true
+
+
+func exit_hiding_spot() -> void:
+	if not _is_hidden or _current_hiding_spot == null:
+		return
+
+	var spot: Node3D = _current_hiding_spot
+	_is_hidden = false
+	_current_hiding_spot = null
+
+	if spot.has_method("release_player"):
+		spot.release_player(self)
+
+	collision_mask = _saved_collision_mask
+	collision_layer = _saved_collision_layer
+
+	var exit_pos: Vector3 = global_position
+	if spot.has_method("get_exit_position"):
+		exit_pos = spot.get_exit_position()
+	global_position = exit_pos
+
+	var audio_mgr: Node = get_node_or_null("/root/AudioManager")
+	if audio_mgr != null and audio_mgr.has_method("play_sfx"):
+		audio_mgr.play_sfx("door_open")
+
+	if _saved_flashlight_state:
+		set_flashlight(true)
+
+	var ui_mgr: Node = get_node_or_null("/root/UIManager")
+	if ui_mgr != null and ui_mgr.has_method("show_message"):
+		ui_mgr.show_message("Vous êtes sorti de la cachette.", 1.5)
+
+	hidden_state_changed.emit(false)
+
+
 func reset_player() -> void:
+	if _is_hidden and _current_hiding_spot != null:
+		if _current_hiding_spot.has_method("release_player"):
+			_current_hiding_spot.release_player(self)
+	_is_hidden = false
+	_current_hiding_spot = null
+	_nearby_hiding_spot = null
+	if _saved_collision_mask != 0:
+		collision_mask = _saved_collision_mask
+		collision_layer = _saved_collision_layer
 	_applied_sacrifices.clear()
 	_speed_modifier = 1.0
 	_speed_modifier_time_left = 0.0
@@ -266,9 +379,24 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var motion := event as InputEventMouseMotion
 		_look_delta = (_look_delta + motion.relative).limit_length(80.0)
-		rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
-		head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
-		head.rotation.x = clampf(head.rotation.x, -MAX_PITCH, MAX_PITCH)
+		if _is_hidden:
+			rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
+			var diff := wrapf(rotation.y - _hiding_yaw_center, -PI, PI)
+			diff = clampf(diff, -HIDING_YAW_LIMIT, HIDING_YAW_LIMIT)
+			rotation.y = _hiding_yaw_center + diff
+			head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
+			head.rotation.x = clampf(head.rotation.x, -0.6, 0.6)
+		else:
+			rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
+			head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
+			head.rotation.x = clampf(head.rotation.x, -MAX_PITCH, MAX_PITCH)
+		return
+
+	if event.is_action_pressed("interact"):
+		if _is_hidden:
+			exit_hiding_spot()
+		elif _nearby_hiding_spot != null and is_instance_valid(_nearby_hiding_spot):
+			hide_in_spot(_nearby_hiding_spot)
 		return
 
 	if event.is_action_pressed("flashlight"):
@@ -284,6 +412,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _is_hidden:
+		velocity = Vector3.ZERO
+		return
+
 	_update_speed_modifier(delta)
 
 	var direction: Vector3 = Vector3.ZERO
@@ -487,9 +619,9 @@ func _update_hands(delta: float) -> void:
 	# Epuise : les mains tremblent.
 	if _exhausted:
 		target_pos += Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), 0.0) * 0.004
-	# Mort : les mains retombent.
-	if _dead:
-		target_pos.y = -0.35
+	# Mort ou cache : les mains retombent pour degager la vue
+	if _dead or _is_hidden:
+		target_pos.y = -0.45
 
 	var weight: float = minf(10.0 * delta, 1.0)
 	_hands_root.position = _hands_root.position.lerp(target_pos, weight)
@@ -617,6 +749,7 @@ func _register_default_inputs() -> void:
 		"move_right": KEY_D,
 		"sprint": KEY_SHIFT,
 		"flashlight": KEY_F,
+		"interact": KEY_E,
 		"power_1": KEY_1,
 		"power_2": KEY_2,
 		"power_3": KEY_3,

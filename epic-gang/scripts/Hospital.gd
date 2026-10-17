@@ -21,7 +21,7 @@ const AGENT_RADIUS: float = 0.35
 const AGENT_HEIGHT: float = 1.8
 const EXIT_TOLERANCE: float = 1.0
 ## Emprise de la map (x, z, largeur, profondeur) en coordonnees globales.
-@export var walkable_bounds: Rect2 = Rect2(-10.0, -12.0, 60.0, 24.0)
+@export var walkable_bounds: Rect2 = Rect2(-10.0, -12.0, 80.0, 24.0)
 
 ## Ambiance (meme esthetique que MenuBackground) : un neon defaillant grille
 ## souvent, les autres rarement. Purement visuel.

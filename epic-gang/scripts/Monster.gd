@@ -60,7 +60,10 @@ func start_patrol(points: Array[Vector3]) -> void:
 
 
 func resume_patrol() -> void:
-	_patrol_index = _get_nearest_patrol_index()
+	if _is_target_hidden():
+		_patrol_index = _get_farthest_patrol_index_from_target()
+	else:
+		_patrol_index = _get_nearest_patrol_index()
 	_enter_patrol()
 
 
@@ -173,6 +176,10 @@ func _apply_gravity(delta: float) -> void:
 
 
 func _update_state(delta: float) -> void:
+	if _is_target_hidden():
+		_update_target_hidden(delta)
+		return
+
 	match _state:
 		State.PATROL:
 			_update_patrol()
@@ -180,6 +187,33 @@ func _update_state(delta: float) -> void:
 			_update_chase(delta)
 		State.SEARCH:
 			_update_search(delta)
+
+
+func _update_target_hidden(_delta: float) -> void:
+	if _state == State.CHASE:
+		_state = State.PATROL
+		player_lost.emit()
+	elif _state == State.SEARCH:
+		_state = State.PATROL
+
+	_lose_sight_timer = 0.0
+	_search_arrived = false
+
+	if _patrol_points.is_empty():
+		_stop_horizontal()
+		return
+
+	var target_pos: Vector3 = _target.global_position
+	var dist_to_target: float = _flat_distance_to(target_pos)
+
+	if dist_to_target < 25.0:
+		_patrol_index = _get_farthest_patrol_index_from_target()
+		_move_toward(_patrol_points[_patrol_index], PATROL_SPEED)
+	else:
+		var current_point: Vector3 = _patrol_points[_patrol_index]
+		if _flat_distance_to(current_point) <= WAYPOINT_REACHED_DISTANCE or current_point.distance_to(target_pos) < 18.0:
+			_patrol_index = _get_next_far_patrol_index(18.0)
+		_move_toward(_patrol_points[_patrol_index], PATROL_SPEED)
 
 
 func _update_patrol() -> void:
@@ -257,6 +291,8 @@ func _start_search() -> void:
 func _check_capture() -> void:
 	if _target == null or not is_instance_valid(_target):
 		return
+	if _is_target_hidden():
+		return
 	if global_position.distance_to(_target.global_position) > CAPTURE_DISTANCE:
 		return
 	_caught = true
@@ -264,8 +300,14 @@ func _check_capture() -> void:
 	monster_caught_player.emit()
 
 
+func _is_target_hidden() -> bool:
+	return _target != null and is_instance_valid(_target) and _target.has_method("is_hidden") and _target.is_hidden()
+
+
 func _can_see_target(ignore_fov: bool) -> bool:
 	if _target == null or not is_instance_valid(_target):
+		return false
+	if _is_target_hidden():
 		return false
 	var to_target: Vector3 = _target.global_position - global_position
 	var distance: float = to_target.length()
@@ -348,3 +390,33 @@ func _get_nearest_patrol_index() -> int:
 			best_distance = distance
 			best_index = i
 	return best_index
+
+
+func _get_farthest_patrol_index_from_target() -> int:
+	if _patrol_points.is_empty() or _target == null or not is_instance_valid(_target):
+		return 0
+	var target_pos: Vector3 = _target.global_position
+	var best_index: int = 0
+	var best_dist: float = -1.0
+	for i in range(_patrol_points.size()):
+		var d: float = _patrol_points[i].distance_to(target_pos)
+		if d > best_dist:
+			best_dist = d
+			best_index = i
+	return best_index
+
+
+func _get_next_far_patrol_index(min_dist: float) -> int:
+	if _patrol_points.is_empty() or _target == null or not is_instance_valid(_target):
+		return 0
+	var target_pos: Vector3 = _target.global_position
+	var candidates: Array[int] = []
+	for i in range(_patrol_points.size()):
+		if _patrol_points[i].distance_to(target_pos) >= min_dist:
+			candidates.append(i)
+	if candidates.is_empty():
+		return _get_farthest_patrol_index_from_target()
+	for idx: int in candidates:
+		if idx > _patrol_index:
+			return idx
+	return candidates[0]
