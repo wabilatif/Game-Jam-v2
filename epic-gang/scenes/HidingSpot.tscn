@@ -1,0 +1,118 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/HidingSpot.gd" id="1_spot"]
+
+[sub_resource type="StandardMaterial3D" id="mat_wardrobe"]
+albedo_color = Color(0.2, 0.22, 0.19, 1)
+metallic = 0.35
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="mat_interior"]
+albedo_color = Color(0.08, 0.09, 0.08, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_handles"]
+albedo_color = Color(0.65, 0.68, 0.65, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="BoxShape3D" id="shape_back"]
+size = Vector3(1.1, 2.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="shape_side"]
+size = Vector3(0.1, 2.1, 0.8)
+
+[sub_resource type="BoxShape3D" id="shape_interaction"]
+size = Vector3(1.8, 2.2, 1.6)
+
+[sub_resource type="BoxMesh" id="mesh_panel"]
+material = SubResource("mat_wardrobe")
+
+[sub_resource type="BoxMesh" id="mesh_door"]
+material = SubResource("mat_wardrobe")
+
+[sub_resource type="BoxMesh" id="mesh_handle"]
+material = SubResource("mat_handles")
+
+[node name="HidingSpot" type="Node3D"]
+script = ExtResource("1_spot")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Col_Back" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.35)
+shape = SubResource("shape_back")
+
+[node name="Col_Left" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.05, 0)
+shape = SubResource("shape_side")
+
+[node name="Col_Right" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.05, 0)
+shape = SubResource("shape_side")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Back" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1.1, 0, 0, 0, 2.1, 0, 0, 0, 0.06, 0, 1.05, -0.37)
+mesh = SubResource("mesh_panel")
+
+[node name="LeftWall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.06, 0, 0, 0, 2.1, 0, 0, 0, 0.78, -0.52, 1.05, 0)
+mesh = SubResource("mesh_panel")
+
+[node name="RightWall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.06, 0, 0, 0, 2.1, 0, 0, 0, 0.78, 0.52, 1.05, 0)
+mesh = SubResource("mesh_panel")
+
+[node name="Top" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1.1, 0, 0, 0, 0.06, 0, 0, 0, 0.78, 0, 2.07, 0)
+mesh = SubResource("mesh_panel")
+
+[node name="Bottom" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1.1, 0, 0, 0, 0.06, 0, 0, 0, 0.78, 0, 0.03, 0)
+mesh = SubResource("mesh_panel")
+
+[node name="DoorLeft" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.439, 0, -0.098, 0, 1.98, 0, 0.0065, 0, 0.029, -0.28, 1.05, 0.42)
+mesh = SubResource("mesh_door")
+
+[node name="DoorRight" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.439, 0, 0.098, 0, 1.98, 0, -0.0065, 0, 0.029, 0.28, 1.05, 0.42)
+mesh = SubResource("mesh_door")
+
+[node name="HandleLeft" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.02, 0, 0, 0, 0.16, 0, 0, 0, 0.05, -0.08, 1.05, 0.48)
+mesh = SubResource("mesh_handle")
+
+[node name="HandleRight" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.02, 0, 0, 0, 0.16, 0, 0, 0, 0.05, 0.08, 1.05, 0.48)
+mesh = SubResource("mesh_handle")
+
+[node name="HidingPoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.05, 0.12)
+
+[node name="ExitPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 1.1)
+
+[node name="InteractionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.8)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("shape_interaction")
+
+[node name="PromptLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0.45)
+visible = false
+billboard = 1
+no_depth_test = true
+text = "[E] Se cacher"
+font_size = 28
+outline_size = 8
+modulate = Color(0.96, 0.94, 0.85, 1)
+outline_modulate = Color(0.05, 0.05, 0.05, 0.9)
