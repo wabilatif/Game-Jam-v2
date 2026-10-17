@@ -1,0 +1,17 @@
+
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ExitDoor.gd" id="1_script"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_exit"]
+size = Vector3(2.0, 3.0, 1.0)
+
+[node name="ExitDoor" type="Area3D"]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_exit")
