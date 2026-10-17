@@ -5,6 +5,9 @@ extends CharacterBody3D
 
 signal sacrifice_applied(sacrifice_id: String)
 signal player_died
+## Hors contrat (bonus) : pour l'AudioManager / l'UI.
+signal footstep(is_sprinting: bool)
+signal flashlight_toggled(is_on: bool)
 
 # --- Valeurs du contrat -------------------------------------------------
 const BASE_SPEED: float = 5.0
@@ -25,6 +28,21 @@ const MOUSE_SENSITIVITY: float = 0.002
 const AIM_MAX_DISTANCE: float = 50.0
 const MAX_PITCH: float = 1.553343 # 89 degres en radians (evite deg_to_rad en const)
 
+# --- Bonus "feeling" (hors contrat, purement cosmetique) ------------------
+const ACCELERATION: float = 40.0        # m/s^2 pour atteindre la vitesse voulue
+const DECELERATION: float = 55.0        # m/s^2 pour s'arreter (freinage net)
+const BOB_FREQUENCY: float = 1.3        # radians par metre parcouru
+const BOB_AMPLITUDE: float = 0.035      # metres
+const SPRINT_FOV_BONUS: float = 8.0
+const BOOST_FOV_BONUS: float = 5.0
+const FOV_SMOOTHING: float = 8.0
+const FLASHLIGHT_RANGE: float = 18.0
+const FLASHLIGHT_ANGLE: float = 32.0
+const FLASHLIGHT_ENERGY: float = 3.0
+
+## Hors contrat : lampe torche (touche F), allumee au depart.
+@export var flashlight_on_at_start: bool = true
+
 ## Hors contrat : si true, Player ecoute les touches 1 a 4 et appelle
 ## PowerManager.activate_power. Mettre a false si l'UI ou Main gere deja
 ## les raccourcis (evite le double declenchement).
@@ -44,6 +62,12 @@ var _stamina: float = SPRINT_TIME_NORMAL
 var _exhausted: bool = false
 var _is_sprinting: bool = false
 
+var _flashlight: SpotLight3D
+var _base_fov: float = 75.0
+var _camera_base_y: float = 0.0
+var _bob_phase: float = 0.0
+var _last_step_index: int = 0
+
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
@@ -51,6 +75,10 @@ func _ready() -> void:
 	add_to_group("player")
 	_register_default_inputs()
 	camera.current = true
+	_base_fov = camera.fov
+	_camera_base_y = camera.position.y
+	_create_flashlight()
+	set_flashlight(flashlight_on_at_start)
 	set_controls_enabled(true)
 
 
@@ -129,6 +157,34 @@ func get_aim_direction() -> Vector3:
 	return -camera.global_transform.basis.z.normalized()
 
 
+## Bonus : endurance restante entre 0.0 et 1.0 (pour une barre de sprint).
+func get_stamina_ratio() -> float:
+	return clampf(_stamina / _get_max_sprint_time(), 0.0, 1.0)
+
+
+## Bonus : true si le joueur est en train de sprinter.
+func is_sprinting() -> bool:
+	return _is_sprinting
+
+
+## Bonus : true si le joueur est epuise (sprint bloque jusqu'a recuperation).
+func is_exhausted() -> bool:
+	return _exhausted
+
+
+func set_flashlight(on: bool) -> void:
+	if _flashlight == null:
+		return
+	if _flashlight.visible == on:
+		return
+	_flashlight.visible = on
+	flashlight_toggled.emit(on)
+
+
+func is_flashlight_on() -> bool:
+	return _flashlight != null and _flashlight.visible
+
+
 func reset_player() -> void:
 	_applied_sacrifices.clear()
 	_speed_modifier = 1.0
@@ -140,6 +196,11 @@ func reset_player() -> void:
 	velocity = Vector3.ZERO
 	rotation = Vector3.ZERO
 	head.rotation = Vector3.ZERO
+	_bob_phase = 0.0
+	_last_step_index = 0
+	camera.position.y = _camera_base_y
+	camera.fov = _base_fov
+	set_flashlight(flashlight_on_at_start)
 	set_controls_enabled(true)
 
 
@@ -169,6 +230,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		head.rotation.x = clampf(head.rotation.x, -MAX_PITCH, MAX_PITCH)
 		return
 
+	if event.is_action_pressed("flashlight"):
+		set_flashlight(not is_flashlight_on())
+		return
+
 	if not handle_power_keys:
 		return
 	for i in range(POWER_KEYS.size()):
@@ -192,8 +257,12 @@ func _physics_process(delta: float) -> void:
 	_update_stamina(delta, wants_sprint)
 
 	var speed: float = get_movement_speed()
-	velocity.x = direction.x * speed
-	velocity.z = direction.z * speed
+	var target_velocity := Vector2(direction.x, direction.z) * speed
+	var current_velocity := Vector2(velocity.x, velocity.z)
+	var rate: float = ACCELERATION if target_velocity != Vector2.ZERO else DECELERATION
+	current_velocity = current_velocity.move_toward(target_velocity, rate * delta)
+	velocity.x = current_velocity.x
+	velocity.z = current_velocity.y
 
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
@@ -203,9 +272,48 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+func _process(delta: float) -> void:
+	_update_head_bob(delta)
+	_update_fov(delta)
+
+
 # =======================================================================
 # PRIVE
 # =======================================================================
+
+func _create_flashlight() -> void:
+	_flashlight = SpotLight3D.new()
+	_flashlight.name = "Flashlight"
+	_flashlight.spot_range = FLASHLIGHT_RANGE
+	_flashlight.spot_angle = FLASHLIGHT_ANGLE
+	_flashlight.spot_attenuation = 0.8
+	_flashlight.light_energy = FLASHLIGHT_ENERGY
+	_flashlight.shadow_enabled = true
+	camera.add_child(_flashlight)
+
+
+func _update_head_bob(delta: float) -> void:
+	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
+	var moving: bool = horizontal_speed > 0.5 and is_on_floor()
+	if moving:
+		_bob_phase += horizontal_speed * BOB_FREQUENCY * delta
+		var step_index: int = int(floor(_bob_phase / PI))
+		if step_index != _last_step_index:
+			_last_step_index = step_index
+			footstep.emit(_is_sprinting)
+		camera.position.y = _camera_base_y + sin(_bob_phase) * BOB_AMPLITUDE
+	else:
+		camera.position.y = lerpf(camera.position.y, _camera_base_y, minf(10.0 * delta, 1.0))
+
+
+func _update_fov(delta: float) -> void:
+	var target_fov: float = _base_fov
+	if _is_sprinting:
+		target_fov += SPRINT_FOV_BONUS
+	if _speed_modifier > 1.0:
+		target_fov += BOOST_FOV_BONUS
+	camera.fov = lerpf(camera.fov, target_fov, minf(FOV_SMOOTHING * delta, 1.0))
+
 
 func _get_max_sprint_time() -> float:
 	return SPRINT_TIME_STAMINA if has_sacrifice("stamina") else SPRINT_TIME_NORMAL
@@ -255,6 +363,7 @@ func _register_default_inputs() -> void:
 		"move_left": KEY_A,
 		"move_right": KEY_D,
 		"sprint": KEY_SHIFT,
+		"flashlight": KEY_F,
 		"power_1": KEY_1,
 		"power_2": KEY_2,
 		"power_3": KEY_3,
