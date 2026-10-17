@@ -43,6 +43,21 @@ const FLASHLIGHT_RANGE: float = 18.0
 const FLASHLIGHT_ANGLE: float = 32.0
 const FLASHLIGHT_ENERGY: float = 3.0
 
+# --- Bonus "corps" : mains et pieds proceduraux (aucun asset requis) -------
+const SKIN_COLOR: Color = Color(0.78, 0.62, 0.52)
+const SLEEVE_COLOR: Color = Color(0.55, 0.58, 0.6)   # blouse d'hopital
+const PANTS_COLOR: Color = Color(0.5, 0.53, 0.55)
+const SHOE_COLOR: Color = Color(0.14, 0.14, 0.16)
+const HAND_REST_RIGHT: Vector3 = Vector3(0.24, -0.27, -0.45)
+const HAND_REST_LEFT: Vector3 = Vector3(-0.24, -0.29, -0.43)
+const FOOT_REST_Z: float = -0.08
+const FOOT_SPACING: float = 0.11
+
+## Hors contrat : mains visibles en vue FPS (la droite tient la lampe).
+@export var show_hands: bool = true
+## Hors contrat : pieds visibles quand on regarde vers le bas.
+@export var show_feet: bool = true
+
 ## Hors contrat : lampe torche (touche F), allumee au depart.
 @export var flashlight_on_at_start: bool = true
 
@@ -65,6 +80,16 @@ var _stamina: float = SPRINT_TIME_NORMAL
 var _exhausted: bool = false
 var _is_sprinting: bool = false
 
+var _hands_root: Node3D
+var _right_hand: Node3D
+var _left_hand: Node3D
+var _feet_root: Node3D
+var _left_foot: Node3D
+var _right_foot: Node3D
+var _lens_material: StandardMaterial3D
+var _gesture_tween: Tween
+var _look_delta: Vector2 = Vector2.ZERO
+
 var _flashlight: SpotLight3D
 var _base_fov: float = 75.0
 var _camera_base_y: float = 0.0
@@ -81,6 +106,7 @@ func _ready() -> void:
 	_base_fov = camera.fov
 	_camera_base_y = camera.position.y
 	_create_flashlight()
+	_create_viewmodel()
 	set_flashlight(flashlight_on_at_start)
 	set_controls_enabled(true)
 
@@ -181,6 +207,7 @@ func set_flashlight(on: bool) -> void:
 	if _flashlight.visible == on:
 		return
 	_flashlight.visible = on
+	_update_lens()
 	flashlight_toggled.emit(on)
 
 
@@ -204,6 +231,15 @@ func reset_player() -> void:
 	camera.position.y = _camera_base_y
 	camera.rotation.z = 0.0
 	camera.fov = _base_fov
+	_look_delta = Vector2.ZERO
+	if _gesture_tween != null:
+		_gesture_tween.kill()
+	if _hands_root != null:
+		_hands_root.position = Vector3.ZERO
+		_hands_root.rotation = Vector3.ZERO
+		_right_hand.position = HAND_REST_RIGHT
+		_right_hand.rotation = Vector3.ZERO
+		_left_hand.position = HAND_REST_LEFT
 	set_flashlight(flashlight_on_at_start)
 	set_controls_enabled(true)
 
@@ -229,6 +265,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var motion := event as InputEventMouseMotion
+		_look_delta = (_look_delta + motion.relative).limit_length(80.0)
 		rotate_y(-motion.relative.x * MOUSE_SENSITIVITY)
 		head.rotate_x(-motion.relative.y * MOUSE_SENSITIVITY)
 		head.rotation.x = clampf(head.rotation.x, -MAX_PITCH, MAX_PITCH)
@@ -279,11 +316,212 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	_update_head_bob(delta)
 	_update_fov(delta)
+	_update_hands(delta)
+	_update_feet(delta)
 
 
 # =======================================================================
 # PRIVE
 # =======================================================================
+
+func _make_material(color: Color) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	material.roughness = 0.9
+	return material
+
+
+func _add_mesh(parent: Node3D, mesh: Mesh, material: Material,
+		pos: Vector3, rot: Vector3) -> MeshInstance3D:
+	var instance := MeshInstance3D.new()
+	instance.mesh = mesh
+	instance.material_override = material
+	instance.position = pos
+	instance.rotation = rot
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(instance)
+	return instance
+
+
+func _create_viewmodel() -> void:
+	if show_hands:
+		_hands_root = Node3D.new()
+		_hands_root.name = "Hands"
+		camera.add_child(_hands_root)
+		_right_hand = _build_hand(true)
+		_right_hand.position = HAND_REST_RIGHT
+		_hands_root.add_child(_right_hand)
+		_left_hand = _build_hand(false)
+		_left_hand.position = HAND_REST_LEFT
+		_hands_root.add_child(_left_hand)
+		_attach_flashlight_to_hand()
+	if show_feet:
+		_feet_root = Node3D.new()
+		_feet_root.name = "Feet"
+		add_child(_feet_root)
+		_left_foot = _build_foot()
+		_left_foot.position = Vector3(-FOOT_SPACING, 0.0, FOOT_REST_Z)
+		_feet_root.add_child(_left_foot)
+		_right_foot = _build_foot()
+		_right_foot.position = Vector3(FOOT_SPACING, 0.0, FOOT_REST_Z)
+		_feet_root.add_child(_right_foot)
+	_update_lens()
+
+
+## Main faite de boites et cylindres : avant-bras, manche, paume, 4 doigts
+## replies, pouce. Le "devant" de la main est l'axe -Z.
+func _build_hand(is_right: bool) -> Node3D:
+	var hand := Node3D.new()
+	hand.name = "RightHand" if is_right else "LeftHand"
+	var side: float = 1.0 if is_right else -1.0
+	var skin: StandardMaterial3D = _make_material(SKIN_COLOR)
+
+	var palm := BoxMesh.new()
+	palm.size = Vector3(0.085, 0.03, 0.09)
+	_add_mesh(hand, palm, skin, Vector3.ZERO, Vector3.ZERO)
+
+	for i in range(4):
+		var finger := BoxMesh.new()
+		finger.size = Vector3(0.017, 0.017, 0.07)
+		_add_mesh(hand, finger, skin,
+			Vector3(-0.03 + 0.02 * i, -0.008, -0.08), Vector3(-0.35, 0.0, 0.0))
+
+	var thumb := BoxMesh.new()
+	thumb.size = Vector3(0.02, 0.018, 0.05)
+	_add_mesh(hand, thumb, skin,
+		Vector3(-side * 0.05, -0.004, -0.02), Vector3(0.0, side * 0.5, 0.0))
+
+	var forearm := CylinderMesh.new()
+	forearm.top_radius = 0.042
+	forearm.bottom_radius = 0.03
+	forearm.height = 0.5
+	_add_mesh(hand, forearm, skin, Vector3(0.0, 0.0, 0.30), Vector3(PI / 2.0, 0.0, 0.0))
+
+	var sleeve := CylinderMesh.new()
+	sleeve.top_radius = 0.058
+	sleeve.bottom_radius = 0.05
+	sleeve.height = 0.22
+	_add_mesh(hand, sleeve, _make_material(SLEEVE_COLOR),
+		Vector3(0.0, 0.0, 0.42), Vector3(PI / 2.0, 0.0, 0.0))
+	return hand
+
+
+func _build_foot() -> Node3D:
+	var foot := Node3D.new()
+	var shoe := BoxMesh.new()
+	shoe.size = Vector3(0.10, 0.07, 0.26)
+	_add_mesh(foot, shoe, _make_material(SHOE_COLOR), Vector3(0.0, 0.035, -0.04), Vector3.ZERO)
+	var shin := CylinderMesh.new()
+	shin.top_radius = 0.04
+	shin.bottom_radius = 0.045
+	shin.height = 0.3
+	_add_mesh(foot, shin, _make_material(PANTS_COLOR), Vector3(0.0, 0.22, 0.04), Vector3.ZERO)
+	return foot
+
+
+## La lampe est tenue par la main droite : corps metal + verre qui s'allume.
+func _attach_flashlight_to_hand() -> void:
+	var metal: StandardMaterial3D = _make_material(Color(0.12, 0.12, 0.13))
+	metal.metallic = 0.6
+	var body := CylinderMesh.new()
+	body.top_radius = 0.03
+	body.bottom_radius = 0.03
+	body.height = 0.18
+	_add_mesh(_right_hand, body, metal, Vector3(0.0, 0.0, -0.06), Vector3(PI / 2.0, 0.0, 0.0))
+
+	_lens_material = StandardMaterial3D.new()
+	_lens_material.albedo_color = Color(0.9, 0.9, 0.8)
+	_lens_material.emission_enabled = true
+	_lens_material.emission = Color(1.0, 0.95, 0.75)
+	var lens := CylinderMesh.new()
+	lens.top_radius = 0.042
+	lens.bottom_radius = 0.032
+	lens.height = 0.035
+	_add_mesh(_right_hand, lens, _lens_material, Vector3(0.0, 0.0, -0.16), Vector3(PI / 2.0, 0.0, 0.0))
+
+	if _flashlight != null:
+		_flashlight.get_parent().remove_child(_flashlight)
+		_right_hand.add_child(_flashlight)
+		_flashlight.position = Vector3(0.0, 0.0, -0.19)
+		_flashlight.rotation = Vector3.ZERO
+
+
+func _update_lens() -> void:
+	if _lens_material == null:
+		return
+	_lens_material.emission_energy_multiplier = 2.0 if is_flashlight_on() else 0.0
+
+
+## Geste rapide de la main droite quand un pouvoir est active avec succes.
+func _play_hand_gesture() -> void:
+	if _right_hand == null:
+		return
+	if _gesture_tween != null:
+		_gesture_tween.kill()
+	_right_hand.position = HAND_REST_RIGHT
+	_gesture_tween = create_tween()
+	_gesture_tween.tween_property(
+		_right_hand, "position", HAND_REST_RIGHT + Vector3(0.0, 0.07, -0.16), 0.10
+	).set_ease(Tween.EASE_OUT)
+	_gesture_tween.tween_property(_right_hand, "position", HAND_REST_RIGHT, 0.28)
+
+
+func _update_hands(delta: float) -> void:
+	if _hands_root == null:
+		return
+	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
+	var moving: bool = horizontal_speed > 0.5 and is_on_floor()
+	var target_pos: Vector3 = Vector3.ZERO
+	var target_rot: Vector3 = Vector3.ZERO
+
+	if moving:
+		target_pos.x = cos(_bob_phase * 0.5) * 0.008
+		target_pos.y = sin(_bob_phase - 0.6) * 0.012 * (SPRINT_BOB_MULTIPLIER if _is_sprinting else 1.0)
+	if _is_sprinting:
+		target_pos += Vector3(0.0, -0.05, 0.04)
+		target_rot.x = -0.25
+	# Retard des mains quand on bouge la souris (effet de poids).
+	target_rot.y += _look_delta.x * 0.003
+	target_rot.x += _look_delta.y * 0.003
+	_look_delta = _look_delta.lerp(Vector2.ZERO, minf(12.0 * delta, 1.0))
+	# Epuise : les mains tremblent.
+	if _exhausted:
+		target_pos += Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), 0.0) * 0.004
+	# Mort : les mains retombent.
+	if _dead:
+		target_pos.y = -0.35
+
+	var weight: float = minf(10.0 * delta, 1.0)
+	_hands_root.position = _hands_root.position.lerp(target_pos, weight)
+	_hands_root.rotation = _hands_root.rotation.lerp(target_rot, weight)
+
+
+func _update_feet(delta: float) -> void:
+	if _feet_root == null:
+		return
+	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
+	var moving: bool = horizontal_speed > 0.5 and is_on_floor()
+	var left_target := Vector3(-FOOT_SPACING, 0.0, FOOT_REST_Z)
+	var right_target := Vector3(FOOT_SPACING, 0.0, FOOT_REST_Z)
+	if moving:
+		var limp: bool = has_sacrifice("leg")
+		var amplitude: float = 0.16
+		if limp:
+			amplitude *= 0.6
+		if _is_sprinting:
+			amplitude *= 1.3
+		var s: float = sin(_bob_phase)
+		var c: float = cos(_bob_phase)
+		left_target.z -= s * amplitude
+		right_target.z += s * amplitude
+		left_target.y = maxf(0.0, c) * 0.08
+		right_target.y = maxf(0.0, -c) * 0.08
+		if limp:
+			left_target.y *= 0.3 # la jambe blessee traine
+	var weight: float = minf(20.0 * delta, 1.0)
+	_left_foot.position = _left_foot.position.lerp(left_target, weight)
+	_right_foot.position = _right_foot.position.lerp(right_target, weight)
+
 
 func _create_flashlight() -> void:
 	_flashlight = SpotLight3D.new()
@@ -308,9 +546,12 @@ func _update_head_bob(delta: float) -> void:
 			footstep.emit(_is_sprinting)
 		var amplitude: float = BOB_AMPLITUDE * (SPRINT_BOB_MULTIPLIER if _is_sprinting else 1.0)
 		camera.position.y = _camera_base_y + sin(_bob_phase) * amplitude
-		# En sprint, la tete penche d'un cote puis de l'autre a chaque pas.
 		if _is_sprinting:
+			# En sprint, la tete penche d'un cote puis de l'autre a chaque pas.
 			target_roll = sin(_bob_phase * 0.5) * SPRINT_ROLL
+		elif has_sacrifice("leg"):
+			# Sacrifice "leg" : la camera penche legerement a chaque pas (boiterie).
+			target_roll = sin(_bob_phase) * 0.015
 	else:
 		camera.position.y = lerpf(camera.position.y, _camera_base_y, minf(10.0 * delta, 1.0))
 	camera.rotation.z = lerpf(camera.rotation.z, target_roll, minf(ROLL_SMOOTHING * delta, 1.0))
@@ -361,7 +602,9 @@ func _request_power(power_id: String) -> void:
 		push_warning("Player: PowerManager introuvable (test isole ?)")
 		return
 	if power_manager.has_method("activate_power"):
-		power_manager.activate_power(power_id)
+		var result: Variant = power_manager.activate_power(power_id)
+		if result is bool and result:
+			_play_hand_gesture()
 
 
 ## Cree les actions d'entree si elles n'existent pas (touches physiques :
