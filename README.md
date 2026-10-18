@@ -12,11 +12,12 @@ A **mini-map** (top-left) is revealed progressively as the player explores: wall
 
 Some doorways (5 per game, drawn at random, never all of them) have a hinged door. **E** opens / closes it, and the noise depends on how you open it:
 
-| Action | Sound | Noise radius |
-|---|---|---|
-| Open while **sprinting** | Loud slam | 22 m |
-| Open while walking | Slow creak | 7 m |
-| Close | Soft creak | 5 m |
+
+| Action                  | Sound      | Noise radius |
+| ----------------------- | ---------- | ------------ |
+| Open while**sprinting** | Loud slam  | 22 m         |
+| Open while walking      | Slow creak | 7 m          |
+| Close                   | Soft creak | 5 m          |
 
 The monster opens doors by itself (a closed door never blocks it), and the player hears it through the 3D sound.
 
@@ -42,41 +43,44 @@ The game is available in **French** (default) and **English**: the "Langue / Lan
 
 ## Powers
 
-| Key | Power | Effect | Cooldown |
-|---|---|---|---|
-| 1 | Shockwave | Stuns the monster for 3s (8m range) | 12s |
-| 2 | Spectral Vision | Reveals the monster for 5s | 15s |
-| 3 | Speed Boost | 1.5x movement speed for 5s | 12s |
-| 4 | Spectral Trap | Placed at the player's feet, slows the monster by 50% for 5s | 15s |
+
+| Key | Power           | Effect                                                       | Cooldown |
+| --- | --------------- | ------------------------------------------------------------ | -------- |
+| 1   | Shockwave       | Stuns the monster for 3s (8m range)                          | 12s      |
+| 2   | Spectral Vision | Reveals the monster for 5s                                   | 15s      |
+| 3   | Speed Boost     | 1.5x movement speed for 5s                                   | 12s      |
+| 4   | Spectral Trap   | Placed at the player's feet, slows the monster by 50% for 5s | 15s      |
 
 ## Sacrifices
 
 Each power offers 5 sacrifices drawn at random among those still available (9 in total). A sacrifice can only be given once per game.
 
-| Sacrifice | Permanent Effect |
-|---|---|
-| Hearing | Audio cues used to locate the monster are heavily muffled |
-| Leg | Movement speed reduced by 25% |
-| Sight | Impaired vision |
-| Stamina | Sprint duration reduced by half |
-| Arm | Powers recharge 50% slower |
-| Heart | Stamina recovers twice as slowly |
-| Reflexes | Camera responds worse (lower mouse sensitivity) |
-| Light | The flashlight is much weaker |
-| Memory | The mini-map is lost for good |
+
+| Sacrifice | Permanent Effect                                          |
+| --------- | --------------------------------------------------------- |
+| Hearing   | Audio cues used to locate the monster are heavily muffled |
+| Leg       | Movement speed reduced by 25%                             |
+| Sight     | Impaired vision                                           |
+| Stamina   | Sprint duration reduced by half                           |
+| Arm       | Powers recharge 50% slower                                |
+| Heart     | Stamina recovers twice as slowly                          |
+| Reflexes  | Camera responds worse (lower mouse sensitivity)           |
+| Light     | The flashlight is much weaker                             |
+| Memory    | The mini-map is lost for good                             |
 
 ## Controls
 
-| Action | Key |
-|---|---|
-| Move | W A S D (Z Q S D on AZERTY keyboards) |
-| Look | Mouse |
-| Sprint | Shift |
-| Powers | 1, 2, 3, 4 (top row) |
-| Map | M (large map; small map is always top-left) |
-| Open / close a door, hide | E |
-| Fullscreen | F11, Alt+Enter, or the "Fullscreen" button in the menus (not available when the game runs inside the Godot editor's embedded Game tab: launch it in its own window) |
-| Brightness | `+` / `-` in game, or the slider in the main menu and pause menu |
+
+| Action                    | Key                                                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Move                      | W A S D (Z Q S D on AZERTY keyboards)                                                                                                                               |
+| Look                      | Mouse                                                                                                                                                               |
+| Sprint                    | Shift                                                                                                                                                               |
+| Powers                    | 1, 2, 3, 4 (top row)                                                                                                                                                |
+| Map                       | M (large map; small map is always top-left)                                                                                                                         |
+| Open / close a door, hide | E                                                                                                                                                                   |
+| Fullscreen                | F11, Alt+Enter, or the "Fullscreen" button in the menus (not available when the game runs inside the Godot editor's embedded Game tab: launch it in its own window) |
+| Brightness                | `+` / `-` in game, or the slider in the main menu and pause menu                                                                                                    |
 
 ## Installation
 
@@ -134,32 +138,29 @@ epic-gang/            Godot project (res://)
 
 ## Team
 
-| Person | Role |
-|---|---|
-| 1 | FPS Player, movement, sprint, permanent sacrifices |
-| 2 | Level design, collisions, spawns, patrol points |
-| 3 | Monster AI, detection, chase, capture |
-| 4 | PowerManager, sacrifices, pickups, and spectral trap |
-| 5 | HUD, sacrifice menu, pause, victory, and defeat |
-| 6 | Audio, deafness, impaired vision, and spectral vision |
-| 7 | Main, GameManager, integration, exit, and restart |
+
+| Person | Role                                                  |
+| ------ | ----------------------------------------------------- |
+| 1      | FPS Player, movement, sprint, permanent sacrifices    |
+| 2      | Level design, collisions, spawns, patrol points       |
+| 3      | Monster AI, detection, chase, capture                 |
+| 4      | PowerManager, sacrifices, pickups, and spectral trap  |
+| 5      | HUD, sacrifice menu, pause, victory, and defeat       |
+| 6      | Audio, deafness, impaired vision, and spectral vision |
+| 7      | Main, GameManager, integration, exit, and restart     |
 
 ## Credits
 
 - Adrien Grégoire
-
 - Ilann Amimer
-
 - Marc-Antoine Sadio THE ULTIMATE BOSS NO NEED TO BE FIRST TO PROVE SOMETHING YOU GET ME BROOO
-
 - Abdoul Latif Wabi
-
 - Donata Contant
-
 - Mahammad Abdourahman Mohamed
-
 - Deniz Demir
 
 ## Assets tiers
 
 - Monstre : [Smily horror monster](https://sketchfab.com/3d-models/smily-horror-monster-3d3fc31eddaa409a8f2df564823154e1) par [Bento (gostbento)](https://sketchfab.com/gostbento), sous licence [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/). Animation de marche ajoutée dans le jeu.
+- Secret : [Voodoo Doll](https://sketchfab.com/3d-models/voodoo-doll-e0245d6f01f141f9812582a9487c3062) par [Sophie](https://sketchfab.com/Sofi_EX) , sous licence  [CC Attribution](https://creativecommons.org/licenses/by/4.0/)
+- Torch : [Torch](https://sketchfab.com/3d-models/torch-78a40e36444b4ae79814a9965cbd0c1b) par [Oliver D](https://sketchfab.com/OliverD) , sous licence [CC Attribution](https://creativecommons.org/licenses/by/4.0/)
