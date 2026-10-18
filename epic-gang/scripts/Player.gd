@@ -281,7 +281,7 @@ func hide_in_spot(spot: Node3D) -> bool:
 
 	var audio_mgr: Node = get_node_or_null("/root/AudioManager")
 	if audio_mgr != null and audio_mgr.has_method("play_sfx"):
-		audio_mgr.play_sfx("door_open")
+		audio_mgr.play_sfx("hide")
 
 	var hide_pos: Vector3 = spot.global_position
 	var hide_rot: Vector3 = spot.global_rotation
@@ -329,7 +329,7 @@ func exit_hiding_spot() -> void:
 
 	var audio_mgr: Node = get_node_or_null("/root/AudioManager")
 	if audio_mgr != null and audio_mgr.has_method("play_sfx"):
-		audio_mgr.play_sfx("door_open")
+		audio_mgr.play_sfx("hide")
 
 	if _saved_flashlight_state:
 		set_flashlight(true)
