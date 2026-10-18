@@ -164,3 +164,7 @@ epic-gang/            Godot project (res://)
 - Monstre : [Smily horror monster](https://sketchfab.com/3d-models/smily-horror-monster-3d3fc31eddaa409a8f2df564823154e1) par [Bento (gostbento)](https://sketchfab.com/gostbento), sous licence [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/). Animation de marche ajoutée dans le jeu.
 - Secret : [Voodoo Doll](https://sketchfab.com/3d-models/voodoo-doll-e0245d6f01f141f9812582a9487c3062) par [Sophie](https://sketchfab.com/Sofi_EX) , sous licence  [CC Attribution](https://creativecommons.org/licenses/by/4.0/)
 - Torch : [Torch](https://sketchfab.com/3d-models/torch-78a40e36444b4ae79814a9965cbd0c1b) par [Oliver D](https://sketchfab.com/OliverD) , sous licence [CC Attribution](https://creativecommons.org/licenses/by/4.0/)
+
+## Sounds
+
+- All the audio sounds are free and they come from [PixaBay](https://pixabay.com/sound-effects/search/item%20found/).
