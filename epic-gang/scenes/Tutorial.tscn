@@ -124,35 +124,7 @@ albedo_color = Color(0.2, 1, 0.45, 1)
 shading_mode = 0
 albedo_color = Color(0.89411765, 0.9411765, 0.9019608, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_s4wry"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_t73ya"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_1y4d5"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_47rdh"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_4c805"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_podgh"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_hmhye"]
-material = SubResource("StandardMaterial3D_wwsfe")
-size = Vector3(0.14, 0.04, 1.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_cys1x"]
+[sub_resource type="BoxMesh" id="BoxMesh_tubelight"]
 material = SubResource("StandardMaterial3D_wwsfe")
 size = Vector3(0.14, 0.04, 1.3)
 
@@ -187,280 +159,588 @@ bg_color = Color(0.043137256, 0.043137256, 0.039215688, 0.78)
 border_width_left = 3
 border_color = Color(0.5568628, 0.105882354, 0.09019608, 1)
 
-[node name="Tutorial" type="Node3D" unique_id=734671962]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_door"]
+albedo_color = Color(0.18, 0.21, 0.23, 1)
+metallic = 0.75
+roughness = 0.35
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(2.15, 2.4, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_door"]
+material = SubResource("StandardMaterial3D_door")
+size = Vector3(2.15, 2.4, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ind_red"]
+shading_mode = 0
+albedo_color = Color(1, 0.2, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ind"]
+size = Vector3(0.3, 0.1, 0.08)
+
+[node name="Tutorial" type="Node3D"]
 script = ExtResource("1_l206y")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=13801161]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_e4hrd")
 
-[node name="Level" type="Node3D" parent="." unique_id=1086644101]
+[node name="Level" type="Node3D" parent="."]
 
-[node name="Floor" type="CSGBox3D" parent="Level" unique_id=480484522]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -23)
+[node name="Floor" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -38)
 use_collision = true
-size = Vector3(4, 0.2, 50)
+size = Vector3(6.4, 0.2, 81.4)
 material = SubResource("StandardMaterial3D_eba8f")
 
-[node name="Ceiling" type="CSGBox3D" parent="Level" unique_id=1858371668]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, -23)
+[node name="Ceiling" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, -38)
 use_collision = true
-size = Vector3(4, 0.2, 50)
+size = Vector3(6.4, 0.2, 81.4)
 material = SubResource("StandardMaterial3D_4tybr")
 
-[node name="WallLeft" type="CSGBox3D" parent="Level" unique_id=170767224]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 1.5, -23)
+[node name="WallLeft" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1, 1.5, -38)
 use_collision = true
-size = Vector3(0.2, 3, 50)
+size = Vector3(0.2, 3, 81.4)
 material = SubResource("StandardMaterial3D_dn1de")
 
-[node name="WallRight" type="CSGBox3D" parent="Level" unique_id=2118644709]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 1.5, -23)
+[node name="WallRight" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1, 1.5, -38)
 use_collision = true
-size = Vector3(0.2, 3, 50)
+size = Vector3(0.2, 3, 81.4)
 material = SubResource("StandardMaterial3D_dn1de")
 
-[node name="WallStart" type="CSGBox3D" parent="Level" unique_id=1851096163]
+[node name="WallStart" type="CSGBox3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2.1)
 use_collision = true
-size = Vector3(4, 3, 0.2)
+size = Vector3(6.4, 3, 0.2)
 material = SubResource("StandardMaterial3D_dn1de")
 
-[node name="WallEnd" type="CSGBox3D" parent="Level" unique_id=1766560063]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -48.1)
+[node name="WallEnd" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -78.1)
 use_collision = true
-size = Vector3(4, 3, 0.2)
+size = Vector3(6.4, 3, 0.2)
 material = SubResource("StandardMaterial3D_dn1de")
 
-[node name="TrimLeft" type="CSGBox3D" parent="Level" unique_id=1455108057]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.98, 0.5, -23)
-size = Vector3(0.05, 1, 50)
+[node name="TrimLeft" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.98, 0.5, -38)
+size = Vector3(0.05, 1, 81.4)
 material = SubResource("StandardMaterial3D_wkaxc")
 
-[node name="TrimRight" type="CSGBox3D" parent="Level" unique_id=1092156936]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98, 0.5, -23)
-size = Vector3(0.05, 1, 50)
+[node name="TrimRight" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.98, 0.5, -38)
+size = Vector3(0.05, 1, 81.4)
 material = SubResource("StandardMaterial3D_wkaxc")
 
-[node name="FrameL12" type="CSGBox3D" parent="Level" unique_id=1187056173]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.5, -12)
+[node name="Div1_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -5.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div1_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -5.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div1_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -5.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameR12" type="CSGBox3D" parent="Level" unique_id=701988739]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.5, -12)
+[node name="Div1_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -5.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameTop12" type="CSGBox3D" parent="Level" unique_id=1439257305]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, -12)
+[node name="Div1_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -5.0)
 use_collision = true
-size = Vector3(4, 0.4, 0.3)
+size = Vector3(2.5, 0.6, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameL22" type="CSGBox3D" parent="Level" unique_id=2098554739]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.5, -22)
+[node name="Div2_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -14.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div2_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -14.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div2_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -14.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameR22" type="CSGBox3D" parent="Level" unique_id=779930211]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.5, -22)
+[node name="Div2_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -14.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameTop22" type="CSGBox3D" parent="Level" unique_id=952353252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, -22)
+[node name="Div2_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -14.0)
 use_collision = true
-size = Vector3(4, 0.4, 0.3)
+size = Vector3(2.5, 0.6, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameL34" type="CSGBox3D" parent="Level" unique_id=1014741760]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.5, -34)
+[node name="Div3_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -30.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div3_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -30.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div3_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -30.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameR34" type="CSGBox3D" parent="Level" unique_id=288967411]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.5, -34)
+[node name="Div3_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -30.0)
 use_collision = true
-size = Vector3(0.5, 3, 0.3)
+size = Vector3(0.2, 2.4, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="FrameTop34" type="CSGBox3D" parent="Level" unique_id=916345933]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, -34)
+[node name="Div3_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -30.0)
 use_collision = true
-size = Vector3(4, 0.4, 0.3)
+size = Vector3(2.5, 0.6, 0.42)
 material = SubResource("StandardMaterial3D_7vc5l")
 
-[node name="ExitDoorPanel" type="CSGBox3D" parent="Level" unique_id=1761947669]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, -47.95)
+[node name="Div4_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -42.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div4_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -42.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div4_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -42.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div4_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -42.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div4_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -42.0)
+use_collision = true
+size = Vector3(2.5, 0.6, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div5_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -54.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div5_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -54.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div5_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -54.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div5_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -54.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div5_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -54.0)
+use_collision = true
+size = Vector3(2.5, 0.6, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div6_WallL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05, 1.5, -68.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div6_WallR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.5, -68.0)
+use_collision = true
+size = Vector3(1.95, 3, 0.38)
+material = SubResource("StandardMaterial3D_dn1de")
+
+[node name="Div6_PostL" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -68.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div6_PostR" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -68.0)
+use_collision = true
+size = Vector3(0.2, 2.4, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="Div6_Lintel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -68.0)
+use_collision = true
+size = Vector3(2.5, 0.6, 0.42)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="ExitDoorPanel" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, -77.95)
 size = Vector3(1.6, 2.3, 0.1)
 material = SubResource("StandardMaterial3D_v1uvm")
 
-[node name="ExitSign" type="Label3D" parent="Level" unique_id=238792382]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -47.8)
+[node name="ExitSign" type="Label3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -77.8)
 modulate = Color(0.2, 1, 0.45, 1)
 text = "SORTIE"
 font = ExtResource("2_ei5ly")
 font_size = 72
 
-[node name="Lights" type="Node3D" parent="." unique_id=1690683435]
+[node name="Doors" type="Node3D" parent="."]
 
-[node name="Tube0" type="Node3D" parent="Lights" unique_id=1316855839]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -2)
+[node name="Door1" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.0)
 
-[node name="@MeshInstance3D@2" type="MeshInstance3D" parent="Lights/Tube0" unique_id=2105089229]
-mesh = SubResource("BoxMesh_s4wry")
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
 
-[node name="@OmniLight3D@3" type="OmniLight3D" parent="Lights/Tube0" unique_id=2025978112]
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door1/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door1/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Door2" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14.0)
+
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door2/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door2/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Door3" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30.0)
+
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door3/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door3/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Door4" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -42.0)
+
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door4/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door4/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Door5" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -54.0)
+
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door5/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door5/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Door6" type="Node3D" parent="Doors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -68.0)
+
+[node name="Panel" type="AnimatableBody3D" parent="Doors/Door6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Doors/Door6/Panel"]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Doors/Door6/Panel"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="Indicator" type="MeshInstance3D" parent="Doors/Door6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.22)
+mesh = SubResource("BoxMesh_ind")
+material_override = SubResource("StandardMaterial3D_ind_red")
+
+[node name="Light" type="OmniLight3D" parent="Doors/Door6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0.3)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 2.5
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Tube0" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -1.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube0"]
+mesh = SubResource("BoxMesh_tubelight")
+
+[node name="Light" type="OmniLight3D" parent="Lights/Tube0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
 light_energy = 1.1
 shadow_enabled = true
 omni_range = 7.0
 
-[node name="Tube1" type="Node3D" parent="Lights" unique_id=530291884]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -8)
+[node name="Tube1" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -9.5)
 
-[node name="@MeshInstance3D@4" type="MeshInstance3D" parent="Lights/Tube1" unique_id=506198506]
-mesh = SubResource("BoxMesh_t73ya")
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube1"]
+mesh = SubResource("BoxMesh_tubelight")
 
-[node name="@OmniLight3D@5" type="OmniLight3D" parent="Lights/Tube1" unique_id=2037889197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 1.1
-omni_range = 7.0
-
-[node name="Tube2" type="Node3D" parent="Lights" unique_id=1406885673]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -15)
-
-[node name="@MeshInstance3D@6" type="MeshInstance3D" parent="Lights/Tube2" unique_id=1139528185]
-mesh = SubResource("BoxMesh_1y4d5")
-
-[node name="@OmniLight3D@7" type="OmniLight3D" parent="Lights/Tube2" unique_id=450380964]
+[node name="Light" type="OmniLight3D" parent="Lights/Tube1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
 light_energy = 1.1
 shadow_enabled = true
 omni_range = 7.0
 
-[node name="Tube3" type="Node3D" parent="Lights" unique_id=773831207]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -20)
+[node name="Tube2" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -18.0)
 
-[node name="@MeshInstance3D@8" type="MeshInstance3D" parent="Lights/Tube3" unique_id=1368150842]
-mesh = SubResource("BoxMesh_47rdh")
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube2"]
+mesh = SubResource("BoxMesh_tubelight")
 
-[node name="@OmniLight3D@9" type="OmniLight3D" parent="Lights/Tube3" unique_id=283155022]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 1.1
-omni_range = 7.0
-
-[node name="Tube4" type="Node3D" parent="Lights" unique_id=1496875905]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -27)
-
-[node name="@MeshInstance3D@10" type="MeshInstance3D" parent="Lights/Tube4" unique_id=503281359]
-mesh = SubResource("BoxMesh_4c805")
-
-[node name="@OmniLight3D@11" type="OmniLight3D" parent="Lights/Tube4" unique_id=2008091443]
+[node name="Light" type="OmniLight3D" parent="Lights/Tube2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
 light_energy = 1.1
 shadow_enabled = true
 omni_range = 7.0
 
-[node name="Tube5" type="Node3D" parent="Lights" unique_id=143237983]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -33)
+[node name="Tube3" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -25.0)
 
-[node name="@MeshInstance3D@12" type="MeshInstance3D" parent="Lights/Tube5" unique_id=1224957735]
-mesh = SubResource("BoxMesh_podgh")
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube3"]
+mesh = SubResource("BoxMesh_tubelight")
 
-[node name="@OmniLight3D@13" type="OmniLight3D" parent="Lights/Tube5" unique_id=793200306]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
-light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
-light_energy = 1.1
-omni_range = 7.0
-
-[node name="Tube6" type="Node3D" parent="Lights" unique_id=1786784755]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -39)
-
-[node name="@MeshInstance3D@14" type="MeshInstance3D" parent="Lights/Tube6" unique_id=653302727]
-mesh = SubResource("BoxMesh_hmhye")
-
-[node name="@OmniLight3D@15" type="OmniLight3D" parent="Lights/Tube6" unique_id=945124381]
+[node name="Light" type="OmniLight3D" parent="Lights/Tube3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
 light_energy = 1.1
 shadow_enabled = true
 omni_range = 7.0
 
-[node name="Tube7" type="Node3D" parent="Lights" unique_id=683919494]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -45)
+[node name="Tube4" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -36.0)
 
-[node name="@MeshInstance3D@16" type="MeshInstance3D" parent="Lights/Tube7" unique_id=612407221]
-mesh = SubResource("BoxMesh_cys1x")
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube4"]
+mesh = SubResource("BoxMesh_tubelight")
 
-[node name="@OmniLight3D@17" type="OmniLight3D" parent="Lights/Tube7" unique_id=958563316]
+[node name="Light" type="OmniLight3D" parent="Lights/Tube4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
 light_energy = 1.1
+shadow_enabled = true
 omni_range = 7.0
 
-[node name="Markers" type="Node3D" parent="." unique_id=796713852]
+[node name="Tube5" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -48.0)
 
-[node name="MoveMarker" type="Node3D" parent="Markers" unique_id=727249072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube5"]
+mesh = SubResource("BoxMesh_tubelight")
 
-[node name="@MeshInstance3D@18" type="MeshInstance3D" parent="Markers/MoveMarker" unique_id=926070307]
+[node name="Light" type="OmniLight3D" parent="Lights/Tube5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 1.1
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="Tube6" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -61.0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube6"]
+mesh = SubResource("BoxMesh_tubelight")
+
+[node name="Light" type="OmniLight3D" parent="Lights/Tube6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 1.1
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="Tube7" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96, -73.0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Lights/Tube7"]
+mesh = SubResource("BoxMesh_tubelight")
+
+[node name="Light" type="OmniLight3D" parent="Lights/Tube7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+light_color = Color(0.8392157, 0.89411765, 0.84705883, 1)
+light_energy = 1.1
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="Markers" type="Node3D" parent="."]
+
+[node name="MoveMarker" type="Node3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Markers/MoveMarker"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 mesh = SubResource("CylinderMesh_jdfau")
 
-[node name="@OmniLight3D@19" type="OmniLight3D" parent="Markers/MoveMarker" unique_id=1639891489]
+[node name="Light" type="OmniLight3D" parent="Markers/MoveMarker"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 light_color = Color(0.55, 0.85, 1, 1)
 omni_range = 3.0
 
-[node name="SprintMarker" type="Node3D" parent="Markers" unique_id=1443319338]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19)
+[node name="SprintMarker" type="Node3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -26)
 
-[node name="@MeshInstance3D@20" type="MeshInstance3D" parent="Markers/SprintMarker" unique_id=1191166954]
+[node name="Mesh" type="MeshInstance3D" parent="Markers/SprintMarker"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 mesh = SubResource("CylinderMesh_lyjt2")
 
-[node name="@OmniLight3D@21" type="OmniLight3D" parent="Markers/SprintMarker" unique_id=1524155372]
+[node name="Light" type="OmniLight3D" parent="Markers/SprintMarker"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 light_color = Color(0.55, 0.85, 1, 1)
 omni_range = 3.0
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=1174021199 instance=ExtResource("3_m6ekv")]
+[node name="Player" parent="." instance=ExtResource("3_m6ekv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("4_cjgls")
 
-[node name="HidingSpot" type="Node3D" parent="." unique_id=59410623 instance=ExtResource("5_f11s7")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.55, 0, -26)
+[node name="HidingSpot" parent="." instance=ExtResource("5_f11s7")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2.35, 0, -36)
 script = ExtResource("6_wl8cv")
 
-[node name="PowerPickup" type="Area3D" parent="." unique_id=1310352571 instance=ExtResource("7_npjuv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -31)
+[node name="Pedestal" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -48)
+use_collision = true
+size = Vector3(1, 0.8, 1)
+material = SubResource("StandardMaterial3D_7vc5l")
+
+[node name="PowerPickup" parent="." instance=ExtResource("7_npjuv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -48)
 script = ExtResource("8_v5f6i")
 power_id = "shockwave"
 
-[node name="Monster" type="CharacterBody3D" parent="." unique_id=1229413221 instance=ExtResource("9_jw24r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0, -36.5)
+[node name="Monster" parent="." instance=ExtResource("9_jw24r")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -62)
 collision_layer = 2
 script = ExtResource("10_l4yix")
 
-[node name="ExitDoor" type="Area3D" parent="." unique_id=518033410 instance=ExtResource("11_0hjnf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -47.2)
+[node name="ExitDoor" parent="." instance=ExtResource("11_0hjnf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -77.2)
 collision_layer = 0
 script = ExtResource("12_q5ijt")
 
-[node name="TutorialUI" type="CanvasLayer" parent="." unique_id=1858698027]
+[node name="TutorialUI" type="CanvasLayer" parent="."]
 layer = 11
 
-[node name="Root" type="Control" parent="TutorialUI" unique_id=1315015994]
+[node name="Root" type="Control" parent="TutorialUI"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -468,7 +748,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource("13_bi4s5")
 
-[node name="ObjectivePanel" type="PanelContainer" parent="TutorialUI/Root" unique_id=789298245]
+[node name="ObjectivePanel" type="PanelContainer" parent="TutorialUI/Root"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 40.0
@@ -478,67 +758,67 @@ offset_bottom = 32.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_g0kia")
 
-[node name="@VBoxContainer@22" type="VBoxContainer" parent="TutorialUI/Root/ObjectivePanel" unique_id=150736483]
+[node name="VBox" type="VBoxContainer" parent="TutorialUI/Root/ObjectivePanel"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="StepCounter" type="Label" parent="TutorialUI/Root/ObjectivePanel/@VBoxContainer@22" unique_id=781935565]
+[node name="StepCounter" type="Label" parent="TutorialUI/Root/ObjectivePanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 theme_override_colors/font_color = Color(0.72156864, 0.20784314, 0.1764706, 1)
 text = "TUTORIEL  ·  ÉTAPE 1 / 9"
 
-[node name="StepTitle" type="Label" parent="TutorialUI/Root/ObjectivePanel/@VBoxContainer@22" unique_id=1174920429]
+[node name="StepTitle" type="Label" parent="TutorialUI/Root/ObjectivePanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"StepTitleLabel"
 text = "Regarder"
 
-[node name="StepText" type="Label" parent="TutorialUI/Root/ObjectivePanel/@VBoxContainer@22" unique_id=1244200269]
+[node name="StepText" type="Label" parent="TutorialUI/Root/ObjectivePanel/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(440, 0)
 layout_mode = 2
 theme_type_variation = &"StatementLabel"
 autowrap_mode = 3
 
-[node name="StepKeys" type="HBoxContainer" parent="TutorialUI/Root/ObjectivePanel/@VBoxContainer@22" unique_id=1910379407]
+[node name="StepKeys" type="HBoxContainer" parent="TutorialUI/Root/ObjectivePanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="FinalCard" type="Control" parent="TutorialUI/Root" unique_id=802351582]
+[node name="FinalCard" type="Control" parent="TutorialUI/Root"]
 unique_name_in_owner = true
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="@ColorRect@23" type="ColorRect" parent="TutorialUI/Root/FinalCard" unique_id=1884423935]
+[node name="ColorRect" type="ColorRect" parent="TutorialUI/Root/FinalCard"]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0.043137256, 0.043137256, 0.039215688, 0.97)
 
-[node name="@VBoxContainer@24" type="VBoxContainer" parent="TutorialUI/Root/FinalCard" unique_id=989377038]
+[node name="VBox" type="VBoxContainer" parent="TutorialUI/Root/FinalCard"]
 layout_mode = 0
 anchor_bottom = 1.0
 offset_left = 72.0
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="FinalTitle" type="Label" parent="TutorialUI/Root/FinalCard/@VBoxContainer@24" unique_id=1680719383]
+[node name="FinalTitle" type="Label" parent="TutorialUI/Root/FinalCard/VBox"]
 layout_mode = 2
 theme_type_variation = &"ReportTitleLabel"
 text = "TU ES PRÊT."
 
-[node name="FinalText" type="Label" parent="TutorialUI/Root/FinalCard/@VBoxContainer@24" unique_id=343268471]
+[node name="FinalText" type="Label" parent="TutorialUI/Root/FinalCard/VBox"]
 layout_mode = 2
 theme_type_variation = &"StatementLabel"
 text = "Ou presque. Le vrai hôpital t'attend."
 
-[node name="HoldToSkip" type="HBoxContainer" parent="TutorialUI/Root" unique_id=426104257 instance=ExtResource("14_ujnhc")]
+[node name="HoldToSkip" parent="TutorialUI/Root" instance=ExtResource("14_ujnhc")]
 unique_name_in_owner = true
 layout_mode = 0
 anchor_left = 1.0
@@ -555,7 +835,7 @@ theme_override_constants/separation = 14
 script = ExtResource("15_xi6p3")
 text = "Maintenir Échap pour passer le tutoriel"
 
-[node name="Fade" type="ColorRect" parent="TutorialUI/Root" unique_id=901001623]
+[node name="Fade" type="ColorRect" parent="TutorialUI/Root"]
 unique_name_in_owner = true
 layout_mode = 0
 anchor_right = 1.0

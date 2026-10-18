@@ -129,11 +129,54 @@ func _is_near(marker: Node3D) -> bool:
 
 
 func _advance() -> void:
+	_open_door_for_step(_step)
 	_step = (_step + 1) as Step
 	if _step == Step.DONE:
 		_show_final_card()
 		return
 	_show_step()
+
+
+func _open_door_for_step(completed_step: Step) -> void:
+	match completed_step:
+		Step.LOOK:
+			_open_door("Door1")
+		Step.MOVE:
+			_open_door("Door2")
+		Step.LIGHT:
+			_open_door("Door3")
+		Step.UNHIDE:
+			_open_door("Door4")
+		Step.POWER:
+			_open_door("Door5")
+		Step.USE:
+			_open_door("Door6")
+
+
+func _open_door(door_name: String) -> void:
+	var door := get_node_or_null("Doors/" + door_name) as Node3D
+	if door == null:
+		return
+	var audio := get_node_or_null("/root/AudioManager")
+	if audio != null and audio.has_method("play_sfx"):
+		audio.play_sfx("door_open")
+	var panel := door.get_node_or_null("Panel") as Node3D
+	if panel != null:
+		var tween := create_tween()
+		tween.tween_property(panel, "position:y", 3.7, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_callback(func():
+			var col := panel.get_node_or_null("CollisionShape3D") as CollisionShape3D
+			if col != null:
+				col.set_deferred("disabled", true)
+		)
+	var light := door.get_node_or_null("Light") as OmniLight3D
+	if light != null:
+		light.light_color = Color(0.2, 1.0, 0.4)
+	var indicator := door.get_node_or_null("Indicator") as MeshInstance3D
+	if indicator != null and indicator.material_override is StandardMaterial3D:
+		var mat := (indicator.material_override as StandardMaterial3D).duplicate() as StandardMaterial3D
+		mat.albedo_color = Color(0.2, 1.0, 0.4)
+		indicator.material_override = mat
 
 
 func _show_step() -> void:
