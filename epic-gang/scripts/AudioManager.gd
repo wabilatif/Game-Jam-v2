@@ -11,7 +11,7 @@ extends Node
 ##   res://audio/sfx/shockwave.ogg
 ##   res://audio/sfx/door_open.ogg
 ##   res://audio/sfx/footstep.ogg           (optionnel : bruits de pas)
-##   res://audio/ambient/<ambient_id>.ogg   (ex : scary_ambience.ogg)
+##   res://audio/ambient/scary_ambience.ogg (ambiance par défaut, lancée automatiquement)
 ##   res://audio/sfx/monster_loop.ogg       (optionnel : son continu du monstre)
 ##
 ## Si un fichier est absent, un warning est affiché mais le jeu ne plante pas.
@@ -21,17 +21,21 @@ const AMBIENT_DIR := "res://audio/ambient/"
 const EXTENSIONS := ["ogg", "mp3", "wav"]
 const SFX_POOL_SIZE := 8
 const MONSTER_LOOP_ID := "monster_loop"
+## Ambiance lancée automatiquement au démarrage du jeu (et après reset_audio).
+const DEFAULT_AMBIENT := "scary_ambience"
 
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _ambient_player: AudioStreamPlayer
 var _monster_player: AudioStreamPlayer
 var _stream_cache: Dictionary = {}
 var _lowpass_index := -1
+var _current_ambient := ""
 
 
 func _ready() -> void:
 	_setup_players()
 	_setup_hearing_filter()
+	play_ambient_sound(DEFAULT_AMBIENT)
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +53,10 @@ func play_sfx(sound_id: String) -> void:
 
 
 ## Joue une ambiance en boucle. Remplace l'ambiance en cours.
+## Si la même ambiance joue déjà, ne la relance pas.
 func play_ambient_sound(sound_id: String) -> void:
+	if sound_id == _current_ambient and _ambient_player.playing:
+		return
 	var stream := _load_stream(AMBIENT_DIR, sound_id)
 	if stream == null:
 		return
@@ -57,10 +64,13 @@ func play_ambient_sound(sound_id: String) -> void:
 	stream.set("loop", true)
 	_ambient_player.stream = stream
 	_ambient_player.play()
+	_current_ambient = sound_id
+	print("[Audio] ambiance lancée : ", sound_id)
 
 
 func stop_ambient_sound() -> void:
 	_ambient_player.stop()
+	_current_ambient = ""
 
 
 ## Perte d'ouïe : filtre passe-bas sur le bus Master.
@@ -117,12 +127,14 @@ func set_monster_audio_intensity(intensity: float) -> void:
 
 
 ## A appeler par Main à la relance de partie (le joueur ne le fait pas).
+## Coupe tout puis relance l'ambiance par défaut.
 func reset_audio() -> void:
 	set_hearing_effect(false)
 	stop_ambient_sound()
 	_monster_player.stop()
 	for p in _sfx_players:
 		p.stop()
+	play_ambient_sound(DEFAULT_AMBIENT)
 
 
 # ---------------------------------------------------------------------------
