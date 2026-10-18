@@ -7,6 +7,13 @@ extends RefCounted
 ## francais (jamais d'erreur) : pour ajouter une phrase, ajouter une ligne ici.
 
 const TABLE: Dictionary = {
+	# --- Avertissement avant de jouer ---
+	"NOTICE AU PATIENT  /  AVANT ADMISSION": "PATIENT NOTICE  /  BEFORE ADMISSION",
+	"AVERTISSEMENT": "CONTENT WARNING",
+	"Ce jeu d'horreur contient :": "This horror game contains:",
+	"Une ambiance angoissante et des sons soudains.\nDes lumières clignotantes et des effets visuels intenses.\nDes mouvements de caméra pouvant provoquer un inconfort.": "A disturbing atmosphere and sudden sounds.\nFlashing lights and intense visual effects.\nCamera movements that may cause discomfort.",
+	"Si vous êtes sensible à ces effets, évitez de jouer.\nEn cas d'inconfort, arrêtez la partie.": "If you are sensitive to these effects, avoid playing.\nStop playing if you feel uncomfortable.",
+	"Continuer": "Continue",
 	# --- Menu principal / pause / fin de partie (decor "dossier medical") ---
 	"CENTRE HOSPITALIER SAINT-AUBIN": "SAINT-AUBIN HOSPITAL CENTER",
 	"DOSSIER N° 0447": "FILE NO. 0447",
@@ -152,7 +159,7 @@ const TABLE: Dictionary = {
 	"Tu te réveilles sur un brancard.\nTu ne te souviens de rien. Ni de ton nom, ni de la raison de ta présence ici.": "You wake up on a gurney.\nYou remember nothing. Not your name, not why you are here.",
 	"L'hôpital est vide. Les néons grésillent.\nQuelque chose marche dans les couloirs. Il t'entend.": "The hospital is empty. The lights buzz.\nSomething walks the hallways. It can hear you.",
 	"Quatre pouvoirs sont cachés dans les salles.\nChacun exige un sacrifice : une partie de toi, pour toujours.": "Four powers are hidden in the rooms.\nEach one demands a sacrifice: a part of you, forever.",
-	"Rassemble les quatre. Trouve la sortie.\nNe te retourne pas.": "Gather all four. Find the exit.\nDon't look back.",
+	"Retrouve tous les secrets pour ouvrir la sortie.\nLes pouvoirs peuvent t'aider, mais ils ne sont pas obligatoires.": "Find all the secrets to open the exit.\nPowers can help you, but they are optional.",
 	"Entrée pour continuer": "Enter to continue",
 	"Maintenir Échap pour passer": "Hold Esc to skip",
 	"Maintenir Échap pour passer l'intro": "Hold Esc to skip the intro",
@@ -175,7 +182,7 @@ const TABLE: Dictionary = {
 	"Appuie de nouveau sur E pour sortir de l'armoire.": "Press E again to get out of the wardrobe.",
 	"Touche le cube lumineux et signe le formulaire. Ici, le sacrifice ne comptera pas.": "Touch the glowing cube and sign the form. Here, the sacrifice won't count.",
 	"Le monstre est là, immobile. Approche-toi à moins de 8 m et appuie sur 1 pour l'étourdir.": "The monster is there, motionless. Get within 8 m and press 1 to stun it.",
-	"Rejoins la porte verte. Dans le vrai jeu, elle ne s'ouvre qu'avec les quatre pouvoirs.": "Reach the green door. In the real game, it only opens with all four powers.",
+	"Rejoins la porte verte. Dans le vrai jeu, retrouve tous les secrets pour ouvrir la sortie. Les pouvoirs sont facultatifs.": "Reach the green door. In the real game, find all the secrets to open the exit. Powers are optional.",
 	"Souris": "Mouse",
 	"Maj": "Shift",
 	"Échap": "Esc",

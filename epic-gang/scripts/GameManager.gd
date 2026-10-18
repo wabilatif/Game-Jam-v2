@@ -106,6 +106,19 @@ func is_game_over() -> bool:
     return _game_over
 
 
+## Quitter la session sans declencher d'ecran de victoire ou de defaite.
+func stop_game() -> void:
+    _game_running = false
+    _game_over = false
+    _game_time = 0.0
+    _exit_is_open = false
+    _restart_pending = false
+    _secret_total = 0
+    _secrets_found = 0
+    get_tree().paused = false
+    _reset_persistent_systems()
+
+
 # ============================================================
 # 5. CHRONOMETRE
 # ============================================================

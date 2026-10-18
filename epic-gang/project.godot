@@ -30,13 +30,13 @@ UIManager="*res://scripts/UIManager.gd"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[internationalization]
-
-locale/fallback="fr"
-
 [dotnet]
 
 project/assembly_name="Epic-gang"
+
+[internationalization]
+
+locale/fallback="fr"
 
 [physics]
 

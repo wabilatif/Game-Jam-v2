@@ -1,0 +1,116 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/lost_memory_theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://scripts/ContentWarning.gd" id="2_script"]
+
+[node name="ContentWarning" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_theme")
+script = ExtResource("2_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.043137256, 0.043137256, 0.039215688, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 32
+
+[node name="Scroll" type="ScrollContainer" parent="Margin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Layout" type="VBoxContainer" parent="Margin/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Hospital" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "CENTRE HOSPITALIER SAINT-AUBIN"
+
+[node name="TopRule" type="HSeparator" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+
+[node name="TopSpace" type="Control" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Reference" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+theme_override_colors/font_color = Color(0.5568628, 0.105882354, 0.09019608, 1)
+text = "NOTICE AU PATIENT  /  AVANT ADMISSION"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"StepTitleLabel"
+theme_override_font_sizes/font_size = 46
+text = "AVERTISSEMENT"
+autowrap_mode = 3
+
+[node name="Introduction" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"StatementLabel"
+text = "Ce jeu d'horreur contient :"
+autowrap_mode = 3
+
+[node name="Content" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+theme_override_constants/line_spacing = 8
+text = "Une ambiance angoissante et des sons soudains.\nDes lumières clignotantes et des effets visuels intenses.\nDes mouvements de caméra pouvant provoquer un inconfort."
+autowrap_mode = 3
+
+[node name="Advice" type="Label" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldValueLabel"
+text = "Si vous êtes sensible à ces effets, évitez de jouer.\nEn cas d'inconfort, arrêtez la partie."
+autowrap_mode = 3
+
+[node name="BottomSpace" type="Control" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BottomRule" type="HSeparator" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Margin/Scroll/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="ContinueButton" type="Button" parent="Margin/Scroll/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Continuer"
+
+[node name="BackButton" type="Button" parent="Margin/Scroll/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Retour"

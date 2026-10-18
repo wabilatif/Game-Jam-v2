@@ -11,7 +11,7 @@ const CARDS: Array[String] = [
 	"Tu te réveilles sur un brancard.\nTu ne te souviens de rien. Ni de ton nom, ni de la raison de ta présence ici.",
 	"L'hôpital est vide. Les néons grésillent.\nQuelque chose marche dans les couloirs. Il t'entend.",
 	"Quatre pouvoirs sont cachés dans les salles.\nChacun exige un sacrifice : une partie de toi, pour toujours.",
-	"Rassemble les quatre. Trouve la sortie.\nNe te retourne pas.",
+	"Retrouve tous les secrets pour ouvrir la sortie.\nLes pouvoirs peuvent t'aider, mais ils ne sont pas obligatoires.",
 ]
 
 @onready var _card: Label = %Card

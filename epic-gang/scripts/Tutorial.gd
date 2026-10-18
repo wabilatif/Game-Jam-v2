@@ -30,7 +30,7 @@ const STEPS: Array[Dictionary] = [
 	{"title": "Sortir", "text": "Appuie de nouveau sur E pour sortir de l'armoire.", "keys": [KEY_E]},
 	{"title": "Un pouvoir", "text": "Touche le cube lumineux et signe le formulaire. Ici, le sacrifice ne comptera pas.", "keys": []},
 	{"title": "S'en servir", "text": "Le monstre est là, immobile. Approche-toi à moins de 8 m et appuie sur 1 pour l'étourdir.", "keys": [KEY_1]},
-	{"title": "La sortie", "text": "Rejoins la porte verte. Dans le vrai jeu, elle ne s'ouvre qu'avec les quatre pouvoirs.", "keys": []},
+	{"title": "La sortie", "text": "Rejoins la porte verte. Dans le vrai jeu, retrouve tous les secrets pour ouvrir la sortie. Les pouvoirs sont facultatifs.", "keys": []},
 ]
 enum Step { LOOK, MOVE, SPRINT, LIGHT, HIDE, UNHIDE, POWER, USE, EXIT, DONE }
 

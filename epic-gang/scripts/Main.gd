@@ -692,13 +692,8 @@ func _on_restart_requested() -> void:
 
 
 func _on_main_menu_requested() -> void:
-    get_tree().paused = false
-
-    # Les Autoloads survivent au changement de scene : sans ce reset, la
-    # vision spectrale ou le flou d'un sacrifice resteraient sur le menu.
-    _call_manager("PowerManager", "reset_powers")
-    _call_manager("AudioManager", "reset_audio")
-    _call_manager("EffectsManager", "reset_effects")
+    # Arreter la session et nettoyer les Autoloads avant de quitter le jeu.
+    GameManager.stop_game()
 
     var menu_path := "res://scenes/MainMenu.tscn"
 

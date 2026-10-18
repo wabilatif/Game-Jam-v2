@@ -28,6 +28,6 @@ func _ready() -> void:
 	create_tween().tween_property(_fade, "modulate:a", 0.0, FADE_IN_DURATION)
 
 
-## Première partie : intro puis tutoriel. Ensuite : directement le jeu.
+## Lire l'avertissement avant l'intro ou la partie.
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file(TutorialProgress.first_scene())
+	get_tree().change_scene_to_file("res://scenes/ContentWarning.tscn")
