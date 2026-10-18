@@ -149,6 +149,11 @@ const HIDE_SUSPICION_DURATION: float = 20.0
 const HIDDEN_FLEE_RANGE: float = 25.0
 const HIDDEN_FAR_DISTANCE: float = 18.0
 
+## Bruits du monde (NoiseManager : portes, etc.). Le monstre ne reagit qu'a un
+## bruit tout frais : un son vieux de quelques secondes ne l'attire plus.
+const NOISE_MAX_AGE: float = 0.5
+const NOISES_PER_TICK: int = 8
+
 @export var default_difficulty: String = DEFAULT_DIFFICULTY
 
 var _state: State = State.PATROL
@@ -180,6 +185,7 @@ var _hide_check_time: float = 0.0
 var _move_intent: bool = false
 var _stuck_time: float = 0.0
 var _stuck_reference: Vector3 = Vector3.ZERO
+var _noise_manager: Node = null
 
 
 static func get_difficulty_ids() -> Array[String]:
@@ -191,6 +197,7 @@ static func get_difficulty_ids() -> Array[String]:
 func _ready() -> void:
 	add_to_group("monster")
 	_agent = get_node_or_null("NavigationAgent3D") as NavigationAgent3D
+	_noise_manager = get_node_or_null("/root/NoiseManager")
 	var wanted: String = default_difficulty
 	if Engine.has_meta(DIFFICULTY_META_KEY):
 		wanted = str(Engine.get_meta(DIFFICULTY_META_KEY))
@@ -346,6 +353,7 @@ func _physics_process(delta: float) -> void:
 		velocity.z = 0.0
 		move_and_slide()
 		return
+	_listen_to_world_noises()
 	_move_intent = false
 	_update_state(delta)
 	move_and_slide()
@@ -626,6 +634,40 @@ func _track_by_sound(heard_position: Vector3) -> void:
 		return
 	_last_seen_position = heard_position
 	_lose_sight_timer = minf(_lose_sight_timer, _p("lose_sight_time") * NOISE_CHASE_GRACE)
+
+
+## Ecoute les bruits que le monde emet via NoiseManager (porte ouverte en
+## courant = claquement, en marchant = grincement, porte refermee...). Le
+## monstre les entend depuis SA position, avec l'ouie de sa difficulte. Seul le
+## bruit le plus fort est traite a chaque passage, les autres sont ecartes :
+## il ne change donc pas d'avis dix fois dans la meme image.
+## Les bruits de porte sont emis dans l'ouverture du mur : on ne les attenue
+## pas par les murs (le son passe par la porte). Ceux qu'il fait lui-meme ne
+## sont jamais renvoyes par NoiseManager (player_made = false).
+func _listen_to_world_noises() -> void:
+	if _noise_manager == null or not is_instance_valid(_noise_manager):
+		return
+	if not _noise_manager.has_method("consume_noise_heard_at"):
+		return
+	if _is_target_hidden():
+		return
+	var loudest: Dictionary = {}
+	for i in range(NOISES_PER_TICK):
+		var heard: Dictionary = _noise_manager.consume_noise_heard_at(global_position, _p("hearing"))
+		if heard.is_empty():
+			break
+		if float(heard.get("age", 0.0)) > NOISE_MAX_AGE:
+			continue
+		if loudest.is_empty():
+			loudest = heard
+	if loudest.is_empty():
+		return
+	var noise_position: Vector3 = loudest["position"]
+	var global_multiplier: float = float(_noise_manager.get("hearing_multiplier"))
+	var reach: float = float(loudest["radius"]) * global_multiplier * _p("hearing")
+	var heard_position: Vector3 = _blur_noise_position(noise_position, float(loudest["distance"]), reach)
+	noise_heard.emit(heard_position)
+	_react_to_noise(heard_position)
 
 
 func _blur_noise_position(noise_position: Vector3, distance: float, reach: float) -> Vector3:

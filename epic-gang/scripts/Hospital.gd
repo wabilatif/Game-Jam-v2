@@ -40,6 +40,13 @@ const MIN_DISTANCE_FROM_EXIT: float = 6.0
 const CANDIDATES_PER_ITEM: int = 40
 const FALLBACK_ATTEMPTS: int = 400
 
+## --- Depart aleatoire du monstre -----------------------------------------
+const MONSTER_MIN_DISTANCE_FROM_PLAYER: float = 20.0
+const MONSTER_MIN_DISTANCE_FROM_EXIT: float = 6.0
+## Marge (m) autour d'une porte ou le monstre ne peut pas apparaitre.
+const MONSTER_DOOR_MARGIN: float = 1.0
+const MONSTER_SPAWN_ATTEMPTS: int = 80
+
 ## Nombre de secrets a retrouver pour pouvoir gagner.
 @export var secret_count: int = 5
 ## 0 = aleatoire a chaque lancement. Autre valeur = placement reproductible
@@ -90,6 +97,8 @@ var _tubes: Array[Node] = []
 var _power_points: Array[Vector3] = []
 var _secret_points: Array[Vector3] = []
 var _items_generated: bool = false
+var _monster_spawn_ready: bool = false
+var _monster_spawn_point: Vector3 = Vector3.ZERO
 var _doors: Array[Node3D] = []
 var _door_rids: Array[RID] = []
 
@@ -133,6 +142,66 @@ func get_player_spawn_position() -> Vector3:
 ## Position initiale du monstre, loin du joueur.
 func get_monster_spawn_position() -> Vector3:
 	return monster_spawn.global_position
+
+
+## Hors contrat : position de depart ALEATOIRE du monstre (differente a chaque
+## partie). Elle est tiree sur son circuit de patrouille, dont chaque segment
+## est en ligne droite sans mur : le monstre n'apparait donc jamais coince dans
+## une piece, et sa patrouille reprend tout de suite. Loin du joueur et de la
+## sortie, et jamais dans l'emprise d'une porte. Si rien de valide n'est
+## trouve, renvoie le MonsterSpawn fixe. Resultat memorise (stable par partie).
+func get_random_monster_spawn_position() -> Vector3:
+	if _monster_spawn_ready:
+		return _monster_spawn_point
+	_monster_spawn_ready = true
+	_monster_spawn_point = monster_spawn.global_position
+	var points: Array[Vector3] = get_patrol_points()
+	if points.size() < 2:
+		return _monster_spawn_point
+
+	var rng := RandomNumberGenerator.new()
+	if random_seed != 0:
+		rng.seed = random_seed + 202
+	else:
+		rng.randomize()
+
+	var player_pos: Vector3 = get_player_spawn_position()
+	var exit_pos: Vector3 = get_exit_position()
+	var fallback: Vector3 = Vector3.INF
+	var fallback_distance: float = -1.0
+	for attempt in MONSTER_SPAWN_ATTEMPTS:
+		var index: int = rng.randi_range(0, points.size() - 1)
+		var from_point: Vector3 = points[index]
+		var to_point: Vector3 = points[(index + 1) % points.size()]
+		if _flat_distance(from_point, to_point) < 0.5:
+			continue
+		var candidate: Vector3 = from_point.lerp(to_point, rng.randf())
+		candidate.y = monster_spawn.global_position.y
+		if _flat_distance(candidate, exit_pos) < MONSTER_MIN_DISTANCE_FROM_EXIT \
+				or _is_near_door(candidate):
+			continue
+		var distance: float = _flat_distance(candidate, player_pos)
+		if distance >= MONSTER_MIN_DISTANCE_FROM_PLAYER:
+			_monster_spawn_point = candidate
+			return _monster_spawn_point
+		if distance > fallback_distance:
+			fallback_distance = distance
+			fallback = candidate
+	# Aucun point assez loin : on prend le plus eloigne du joueur.
+	if fallback != Vector3.INF:
+		_monster_spawn_point = fallback
+	return _monster_spawn_point
+
+
+## Vrai si le point est dans la zone d'une porte (battant + marge).
+func _is_near_door(point: Vector3) -> bool:
+	for door: Node3D in _doors:
+		if not is_instance_valid(door) or not (door is Door):
+			continue
+		var door_node: Door = door as Door
+		if _flat_distance(point, door_node.get_center_position()) < door_node.get_width() * 0.5 + MONSTER_DOOR_MARGIN:
+			return true
+	return false
 
 
 ## Exactement 4 positions ALEATOIRES (differentes a chaque partie).

@@ -4,7 +4,6 @@ extends Node3D
 ## PowerPickup et le vrai formulaire : ce qu'on apprend ici marche pareil en
 ## jeu. À la fin (ou si on le passe), tout est remis à zéro avant la partie.
 
-const GAME_SCENE := "res://scenes/Main.tscn"
 const FADE_DURATION := 1.0
 const FINAL_CARD_DURATION := 2.5
 const LOOK_ANGLE := 1.6
@@ -223,7 +222,7 @@ func _start_game() -> void:
 		var manager := get_node_or_null("/root/" + manager_call[0])
 		if manager != null and manager.has_method(manager_call[1]):
 			manager.call(manager_call[1])
-	get_tree().change_scene_to_file(GAME_SCENE)
+	get_tree().change_scene_to_file(TutorialProgress.scene_after_tutorial())
 
 
 func _on_flashlight_toggled(is_on: bool) -> void:

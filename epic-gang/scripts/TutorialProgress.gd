@@ -7,6 +7,12 @@ extends RefCounted
 const SETTINGS_PATH := "user://settings.cfg"
 const INTRO_SCENE := "res://scenes/Intro.tscn"
 const GAME_SCENE := "res://scenes/Main.tscn"
+const TUTORIAL_SCENE := "res://scenes/Tutorial.tscn"
+const MENU_SCENE := "res://scenes/MainMenu.tscn"
+
+## Vrai quand le tutoriel est relancé volontairement depuis le menu : à la fin
+## (ou si on le passe), on revient au menu au lieu de lancer la partie.
+static var replay: bool = false
 
 
 static func is_done() -> bool:
@@ -21,6 +27,20 @@ static func mark_done() -> void:
 	config.load(SETTINGS_PATH)
 	config.set_value("progress", "tutorial_done", true)
 	config.save(SETTINGS_PATH)
+
+
+## Relancer le tutoriel depuis le menu (sans refaire l'intro).
+static func replay_scene() -> String:
+	replay = true
+	return TUTORIAL_SCENE
+
+
+## Scène qui suit le tutoriel : le menu après un replay, sinon la partie.
+## Consomme le drapeau : un lancement ultérieur repart sur le flux normal.
+static func scene_after_tutorial() -> String:
+	var was_replay := replay
+	replay = false
+	return MENU_SCENE if was_replay else GAME_SCENE
 
 
 ## Première partie : intro puis tutoriel. Ensuite : directement le jeu.

@@ -23,6 +23,7 @@ const TABLE: Dictionary = {
 	"il est dans le couloir": "it's in the hallway",
 	"Le patient ne se souvient de rien.": "The patient remembers nothing.",
 	"Commencer": "Start",
+	"Revoir le tutoriel": "Replay tutorial",
 	"Quitter": "Quit",
 	"Identité ..........": "Identity ..........",
 	"inconnue": "unknown",

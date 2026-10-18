@@ -23,7 +23,7 @@ The monster opens doors by itself (a closed door never blocks it), and the playe
 
 ### Noise API for the monster (`NoiseManager` autoload)
 
-The monster asks what it hears **from where it stands** (nothing in `Monster.gd` is required for the game to run; this is the hook to use):
+`Monster.gd` listens to `NoiseManager` on every physics tick (`_listen_to_world_noises`): it only reacts to a fresh noise (< 0.5 s old), with the hearing of its difficulty, and goes to investigate it (or tracks it by sound while chasing). The monster starts at a random point of its patrol route (`Hospital.get_random_monster_spawn_position()`), far from the player. Under the hood, it asks what it hears **from where it stands**:
 
 ```gdscript
 var heard: Dictionary = NoiseManager.get_noise_heard_at(global_position)

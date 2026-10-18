@@ -713,7 +713,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("4_cjgls")
 
 [node name="HidingSpot" parent="." instance=ExtResource("5_f11s7")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2.35, 0, -36)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2.55, 0, -36)
 script = ExtResource("6_wl8cv")
 
 [node name="Pedestal" type="CSGBox3D" parent="."]

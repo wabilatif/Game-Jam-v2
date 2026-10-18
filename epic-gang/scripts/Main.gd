@@ -131,9 +131,16 @@ func _spawn_world_objects() -> bool:
         "get_player_spawn_position"
     )
 
-    monster.global_position = hospital.call(
-        "get_monster_spawn_position"
-    )
+    # Depart aleatoire du monstre (sur son circuit de patrouille). Si la
+    # fonction n'existe pas, on retombe sur le point fixe du contrat.
+    if hospital.has_method("get_random_monster_spawn_position"):
+        monster.global_position = hospital.call(
+            "get_random_monster_spawn_position"
+        )
+    else:
+        monster.global_position = hospital.call(
+            "get_monster_spawn_position"
+        )
 
     # Creation des quatre pouvoirs.
     for i in range(POWER_IDS.size()):
@@ -206,6 +213,10 @@ func _initialize_world() -> void:
         "start_patrol",
         hospital.call("get_patrol_points")
     )
+
+    # Le monstre apparait n'importe ou sur son circuit : il reprend la
+    # patrouille au point le plus proche (et non au premier de la liste).
+    monster.call("resume_patrol")
 
 
 # ============================================================
